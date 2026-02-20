@@ -30,6 +30,10 @@
   --increase-s: 35%;
   --increase-l: 50%;
 
+  --danger-h: 0;
+  --danger-s: 75%;
+  --danger-l: 60%;
+
   --black: hsla(var(--black-h), var(--black-s), var(--black-l), var(--black-a));
   --black-muted-bg: hsla(var(--black-h), var(--black-s), var(--black-l), calc(var(--black-a) - 0.65));
   --black-shadow-color: hsla(var(--black-h), var(--black-s), var(--black-l), calc(var(--black-a) - 0.95));
@@ -43,6 +47,7 @@
   --accent-muted-bg: hsl(var(--accent-h), var(--accent-s), calc(var(--accent-l) + 10%));
   --decrease: hsl(var(--decrease-h), var(--decrease-s), var(--decrease-l));
   --increase: hsl(var(--increase-h), var(--increase-s), var(--increase-l));
+  --danger: hsl(var(--danger-h), var(--danger-s), var(--danger-l));
 
   /* THIS IS BASED ON THE `font-size: 16px;` in `html{}`. wherein, 1rem == 16px  */
   --space-1: 0.25rem; /* 4px */
@@ -418,4 +423,124 @@ main {
 .dashboard-exp-break-cat-description {
     font-size: var(--text-sm);
     color: var(--secondary-muted);
+}
+
+/* FINANCIAL TRANSACTION */
+.financial-transaction {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.financial-transaction-header {
+    display: flex;
+}
+
+.financial-transaction-picker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    background: var(--white-muted-bg);
+    border-radius: var(--radius-md);
+    padding: var(--space-1);
+}
+
+.picker-item {
+    font-size: var(--text-sm);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.picker-item p {
+    color: var(--secondary-muted);
+}
+
+.picker-item:hover {
+    background: var(--white);
+}
+
+.picked {
+    pointer-events: none;
+    font-weight: var(--font-medium);
+    text-align: center;
+    background: var(--accent-muted-bg);
+}
+
+.picked p {
+    color: var(--secondary);
+}
+
+.financial-transaction-table-con {
+    display: flex;
+}
+
+.financial-transaction-table-con table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    border: var(--border);
+    border-radius: var(--radius-md);
+}
+
+.financial-transaction-table-con th:first-child {
+    padding-left: var(--space-5);
+} 
+
+.financial-transaction-table-con th:last-child {
+    padding-right: var(--space-5);
+    text-align: end;
+} 
+
+.financial-transaction-table-con th {
+    font-weight: var(--font-medium);
+    text-align: start;
+    padding: var(--space-3) 0px;
+}
+
+.payee-col {
+    text-align: center !important;
+}
+
+.financial-transaction-table-con td:first-child {
+    padding-left: var(--space-5);
+}
+
+.financial-transaction-table-con th, td {
+    color: var(--secondary);
+    font-size: var(--text-sm);
+    border-bottom: var(--border);
+}
+
+.financial-transaction-table-con td {
+    padding: var(--space-4) 0px;
+}
+
+.financial-transaction-table-con td:last-child {
+    display: flex;
+    justify-content: end;
+    padding-right: var(--space-5);
+    gap: var(--space-3);
+} 
+
+.financial-transaction-table-con tr:last-child td {
+    border: none;
+}
+
+.income {
+    color: var(--increase);
+}
+
+.expenses {
+    color: var(--decrease);
+}
+
+.action-con {
+    width: 20px;
+}
+
+.delete {
+    fill: var(--danger);
+    cursor: pointer;
 }

@@ -86,3 +86,7 @@ TO-DO
 
     FIX NAV ICONS SVG
         - inline na lahat ng svg icons para maddali isama sa javascript if ever
+
+        
+
+        tang ina ctrl + d pala ung magic key HAHAHAHA

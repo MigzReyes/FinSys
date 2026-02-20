@@ -14,7 +14,7 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    public IActionResult Dashboard()
+    public IActionResult FinancialTransaction()
     {
         return View();
     }
