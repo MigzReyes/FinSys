@@ -1,0 +1,421 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+  --black-h: 0;
+  --black-s: 0%;
+  --black-l: 0%;
+  --black-a: 1;
+
+  --white-h: 0;
+  --white-s: 0%;
+  --white-l: 100%;
+
+  --primary-h: 205;
+  --primary-s: 100%;
+  --primary-l: 40%;
+
+  --secondary-h: 210;
+  --secondary-s: 20%;
+  --secondary-l: 15%;
+
+  --accent-h: 50;
+  --accent-s: 95%;
+  --accent-l: 60%;
+  
+  --decrease-h: 0;
+  --decrease-s: 75%;
+  --decrease-l: 60%;
+
+  --increase-h: 150;
+  --increase-s: 35%;
+  --increase-l: 50%;
+
+  --black: hsla(var(--black-h), var(--black-s), var(--black-l), var(--black-a));
+  --black-muted-bg: hsla(var(--black-h), var(--black-s), var(--black-l), calc(var(--black-a) - 0.65));
+  --black-shadow-color: hsla(var(--black-h), var(--black-s), var(--black-l), calc(var(--black-a) - 0.95));
+  --white: hsl(var(--white-h), var(--white-s), var(--white-l));
+  --white-muted-bg: hsl(var(--white-h), var(--white-s), calc(var(--white-l) - 5% ));
+  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+  --primary-muted-bg: hsl(var(--primary-h), var(--primary-s), calc(var(--primary-l) + 55%));
+  --secondary: hsl(var(--secondary-h), var(--secondary-s), var(--secondary-l));
+  --secondary-muted: hsl(var(--secondary-h), var(--secondary-s), calc(var(--secondary-l) + 10%));
+  --accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+  --accent-muted-bg: hsl(var(--accent-h), var(--accent-s), calc(var(--accent-l) + 10%));
+  --decrease: hsl(var(--decrease-h), var(--decrease-s), var(--decrease-l));
+  --increase: hsl(var(--increase-h), var(--increase-s), var(--increase-l));
+
+  /* THIS IS BASED ON THE `font-size: 16px;` in `html{}`. wherein, 1rem == 16px  */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-7: 2rem; /* 32px */
+
+  --text-xs: 0.75rem;  /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-md: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semi-bold: 600;
+  --font-bold: 700;
+
+  --radius-sm: 5px;
+  --radius-md: 10px;
+  --radius-full: 9999px;
+
+  --button-radius: var(--radius);
+
+  --box-shadow: 0px 0px 10px 5px var(--black-shadow-color);
+
+  --border: 1px solid var(--secondary);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+}
+
+p, span, button, input {
+  color: var(--secondary);
+}
+
+button {
+  font-size: var(--body-md);
+  font-family: "Inter", sans-serif;
+  padding: var(--space-2) var(--space-4);
+  border: var(--border);
+  border-radius: var(--radius-md);
+}
+
+input {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: var(--border);
+  font-size: var(--body-md);
+}
+
+img {
+    width: 100%;
+    height: auto;
+}
+
+svg {
+    width: 100%;
+    height: auto;
+}
+
+ul {
+    list-style: none;
+}
+
+body {
+    display: flex;
+}
+
+/* NAV */
+
+nav {
+    max-width: 245px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-right: var(--border);
+    padding: var(--space-5) 0px;
+    gap: var(--space-7);
+}
+
+.nav-member-info-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px var(--space-5);
+    gap: var(--space-3);
+}
+
+.nav-member-logo-con {
+    width: 55px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-1) var(--space-2);
+}
+
+.nav-member-logo {
+    width: 45px;
+}
+
+.nav-member-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-member-company-name {
+    font-size: var(--text-md);
+    font-weight: var(--font-semi-bold);
+}
+
+.nav-member-industry {
+    font-size: var(--text-sm);
+    font-weight: var(--font-regular);
+}
+
+.nav-item-con {
+    padding: 0px var(--space-3);
+    flex: 1;
+}
+
+.nav-item-con ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.nav-item {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
+    transition: 0.5s;
+}
+
+.nav-item p {
+    width: stretch;
+}
+
+.nav-item:hover {
+    background: var(--white-muted-bg);
+    color: white;
+    cursor: pointer;
+}
+
+.nav-item-icon {
+    width: 20px;
+}
+
+.nav-footer {
+    display: flex;
+    align-items: end;
+    padding: 0px var(--space-5);
+}
+
+.nav-footer p {
+    font-size: var(--text-xs);
+    padding-bottom: var(--space-1);
+}
+
+.nav-footer-logo {
+    width: 80px;
+}
+
+/* MAIN */
+.main-con {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: var(--border);
+    padding: var(--space-5);
+}
+
+.header-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-info-head {
+    font-size: var(--text-xl);
+    font-weight: var(--font-medium);
+}
+
+.header-info-subhead {
+    font-size: var(--text-md);
+    color: var(--secondary-muted);
+}
+
+.header-user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.header-user-name {
+    font-size: var(--text-md);
+    font-weight: var(--font-medium);
+}
+
+.header-user-role {
+    height: fit-content;
+    background: var(--accent);
+    border-radius: var(--radius-md);
+    padding: var(--space-1) var(--space-2);
+}
+
+.header-user-role p {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+
+main {
+    height: 100%;
+    overflow-x: auto;
+    padding: var(--space-5);
+}
+
+/* DASHBOARD */
+.dashboard {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.dashboard-cards-con {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-5);
+    padding: var(--space-5);
+}
+
+.card {
+    height: 155px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-5);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    flex: 1 1 280px;
+    box-shadow: var(--box-shadow);
+}
+
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-head p {
+    font-size: var(--text-md);
+    font-weight: var(--font-semi-bold);
+    color: var(--secondary-muted);
+}
+
+.card-icon-con {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-icon {
+    width: 20px;
+}
+
+.card-details {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--space-1);
+}
+
+.card-details-value {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semi-bold);
+}
+
+.card-details-description {
+    font-size: var(--text-sm);
+    color: var(--secondary-muted);
+}
+
+.income {
+    fill: var(--increase);
+    color: var(--increase);
+}
+
+.expense {
+    fill: var(--decrease);
+    color: var(--decrease);
+}
+
+.trend-up {
+    fill: var(--primary);
+    color: var(--primary);
+}
+
+.dashboard-fin-over-con {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-3);
+}
+
+.dashboard-fin-over-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.dashboard-fin-over-head {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semi-bold);
+}
+
+.dashboard-fin-over-description {
+    font-size: var(--text-sm);
+    color: var(--secondary-muted);
+}
+
+.dashboard-exp-break-cat-con {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    margin: var(--space-5);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--box-shadow);
+    flex: 1; /* REMOVE THIS PAG MAY LAMAN NA TONG GRAPH */
+}
+
+.dashboard-exp-break-cat-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.dashboard-exp-break-cat-head {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semi-bold);
+}
+
+.dashboard-exp-break-cat-description {
+    font-size: var(--text-sm);
+    color: var(--secondary-muted);
+}

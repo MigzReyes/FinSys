@@ -82,3 +82,7 @@ TO-DO
     Create the boilerplate for member.css
 
     CREATE AN ERD FOR FINSYS
+
+
+    FIX NAV ICONS SVG
+        - inline na lahat ng svg icons para maddali isama sa javascript if ever

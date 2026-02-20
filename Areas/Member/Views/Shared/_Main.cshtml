@@ -10,12 +10,92 @@
 <body>
     <!-- SIDE-NAVBAR -->
     <nav>
+        <div class="nav-member-info-con">
+            <div class="nav-member-logo-con">
+                <div class="nav-member-logo">
+                    <img src="~/img/companyLogo.png" alt="memberLogo">
+                </div>
+            </div>
 
+            <div class="nav-member-info">
+                <p class="nav-member-company-name">Home Ground Coffee Bar</p>
+                <p class="nav-member-industry">Coffee Shop</p>
+            </div>
+        </div>  
+
+        <div class="nav-item-con">  
+            <ul>
+                <li class="nav-item">
+                    <div class="nav-item-icon">
+                        <img src="~/icons/dashboard.svg" alt="dashboardIcon">
+                    </div>
+
+                    <p>Dashboard</p>
+                </li>
+
+                <li class="nav-item">
+                    <div class="nav-item-icon">
+                        <img src="~/icons/receipt.svg" alt="dashboardIcon">
+                    </div>
+
+                    <p>Financial Transaction</p>
+                </li>
+
+                <li class="nav-item">
+                    <div class="nav-item-icon">
+                        <img src="~/icons/userGroup.svg" alt="dashboardIcon">
+                    </div>
+
+                    <p>Employees</p>
+                </li>
+
+                <li class="nav-item">
+                    <div class="nav-item-icon">
+                        <img src="~/icons/reports.svg" alt="dashboardIcon">
+                    </div>
+
+                    <p>Reports</p>
+                </li>
+
+                <li class="nav-item">
+                    <div class="nav-item-icon">
+                        <img src="~/icons/settings.svg" alt="dashboardIcon">
+                    </div>
+
+                    <p>Settings</p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-footer">
+            <p>Powered by</p>
+
+            <div class="nav-footer-logo">
+                <img src="~/brand/logo.svg" alt="">
+            </div>
+        </div>
     </nav>
 
-    <!-- MAIN -->
-    <main>
-        @RenderBody()
-    </main>
+    <div class="main-con">
+        <div class="header">
+            <div class="header-info">
+                <p class="header-info-head">Dashboard</p>
+                <p class="header-info-subhead">Overview of your financial performance</p>
+            </div>
+
+            <div class="header-user-info">
+                <p class="header-user-name">Migz Reyes</p>
+
+                <div class="header-user-role">
+                    <p>Admin</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN -->
+        <main>
+            @RenderBody()
+        </main>
+    </div>
 </body>
 </html>
