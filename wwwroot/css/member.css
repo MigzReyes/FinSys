@@ -97,11 +97,13 @@ p, span, button, input {
 }
 
 button {
-  font-size: var(--body-md);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semi-bold);
   font-family: "Inter", sans-serif;
   padding: var(--space-2) var(--space-4);
   border: var(--border);
   border-radius: var(--radius-md);
+  cursor: pointer;
 }
 
 input {
@@ -540,7 +542,144 @@ main {
     width: 20px;
 }
 
+.edit {
+    cursor: pointer;
+}
+
 .delete {
     fill: var(--danger);
     cursor: pointer;
+}
+
+/* EMPLOYEES */
+.employees {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.employees-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.employees-search {
+    width: 400px;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: var(--white-muted-bg);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-4);
+}
+
+.employees-search p {
+    font-size: var(--text-sm);
+    color: var(--secondary-muted);
+}
+
+.search-icon {
+    width: 15px;
+    display: flex; /* DIKO ALAM BAT GUMANA TO HAHA */
+}
+
+.add-employee {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: var(--accent);
+    border: none;
+    padding: var(--space-2) var(--space-4);
+}
+
+.add-icon {
+    width: 15px;
+    align-self: self-end;
+}
+
+.employees-card-con {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+}
+
+.employees-card {
+    width: 100%; /* CHANGE THIS */
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    box-shadow: var(--box-shadow);
+}
+
+.employees-card-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.employees-card-header-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.employees-card-name {
+    font-size: var(--text-md);
+    font-weight: var(--font-medium);
+}
+
+.employees-card-role {
+    font-size: var(--text-xs);
+    color: var(--secondary-muted);
+}
+
+.employees-card-actions-con {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.employees-card-info-con {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.employees-card-info {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.employees-card-info p {
+    font-size: var(--text-sm);
+}
+
+.employees-info-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.employees-info-right {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--space-2);
+}
+
+.employees-info-right p {
+    font-weight: var(--font-medium);
+}
+
+.employees-card-border {
+    content: "";
+    border-bottom: var(--border);
+}
+
+.employees-card-created-at p {
+    font-size: var(--text-xs);
+    color: var(--secondary-muted);
 }
