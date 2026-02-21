@@ -870,5 +870,9 @@ select {
     background: white;
 }
 
+.active-input {
+    outline: 1px solid var(--black);
+    border-radius: var(--radius-md);
+}
 
  

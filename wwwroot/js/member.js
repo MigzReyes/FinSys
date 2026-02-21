@@ -14,6 +14,16 @@ const PageScripts = {
 
     reports: function() {
         console.log("Reports");
+
+        const dateBtn = document.getElementById("date");
+
+        dateBtn.addEventListener("focus", function () {
+            dateBtn.classList.add("active-input");
+        });
+
+        dateBtn.addEventListener("blur", function () {
+            dateBtn.classList.remove("active-input");
+        });
     },
 
     settings: function() {
