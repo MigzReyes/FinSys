@@ -110,7 +110,7 @@
 
     <!-- MODAL -- POP UP -->
     <div class="modal">
-        <div class="business-registration modal-lg" id="businessRegistrationModal">
+        <div class="modal-business-registration modal-lg" id="businessRegistrationModal">
             <div class="business-registration-header">
                 <div class="logo-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1493" height="610" viewBox="0 0 1493 610">
@@ -179,11 +179,100 @@
                     
                     <div class="business-registration-btn-con">
                         <button class="cancel">Cancel</button>
-                        <button type="submit" class="buy-now">Buy Now</button>
+                        <button type="submit" class="primary-button">Buy Now</button>
                     </div>
                 </form>
             </div>
         </div>
+
+        <div class="modal-employee modal-lg">
+            <div class="modal-header">
+                <p>Add Employee</p>
+
+                <div class="close-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"/></svg>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <form action="">
+                    <div class="modal-body-row-wrap">
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">First Name</p>
+                            <div class="modal-input">
+                                <input type="text" name="firstName" placeholder="Enter first name">
+                            </div>
+                        </div>
+
+                        
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Middle Name</p>
+                            <div class="modal-input">
+                                <input type="text" name="middleName" placeholder="Enter middle name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row-wrap">
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Last Name</p>
+                            <div class="modal-input">
+                                <input type="text" name="lastName" placeholder="Enter last name">
+                            </div>
+                        </div>
+
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Role</p>
+                            <div class="modal-input select-input">
+                                <select name="role" id=""role>
+                                    <option value="" disabled selected hidden>Choose a role</option>
+                                    <option value="staff">Staff</option>
+                                    <option value="moderator">Moderator</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Email</p>
+                        <div class="modal-input">
+                            <input type="email" name="email" placeholder="Enter employee email">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Phone</p>
+                        <div class="modal-input phone-input">
+                            <div class="select-input">
+                                <select name="phoneAreaCode" id="phoneAreaCode">
+                                    <option value="ph">PH</option>
+                                </select>
+                            </div>
+
+                            <div class="phone-input-area">    
+                                <p class="area-code">+63</p>
+                                <input type="text" inputmode="numeric" oninput="this.value = formatNumber(this.value)" minlength="11" maxlength="11" id="phone" name="phone" placeholder="Phone">
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Address</p>
+                        <div class="modal-input">
+                            <input type="text" name="address" placeholder="Enter employee address">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-button-con">
+                        <button class="cancel">Cancel</button>
+                        <button type="submit" class="primary-button">Add Employee</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
 
         
 

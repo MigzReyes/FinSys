@@ -37,4 +37,20 @@ document.addEventListener("DOMContentLoaded", function () {
     if (PageScripts[page]) {
         PageScripts[page]();
     }
+
 });
+
+// FORMAT PHONE NUMBER
+function formatNumber(value) {
+    // Remove non-digits
+    value = value.replace(/\D/g, '');
+
+    // Apply format: 2 3 4 grouping
+    if (value.length > 2 && value.length <= 5)
+        return value.replace(/(\d{2})(\d+)/, "$1 $2");
+
+    if (value.length > 5)
+        return value.replace(/(\d{2})(\d{3})(\d+)/, "$1 $2 $3");
+
+    return value;
+}

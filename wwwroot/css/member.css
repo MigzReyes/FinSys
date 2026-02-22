@@ -1053,23 +1053,29 @@ select {
 
 .modal-sm {
     width: var(--modal-sm);
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
 }
 
 .modal-md {
     width: var(--modal-md);
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
 }
 
 .modal-lg {
     width: var(--modal-lg);
-}
-
-/* MODAL - BUSINESSES REGISTRATION */
-.business-registration {
-    display: flex;
-    flex-direction: column;
     background: var(--white);
     border-radius: var(--radius-md);
     padding: var(--space-4);
+}
+
+/* MODAL - BUSINESSES REGISTRATION */
+.modal-business-registration {
+    display: none;
+    flex-direction: column;
     gap: var(--space-4);
 }
 
@@ -1160,9 +1166,109 @@ select {
     background: white;
 }
 
-.buy-now {
+.primary-button {
     background: var(--accent);
     border: none;
 }
 
+/* MODAL EMPLOYEE */
+.modal-employee {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
 
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-header p {
+    font-size: var(--text-xl);
+    font-weight: var(--font-semi-bold);
+}
+
+.close-icon {
+    width: 15px;
+    cursor: pointer;
+}
+
+.modal-body form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.modal-body-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.modal-input-con input {
+    width: 100%;
+}
+
+.modal-input-label {
+    font-size: var(--text-md);
+    font-weight: var(--font-medium);
+}
+
+.modal-input input {
+    width: 100%;
+}
+
+.modal-body-row-wrap {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+}
+
+.phone-input {
+    display: flex;
+    position: relative;
+    align-items: center;
+    border: var(--border);
+    border-radius: var(--radius-md);
+}
+
+.phone-input input {
+    border: none;
+}
+
+#phoneAreaCode {
+    position: relative;
+    z-index: 1;
+    border: none;
+    border-right: var(--border);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-right: 30px;
+}
+
+.phone-input-area {
+    width: 100%;
+    position: relative;
+}
+
+.phone-input-area input {
+    border-left: none;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    padding-left: 35px;
+}
+
+.area-code {
+    font-size: var(--text-sm);
+    font-weight: var(--font-regular);
+    position: absolute;
+    left: var(--space-1);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.modal-body-button-con {
+    display: flex;
+    justify-content: end;
+    gap: var(--space-3);
+}
