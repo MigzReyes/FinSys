@@ -92,3 +92,8 @@ TO-DO
         Make all button have an onclick event listener for pop up
 
         afer that make everything responsive 
+
+        pag mag insert ka ng employee gamit / lagay ka ng data attribute para ma identify kung sino eedit at 
+        idedelete
+
+        use querySelectorAll the inside get the data attribute for each card / list

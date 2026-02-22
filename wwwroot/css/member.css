@@ -100,6 +100,14 @@ p, span, button, input, label {
     color: var(--secondary);
 }
 
+p {
+    cursor: default;
+}
+
+a {
+    text-decoration: none;
+}
+
 button {
     height: fit-content;
     font-size: var(--text-sm);
@@ -201,6 +209,16 @@ input[type="radio"] {
     flex-wrap: wrap !important;
 }
 
+/* SHOW */
+.show {
+    display: flex !important;
+}
+
+/* MODAL LOG OUT ICON DISPLAY */
+.hidden {
+    display: none !important;
+}
+
 /* MODAL STRUCTURE */
 .modal-header {
     display: flex;
@@ -278,9 +296,17 @@ input[type="radio"] {
 }
 
 .danger-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-1);
     background: var(--danger);
     border: var(--border);
     border-color: var(--danger);
+    color: var(--white);
+}
+
+.danger-button span {
     color: var(--white);
 }
 
@@ -346,13 +372,16 @@ nav {
 }
 
 .nav-item {
+    border-radius: var(--radius-sm);
+}
+
+.nav-item a {
     width: 100%;
     display: flex;
     justify-content: start;
     align-items: center;
     gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-sm);
     transition: 0.5s;
 }
 
@@ -606,7 +635,7 @@ main {
     padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: 0.5s;
+    transition: 0.2s;
 }
 
 .picker-item p {
@@ -693,6 +722,7 @@ main {
 }
 
 .action-con {
+    cursor: pointer;
     width: 20px;
 }
 
@@ -1135,6 +1165,7 @@ select {
 
 .log-out-icon {
     display: flex;
+    align-self: end;
     width: 15px;
     fill: white;
 }
@@ -1158,6 +1189,7 @@ select {
     background: var(--white);
     border-radius: var(--radius-md);
     padding: var(--space-4);
+    flex-direction: column;
 }
 
 .modal-md {
@@ -1165,6 +1197,7 @@ select {
     background: var(--white);
     border-radius: var(--radius-md);
     padding: var(--space-4);
+    flex-direction: column;
 }
 
 .modal-lg {

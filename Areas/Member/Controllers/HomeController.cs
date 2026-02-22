@@ -14,7 +14,28 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    public IActionResult Dashboard()
+    {
+        return View();
+    }
+
+    public IActionResult FinancialTransaction()
+    {
+        return View();
+    }
+
+    public IActionResult Employees()
+    {
+        return View();
+    }
+    
     public IActionResult Reports()
+    {
+        return View();
+    }
+
+    
+    public IActionResult Settings()
     {
         return View();
     }
