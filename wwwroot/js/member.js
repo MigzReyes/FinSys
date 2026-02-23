@@ -7,6 +7,14 @@ const editTransactionModal = document.getElementById("editTransactionModal");
 const alertModal = document.getElementById("alertModal");
 let form = "";
 
+// MEDIA QUERY
+const navOverlayQuery = window.matchMedia('(max-width: 1000px)');
+
+// NAV
+//let navListCon = document.getElementById("navListCon"); // UNCOMMENT MO PAG NAG SPA / AJAX NAVIGATION KANA
+let openNavVar = document.getElementById("openNav");
+let closeNavVar = document.getElementById("closeNav");
+
 // ICONS
 const logOutIconModal = document.getElementById("logOutIconModal");
 
@@ -21,6 +29,16 @@ const employeeModalBtn = document.getElementById("employeeModalBtn");
 const alertBtn = document.getElementById("alertBtn");
 const cancel = document.querySelectorAll(".cancel");
 const closeIcon = document.querySelectorAll(".close-icon");
+
+// NAV OVERLAY
+navOverlayChange(navOverlayQuery); // IT RUNS THIS EVERYTIME YOU REFRESH
+navOverlayQuery.addEventListener("change", navOverlayChange); // LISTENER WATCH FOR CHANGES PARA FLEXIBLE
+
+// NAV LIST ACTIVE HANDLER
+// This handles nav list active effect, if ever man na magawa kong dynamic SPA style tong website ito gamitin mo 
+/* navListCon.addEventListener("click", function (e) {
+    e.target.classList.add("active-nav-item");
+}); */
 
 // CANCEL / CLOSE BTN
 cancel.forEach(c => {
@@ -89,7 +107,7 @@ const PageScripts = {
         debug("Page", "Dashboard");
     },
 
-    financialTransaction: function() {
+    financialTransactions: function() {
         debug("Page", "Financial Transaction");
 
         // PICKER
@@ -174,6 +192,8 @@ const PageScripts = {
             dateBtn.classList.remove("active-input");
         });
 
+        setDateToday(dateBtn);
+
         // CLEAR FORM
         const clearForm = document.getElementById("clearForm");
         clearForm.addEventListener("click", function () {
@@ -217,6 +237,52 @@ function formatNumber(value) {
     return value;
 }
 
+function navOverlayChange(event) {
+    if (event.matches) {
+        debug("Media Query", "It works"); // REMOVE THIS
+        document.body.classList.add("relative");
+        openNavVar.classList.add("absolute");
+
+        // CLEAN UP SHOW AND HIDDEN CLASS
+        closeNavVar.classList.remove("hidden");
+        openNavVar.classList.remove("show");
+
+        closeNavVar.addEventListener("click", function (e) {
+            if (e.target.closest(".nav-item")) return;  
+            openNavVar.classList.add("show");
+
+            debug("Text Sidebar", "Open");
+        });
+
+        openNavVar.addEventListener("click", function () {
+            openNavVar.classList.remove("show");
+        
+            debug("Text Sidebar", "Close");
+        });
+
+
+    } else {
+        document.body.classList.remove("relative");
+        openNavVar.classList.remove("absolute");
+
+        // CLEAN UP SHOW AND HIDDEN CLASS
+        closeNavVar.classList.remove("hidden");
+        openNavVar.classList.remove("show");
+
+        // NAV SIDE BAR OPEN / CLOSE
+        closeNavVar.addEventListener("click", function (e) {
+            if (e.target.closest(".nav-item")) return;  
+            closeNav.classList.add("hidden");
+            openNavVar.classList.add("show");
+        });
+
+        openNavVar.addEventListener("click", function () {
+            closeNavVar.classList.remove("hidden");
+            openNavVar.classList.remove("show");
+        });
+    }
+}
+
 function showModalEditTransaction() {
     modal.classList.add("show");
     editTransactionModal.classList.add("show");
@@ -249,6 +315,16 @@ function showModalAlert(subhead, buttonText, actions) {
 
 function clearForm(formId) {
     formId.reset();
+}
+
+function setDateToday(dateInput) {
+    let date = new Date();
+
+    let day = ("0" + date.getDate()).slice(-2);
+    let month = ("0" + (date.getMonth() + 1)).slice(-2);
+    let today = date.getFullYear() + "-" + month + "-" + day;
+
+    dateInput.value = today;
 }
 
 function closeModal() {
