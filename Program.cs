@@ -30,7 +30,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Main}/{id?}", // CHANGE MO LANG TONG ACTION SA `Main` PAG NAG PULL KA NG REQUEST GALING SAKEN -- MIGZ
-    defaults: new { area = "Public" })
+    defaults: new { area = "Public" }) // GAWIN MONG `Member` to pag sa admin
     .WithStaticAssets();
 
 

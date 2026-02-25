@@ -114,6 +114,7 @@ button {
   padding: var(--space-2) var(--space-4);
   border: var(--border);
   border-radius: var(--radius-md);
+  cursor: pointer;
 }
 
 input {
@@ -176,10 +177,26 @@ main {
   border: none;
 }
 
+.primary-btn {
+  transition: 0.2s;
+}
+
+.primary-btn:hover {
+  filter: brightness(0.9);
+}
+
 .login-btn {
-  border: 1px solid var(--primary);
+  background: transparent;
+  border: var(--border);
+  border-color: var(--primary);
   font-weight: var(--font-semi-bold);
   font-size: var(--body-md);
+  transition: 0.2s;
+}
+
+.login-btn:hover {
+  color: var(--white);
+  background: var(--primary);
 }
 
 .hero {
