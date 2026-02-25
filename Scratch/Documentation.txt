@@ -89,9 +89,11 @@ TO-DO
 
     USE JS for date input border -- DONE
 
+    Make everything responsive -- DONE
+
     CREATE AN ERD FOR FINSYS
 
-    Make everything responsive
+    CREATE LOG IN AND SIGN UP
 
 2/22/2026 ---
 
@@ -161,7 +163,7 @@ TO-DO
 
             Companies 
                 - Id
-                - ClientsId
+                - ClientId
                 - CompanyId
                 - CompanyName
                 - CompanyLogo
@@ -200,3 +202,7 @@ TO-DO
 
 
         
+2/25/2026 ---
+    use snake_case for cross compatibility especially for linux
+
+    *** use EFCore.NamingConventions package
