@@ -18,4 +18,24 @@ public class AccountController : Controller
     {
         return View();
     }
+
+    public IActionResult SignUp()
+    {
+        return View();
+    }
+
+    public IActionResult ForgotPass()
+    {
+        return View();
+    }
+
+    public IActionResult Verification()
+    {
+        return View();
+    }
+
+    public IActionResult ResetPass()
+    {
+        return View();
+    }
 }

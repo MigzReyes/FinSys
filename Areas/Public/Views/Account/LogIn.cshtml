@@ -2,7 +2,99 @@
     ViewData["Title"] = "Log in";
 }
 
-<div>
-    <p>This is log in</p>
+<div class="log-in">
+    <div class="log-in-header">
+        <p class="log-in-head">Get started with FinSys</p>
+        <p class="log-in-subhead">Join over 6.9 million subscribers using FinSys to handle your finance.</p>
+    </div>
+
+    <div class="log-in-body">
+        <form action="">
+            <div class="log-in-body-row">
+                <p class="body-row-label">First Name</p>
+                <div class="body-row-input">
+                    <input type="text" name="firstName" placeholder="First name">
+                </div>
+            </div>
+
+            <div class="log-in-body-row">
+                <p class="body-row-label">Last Name</p>
+                <div class="body-row-input">
+                    <input type="text" name="firstName" placeholder="Last name">
+                </div>
+            </div>
+
+            <div class="log-in-body-row">
+                <p class="body-row-label">Email</p>
+                <div class="body-row-input">
+                    <input type="text" name="firstName" placeholder="Email">
+                </div>
+            </div>
+
+            <div class="log-in-body-row-con">
+                <div class="log-in-body-row">
+                    <p class="body-row-label">Password</p>
+                    <div class="body-row-input">
+                        <input type="text" name="firstName" placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="password-con">
+                    <p class="password-con-label">Password Strength</p>
+                    <div class="password-con-items">
+                        <p class="password-con-item completed">At least 8 characters</p>
+                        <p class="password-con-item">At least one uppercase letter</p>
+                        <p class="password-con-item">At least one lowercase letter</p>
+                        <p class="password-con-item">At least one number</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="log-in-body-row">
+                <p class="body-row-label">Confirm Password</p>
+                <div class="body-row-input">
+                    <input type="text" name="firstName" placeholder="Confirm Password">
+                </div>
+            </div>
+
+            <div class="log-in-body-row">
+                <p class="body-row-label">Phone</p>
+                <div class="body-row-input phone-input">
+                    <div class="select-input">
+                        <select name="phoneAreaCode" id="phoneAreaCode">
+                            <option value="ph">PH</option>
+                        </select>
+                    </div>
+
+                    <div class="phone-input-area">    
+                        <p class="area-code">+63</p>
+                        <input type="text" inputmode="numeric" oninput="this.value = formatNumber(this.value)" minlength="11" maxlength="11" id="phone" name="phone" placeholder="Phone">
+                    </div>
+                </div>
+            </div>
+
+            <div class="log-in-body-row">
+                <p class="body-row-label">Location</p>
+                <div class="body-row-input select-input">
+                    <select class="country-select" name="country" id="country">
+                        <option value="philippines">Philippines</option>
+                        <option value="hongKong">Hong Kong</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="log-in-body-row-wrap">
+                <div class="body-row-input checkbox">
+                    <input type="checkbox" name="firstName">
+                </div>
+                <p class="body-row-label agreement">I've read and agreed to the terms of use, privacy notice and offer details: <span>Terms of use</span> and <span>privacy notice</span>.</p>
+            </div>
+        </form>
+    </div>
+
+    <div class="log-in-btn-con">
+        <button class="primary-btn">Proceed</button>
+    </div>
 
 </div>
