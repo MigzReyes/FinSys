@@ -200,6 +200,10 @@ main {
   width: 100px;
 }
 
+.nav-logo path {
+  fill: revert-layer !important;
+}
+
 .nav-btn-con {
   display: flex;
   justify-content: center;
@@ -619,7 +623,7 @@ main {
   border-radius: var(--radius-md);
 }
 
-/* LOG IN */
+/* SIGN UP */
 .nav-acc {
   position: relative;
   box-shadow: none;
@@ -656,13 +660,13 @@ main {
   max-width: 600px;
 }
 
-.log-in {
+.sign-up {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 }
 
-.log-in-header {
+.sign-up-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -670,52 +674,83 @@ main {
   gap: var(--space-5);
 }
 
-.log-in-header p {
+.sign-up-header p {
   text-align: center;
 }
 
-.log-in-head {
+.sign-up-head {
   font-size: var(--hero-heading);
   font-weight: var(--font-bold);
 }
 
-.log-in-subhead {
+.sign-up-subhead {
   font-size: var(--body-md);
   font-weight: var(--font-medium);
   color: var(--secondary-muted);
 }
 
-.log-in-body form {
+.sign-up-body form {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
 }
 
-.log-in-body-row {
+.sign-up-body-row {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-.log-in-body-row .body-row-label {
+.sign-up-body-row .body-row-label {
   font-size: var(--body-md);
   font-weight: var(--font-semi-bold);
 }
 
-.log-in-body-row .body-row-input input {
+.sign-up-body-row .body-row-input input {
   width: 100%;
 } 
 
-.log-in-body-row-con {
+.sign-up-body-row-con {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+}
+
+.password-input {
+  display: flex;
+  position: relative;
+  appearance: none;
+}
+
+.password-input::-ms-reveal { 
+  display: none; 
 }
 
 .password-con {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+}
+
+.see-eye {
+  display: flex;
+  cursor: pointer;
+  width: 20px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.unsee-eye {
+  display: flex;
+  cursor: pointer;
+  display: none;
+  width: 20px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .password-con-items {
@@ -780,7 +815,7 @@ main {
   width: 100%;
 }
 
-.log-in-body-row-wrap {
+.sign-up-body-row-wrap {
   display: flex;
   gap: var(--space-3);
 }
@@ -813,7 +848,7 @@ main {
   color: var(--primary);
 }
 
-.log-in-btn-con {
+.sign-up-btn-con {
   display: flex;
   justify-content: start;
 }
