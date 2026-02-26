@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Main";
+    ViewData["Page"] = "main";
 }
 
 <!-- HERO SECTION -->
@@ -11,7 +12,7 @@
         </div>
         
         <div class="banner-button">
-            <button class="primary-btn">Learn more about FinSys</button>
+            <button class="primary-btn"><a href="#aboutUs">Learn more about FinSys</a></button>
         </div>
     </div>
 
@@ -31,7 +32,7 @@
 </div>
 
 <!-- ABOUT US -->
-<div class="about main-subsection">
+<div class="about main-subsection" id="aboutUs">
     <div class="about-para about-con-item">
         <div class="about-title">
             <p class="about-get">Get To Know Us</p>
@@ -66,7 +67,7 @@
 </div>
 
 <!-- SOLUTION -->
-<div class="solution main-subsection">
+<div class="solution main-subsection" id="solutions">
     <div class="solution-title">
         <p class="solution-finsys-text">The FinSys Solution</p>
         <p class="solution-whatWeDo-text">What we do?</p>
@@ -119,7 +120,7 @@
 </div>
 
 <!-- SERVICES -->
-<div class="services main-subsection">
+<div class="services main-subsection" id="services">
     <p class="services-title">Everything you need in one place</p>
     <div class="services-item-con">
         <div class="services-img">
@@ -133,7 +134,7 @@
 </div>
 
 <!-- PRICING & PLANS -->
-<div class="price main-subsection">
+<div class="price main-subsection" id="price">
     <div class="price-container">
         <div class="price-title">
             <p class="affordable-para">Affordable Price, Just for You</p>
@@ -161,7 +162,7 @@
         </div>
 
         <div class="price-getStarted">
-            <button class="getStarted-btn primary-btn">Get Started</button>
+            <button class="getStarted-btn primary-btn"><a asp-controller="Account" asp-action="SignUp">Get Started</a></button>
         </div>
     </div>
 </div>

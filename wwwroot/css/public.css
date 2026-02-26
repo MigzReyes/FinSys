@@ -90,7 +90,10 @@
 }
 
 html {
-  font-size: 16px;
+  height: 100%;
+  scroll-behavior: smooth;
+  scroll-snap-align: center;
+  font-size: clamp(14px, 1vw, 16px);
   font-family: "Inter", sans-serif;
 }
 
@@ -108,7 +111,12 @@ svg path {
   fill: var(--secondary);
 }
 
-p, span, button, input {
+a {
+  text-decoration: none;
+
+}
+
+p, a, span, button, input {
   color: var(--secondary);
 }
 
@@ -117,13 +125,18 @@ p, span {
 }
 
 button {
+  display: flex;
   height: fit-content;
   font-size: var(--body-md);
   font-family: "Inter", sans-serif;
-  padding: var(--space-2) var(--space-4);
   border: var(--border);
   border-radius: var(--radius-md);
   cursor: pointer;
+}
+
+button a {
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
 }
 
 input, select {
@@ -162,6 +175,9 @@ select {
 }
 
 body {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
@@ -177,6 +193,7 @@ nav {
 
 main {
   padding-top: 85px;
+  flex: 1;
 }
 
 .main-subsection {
@@ -200,7 +217,7 @@ main {
   width: 100px;
 }
 
-.nav-logo path {
+.logo path {
   fill: revert-layer !important;
 }
 
@@ -222,9 +239,12 @@ main {
   background: var(--accent);
   border: none;
   border-radius: var(--radius-md);
+  transition: 0.2s;
+}
+
+.primary-btn a {
   font-size: var(--body-md);
   font-weight: var(--font-semi-bold);
-  transition: 0.2s;
 }
 
 .primary-btn:hover {
@@ -235,14 +255,22 @@ main {
   background: transparent;
   border: var(--border);
   border-color: var(--primary);
-  font-weight: var(--font-semi-bold);
-  font-size: var(--body-md);
   transition: 0.2s;
 }
 
+.login-btn a {
+  font-weight: var(--font-semi-bold);
+  font-size: var(--body-md);
+}
+
 .login-btn:hover {
-  color: var(--white);
   background: var(--primary);
+
+  &:hover {
+    a {
+      color: var(--white);
+    }
+  }
 }
 
 .hero {
@@ -312,6 +340,7 @@ main {
   align-items: center;
   flex-direction: column;
   gap: var(--space-3);
+  text-align: center;
 }
 
 .carousel-sticker {
@@ -617,10 +646,14 @@ main {
 
 .getStarted-btn {
   border: none;
-  padding: var(--space-2) var(--space-4);
   background-color: var(--primary);
-  color: var(--white);
   border-radius: var(--radius-md);
+}
+
+.getStarted-btn a {
+  font-size: var(--body-md);
+  font-weight: var(--font-medium);
+  color: var(--white);
 }
 
 /* SIGN UP */
@@ -631,11 +664,15 @@ main {
   justify-content: start;
   align-items: center;
   background: var(--primary-muted-bg-light);
-  padding: var(--space-6) 3.125rem;
+  padding: var(--space-6) var(--space-7);
 }
 
 .nav-acc-go-back-con {
   display: flex;
+  cursor: pointer;
+}
+
+.back-btn {
   cursor: pointer;
 }
 
@@ -658,6 +695,7 @@ main {
 
 .main-acc-con {
   max-width: 600px;
+  width: 600px;
 }
 
 .sign-up {
@@ -689,28 +727,50 @@ main {
   color: var(--secondary-muted);
 }
 
-.sign-up-body form {
+.account-body {
+  width: 100%;
+}
+
+.account-body form {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
 }
 
-.sign-up-body-row {
+.account-body-row {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-.sign-up-body-row .body-row-label {
+.account-body-row .body-row-label {
   font-size: var(--body-md);
   font-weight: var(--font-semi-bold);
 }
 
-.sign-up-body-row .body-row-input input {
+.account-body-row .body-row-input input {
   width: 100%;
 } 
 
-.sign-up-body-row-con {
+.account-body-row .code-input {
+  position: relative;
+}
+
+.code-input input {
+  padding: var(--space-2) var(--space-4) var(--space-2) 2.5rem;
+}
+
+.code-prefix {
+  font-size: var(--body-md);
+  font-weight: var(--font-regular);
+  color: var(--secondary-muted);
+  position: absolute;
+  top: 50%;
+  left: var(--space-3);
+  transform: translateY(-50%);
+}
+
+.account-body-row-con {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -815,7 +875,7 @@ main {
   width: 100%;
 }
 
-.sign-up-body-row-wrap {
+.account-body-row-wrap {
   display: flex;
   gap: var(--space-3);
 }
@@ -853,6 +913,72 @@ main {
   justify-content: start;
 }
 
+/* LOG IN */
+.log-in {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  justify-content: center;
+  align-items: center;
+}
+
+.account-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.logo-head-icon {
+  display: flex;
+  align-self: center;
+  width: 150px;
+}
+
+.logo-head-con {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.account-head-con {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.account-head {
+  font-size: var(--body-xl);
+  font-weight: var(--font-bold);
+  text-align: center;
+}
+
+.account-subhead {
+  font-size: var(--body-md);
+  font-weight: var(--font-regular);
+  color: var(--secondary-muted);
+  text-align: center;
+}
+
+.account-btn-con {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.account-btn-con button {
+  width: 100%;
+}
+
+.link a {
+  font-size: var(--body-sm);
+  font-weight: var(--font-regular);
+  color: var(--primary);
+}
 
 /* FOOTER */
 footer {
@@ -872,4 +998,11 @@ footer {
 .copyright-icon {
   display: flex;
   width: 25px;
+}
+
+/* FORGOT PASSWORD */
+.reset-pass-con {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
 }
