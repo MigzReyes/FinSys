@@ -190,6 +190,11 @@ namespace FinSys.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("phone");
 
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("position");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("longtext")

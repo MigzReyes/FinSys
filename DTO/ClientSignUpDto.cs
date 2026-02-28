@@ -16,6 +16,5 @@ namespace FinSys.DTO
 
         public required string Country { get; set; }
 
-        public required int CompanyId { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinSys.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260228150402_InitialDbCreation2")]
-    partial class InitialDbCreation2
+    [Migration("20260228152328_InitialDbCreation")]
+    partial class InitialDbCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,6 +192,11 @@ namespace FinSys.Migrations
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("phone");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("position");
 
                     b.Property<string>("Role")
                         .IsRequired()
