@@ -60,7 +60,6 @@ GIT COMMIT (Procedure) ---------------------------------------------------------
         origin https//github.com/username/yourProject.git
         origin https//github.com/username/yourProject.git
 
-
 8. Push to github
 
     - In the terminal type
@@ -68,6 +67,63 @@ GIT COMMIT (Procedure) ---------------------------------------------------------
         git branch -M main
 
         git push -u origin main
+
+
+EF CORE IMPLEMENTATION
+    ** Always add the name convention package before initial migration
+
+    1st - Install the EFCore package
+
+        dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+        dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+        dotnet add package Pomelo.EntityFrameworkCore.MySql ** If using MySql
+
+        dotnet add package EFCore.NamingConventions ** For table and column name translate from pascal to snake_case 
+
+    2nd - Create your model class, put it inside the `Model` folder
+
+        public class User
+        {
+            public int Id { get; set; }   // Primary key
+            public string Name { get; set; }
+            public string Email { get; set; }
+        }
+
+    3rd - Add a DbContext.cs file inside Data folder 
+
+        using Microsoft.EntityFrameworkCore;
+
+        public class AppDbContext : DbContext
+        {
+            public AppDbContext(DbContextOptions<AppDbContext> options)
+                : base(options)
+            {
+            }
+
+            public DbSet<User> Users { get; set; }
+        }
+
+    4th - Add a connection string inside appsettings.Development.json
+
+        {
+            "ConnectionStrings": {
+                "DefaultConnection": "Server=localhost;Database=MyAppDb;Trusted_Connection=True;"
+            }
+        }
+
+    5th - Register Ef Core in program.cs 
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            )
+            .UseSnakeCaseNamingConvention() // FOR SNAKE_CASE NAMING CONVENTION
+            ); 
+
+    ** The package EFCore.NamingConventions automatically change the column and table name
+
+    
 
 REALIZATION
     
