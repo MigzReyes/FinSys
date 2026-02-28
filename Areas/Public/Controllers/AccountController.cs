@@ -1,17 +1,21 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-//using FinSys.Models; UNCOMMENT THIS IF YOU HAVE A MODEL CLASS IN MODEL FOLEDR
+using FinSys.Models;
+using FinSys.Data;
 
 namespace FinSys.Areas.Public.Controllers;
 
 [Area("Public")]
 public class AccountController : Controller
 {
+    private readonly ApplicationDbContext _context;
+
     private readonly ILogger<AccountController> _logger;
 
-    public AccountController(ILogger<AccountController> logger)
+    public AccountController(ILogger<AccountController> logger, ApplicationDbContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
     public IActionResult LogIn()

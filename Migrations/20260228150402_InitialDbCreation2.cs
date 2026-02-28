@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FinSys.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalDbCreation : Migration
+    public partial class InitialDbCreation2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,6 +35,10 @@ namespace FinSys.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     company_id = table.Column<int>(type: "int", nullable: false),
                     is_payed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    position = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    role = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     created_at = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
@@ -105,6 +109,8 @@ namespace FinSys.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     company_id = table.Column<int>(type: "int", nullable: false),
+                    type = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     date_of_transaction = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     category = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),

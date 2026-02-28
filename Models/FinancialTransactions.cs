@@ -7,6 +7,8 @@ namespace FinSys.Models
 
         public required int CompanyId { get; set; }
 
+        public required string Type { get; set; }
+
         public required DateTime DateOfTransaction { get; set; }
 
         public required string Category { get; set; }

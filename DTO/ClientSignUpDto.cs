@@ -1,10 +1,9 @@
 
-namespace FinSys.Models
-{
-    public class Clients
-    {
-        public int Id { get; set; }
 
+namespace FinSys.DTO
+{   
+    public class ClientSignUpDto
+    {
         public required string FirstName { get; set; }
 
         public required string LastName { get; set; }
@@ -18,13 +17,5 @@ namespace FinSys.Models
         public required string Country { get; set; }
 
         public required int CompanyId { get; set; }
-
-        public required bool IsPayed { get; set; }
-
-        public required string Position { get; set; }
-
-        public required string Role { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

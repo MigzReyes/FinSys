@@ -123,7 +123,9 @@ EF CORE IMPLEMENTATION
 
     ** The package EFCore.NamingConventions automatically change the column and table name
 
-    
+    dotnet ef migrations add NameNgMigration
+
+    dotnet ef database update
 
 REALIZATION
     
@@ -262,3 +264,9 @@ TO-DO
     use snake_case for cross compatibility especially for linux
 
     *** use EFCore.NamingConventions package
+
+2/28/2026 ---
+
+    Make sign up and log in work
+
+    create a dto for clients

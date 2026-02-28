@@ -73,6 +73,16 @@ namespace FinSys.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("phone");
 
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("position");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("role");
+
                     b.HasKey("Id")
                         .HasName("pk_clients");
 
@@ -230,6 +240,11 @@ namespace FinSys.Migrations
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("payee");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("type");
 
                     b.HasKey("Id")
                         .HasName("pk_financial_transactions");
