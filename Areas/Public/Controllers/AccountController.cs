@@ -78,7 +78,7 @@ public class AccountController : Controller
     } 
 
     [HttpPost]
-    public async Task<IActionResult> GetClientEmail([FromBody] ClientEmailVerifDtto emailDto) 
+    public async Task<IActionResult> CheckEmailExists([FromBody] ClientEmailVerifDtto emailDto) 
     {
         var Client = await _context.Clients.FirstOrDefaultAsync(u => u.Email == emailDto.Email);
 
@@ -89,6 +89,28 @@ public class AccountController : Controller
         else
         {
             return Ok( new { message = "Client have signed in", signedIn = true});
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+    {
+        var checkEmail = await _context.Clients.FirstOrDefaultAsync(c => c.Email == loginDto.Email);
+        var checkPassword = await _context.Clients.Where(c => c.Email == loginDto.Email).Select(c => c.Password).FirstOrDefaultAsync(); // HASH password next time
+
+        if (checkEmail == null)
+        {
+            return Ok( new { clientExists = false, message = "Client does not exists"});
+        } 
+        else
+        {
+            if (checkPassword?.ToString() == loginDto.Password) // NULLABLE TO
+            {
+                return Ok( new { clientExists = true, isPassCorrect = true, redirect = "/Member/Home/Dashboard", message = "Password and Email is correct"});
+            } else
+            {
+                return Ok( new { clientExists = true, isPassCorrect = false,  message = "Password is wrong"});
+            }
         }
     }
 }

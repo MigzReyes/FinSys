@@ -275,4 +275,8 @@ TO-DO
 
 3/1/2026 ---
 
-    fix sign up validation
+    fix sign up validation -- DONE
+
+    Log in functionality
+
+    User Session

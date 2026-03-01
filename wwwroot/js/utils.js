@@ -42,7 +42,7 @@ export function errorInput(id) {
 }
 
 export async function validateEmail(email) {
-    const res = await fetch("/Account/GetClientEmail", {
+    const res = await fetch("/Account/CheckEmailExists", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

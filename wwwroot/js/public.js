@@ -202,6 +202,84 @@ const PageScripts = {
 
     logIn: function() {
         debug("Page", "Log in");
+
+        // LOCAL VARIABLE
+        let visibilityToggle = document.querySelectorAll(".visibilityToggle");
+        let logInCient = document.getElementById("logInClient");
+        let email = document.getElementById("email");
+        let password = document.getElementById("password");
+
+        // PASSWORD VISIBILITY
+        visibilityToggle.forEach(i => {
+            i.addEventListener("click", function () {
+                const passwordInput = i.closest(".password-input");
+                const input = passwordInput.querySelector("input");
+
+                togglePasswordVisibility(input, i);
+            });
+        });
+
+        // FETCH
+        logInCient.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            fetch("/Account/Login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    Email: email.value,
+                    Password: password.value
+                })
+            }).then(res => res.json())
+            .then(data => {
+
+                if (isEmpty(email.value) && isEmpty(password.value)) {
+                    const con = document.querySelectorAll(".account-body-row");
+                    con.forEach(c => {
+                        c.querySelector("input").classList.add("error-input");
+                    });
+                } else {
+                    const con = document.querySelectorAll(".account-body-row");
+                    con.forEach(c => {
+                        c.querySelector("input").classList.remove("error-input");
+                    });
+
+                    if (data.clientExists) {
+                        const con = email.closest(".email-con");
+                        con.querySelectorAll(".error-tag").forEach(e => e.remove());
+
+                        if (isEmpty(password.value)) {
+                            const con = password.closest(".password-con");
+                            con.querySelectorAll(".error-tag").forEach(e => e.remove());
+                            con.appendChild(showError("Password is empty"));
+                        } else {
+                            if (data.isPassCorrect) {
+                                const con = password.closest(".password-con");
+                                con.querySelectorAll(".error-tag").forEach(e => e.remove());
+                                    
+                                // REDIRECT
+                                debug("Content", data.message);  
+                                clearForm(logInCient);
+                                window.location.href = data.redirect; 
+                            } else {
+                                const con = password.closest(".password-con");
+                                con.querySelectorAll(".error-tag").forEach(e => e.remove());
+                                con.appendChild(showError("Password is incorrect"));
+                            }
+                        }
+                    } else {
+                        const con = email.closest(".email-con");
+                        con.querySelectorAll(".error-tag").forEach(e => e.remove());
+                        con.appendChild(showError("Email does not exist"));
+                    }             
+                }
+
+    
+            })
+            .catch(error => debug("Error", error));
+        });
     },
 
     forgotPass: function() {
