@@ -1,9 +1,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using FinSys.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 
 namespace FinSys.Areas.Member.Controllers;
 
+[Authorize]
 [Area("Member")]
 public class HomeController : Controller
 {
@@ -38,5 +41,23 @@ public class HomeController : Controller
     public IActionResult Settings()
     {
         return View();
+    }
+
+    [HttpGet]
+    public IActionResult GetClientInfo()
+    {
+        return Ok(new
+        {
+            email = User.FindFirst("Email")?.Value,
+            firstName = User.FindFirst("FirstName")?.Value,
+            lastName = User.FindFirst("LastName")?.Value
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync("UserSession");
+        return Ok();
     }
 }

@@ -4,6 +4,8 @@ using FinSys.Models;
 using FinSys.Data;
 using FinSys.DTO;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 namespace FinSys.Areas.Public.Controllers;
 
@@ -106,7 +108,27 @@ public class AccountController : Controller
         {
             if (checkPassword?.ToString() == loginDto.Password) // NULLABLE TO
             {
-                return Ok( new { clientExists = true, isPassCorrect = true, redirect = "/Member/Home/Dashboard", message = "Password and Email is correct"});
+                var claims = new List<Claim>
+                {
+                    new Claim("ClientId", checkEmail.Id.ToString()),
+                    new Claim("CompanyId", checkEmail.CompanyId.ToString()),
+                    new Claim("Email", checkEmail.Email),
+                    new Claim("FirstName", checkEmail.FirstName),
+                    new Claim("LastName", checkEmail.LastName),
+                    new Claim("Phone", checkEmail.Phone.ToString()),
+                    new Claim("Country", checkEmail.Country),
+                    new Claim("Position", checkEmail.Position),
+                    new Claim("Role", checkEmail.Role),
+                    new Claim("IsPayed", checkEmail.IsPayed.ToString()),
+                    new Claim("CreatedAt", checkEmail.CreatedAt.ToString())
+                };
+
+                var identity = new ClaimsIdentity(claims, "UserSession");
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync("UserSession", principal);
+
+                return Ok( new { clientExists = true, isPassCorrect = true, redirect = "/Member/Home/Dashboard", message = "Password and Email is correct"}); // add a user id here for user session
             } else
             {
                 return Ok( new { clientExists = true, isPassCorrect = false,  message = "Password is wrong"});

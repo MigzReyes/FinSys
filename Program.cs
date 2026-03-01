@@ -11,6 +11,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         .UseSnakeCaseNamingConvention()
 );
 
+builder.Services.AddAuthentication("UserSession")
+    .AddCookie("UserSession", options =>
+    {
+        options.LoginPath = "/Public/Account/LogIn";
+        options.AccessDeniedPath = "/Public/Account/LogIn?error=accessdenied";
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+
+        options.SlidingExpiration = false;
+        options.Cookie.IsEssential = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.MaxAge = options.ExpireTimeSpan;
+    });
+
+
+builder.Services.AddAuthorization();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -25,13 +41,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.UseStaticFiles();
 
 // THIS HANDLE THE AREAS ROUTING
 app.MapControllerRoute(

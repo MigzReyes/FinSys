@@ -1,6 +1,9 @@
 @{
     ViewData["Title"] = "Log in";
     ViewData["page"] = "logIn";
+
+    var  url = Context.Request.Query["ReturnUrl"].ToString();
+    var accessDenied = !string.IsNullOrEmpty(url) && url.StartsWith("/Member");
 }
 
 <div class="log-in">
@@ -18,6 +21,10 @@
 
         <div class="account-head-con">
             <p class="account-head">Log in to FinSys</p>
+            @if(accessDenied) 
+            {
+                <p class="access-denied">Access Denied!</p>
+            }
         </div>
     </div>
 

@@ -276,7 +276,9 @@ TO-DO
 3/1/2026 ---
 
     fix sign up validation -- DONE
+    
+    User Session -- DONE
 
-    Log in functionality
+    Log in functionality -- DONE
 
-    User Session
+    Business registration

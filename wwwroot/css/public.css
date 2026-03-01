@@ -189,6 +189,15 @@ select {
   color: var(--danger) !important;
 }
 
+.access-denied {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--body-md);
+  font-weight: var(--font-medium);
+  color: var(--danger);
+}
+
 body {
   height: 100dvh;
   display: flex;

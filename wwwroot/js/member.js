@@ -77,6 +77,10 @@ alertBtn.addEventListener("click", function () {
         case "removeTransaction":
             closeModal();
             break;
+        case "logout": 
+            closeModal();
+            Logout();
+            break;
         default:
             debug("Action", "No action data attribute received");
             break;
@@ -204,10 +208,20 @@ const PageScripts = {
     settings: function() {
         debug("Page", "Settings");
 
+        // DISPLAY CLIENT INFO
+        getUserClient();
+
+        fetch("/Member/Home/GetClientInfo")
+            .then(res => res.json())
+            .then(client => {
+                debug("Data", client);
+            })
+            .catch(err => debug("Error", err));
+
         // LOG OUT BUTTON
         var logOutBtn = document.getElementById("logOutBtn");
         logOutBtn.addEventListener("click", function () {
-            showModalAlert("Do you want to log out?", "Log Out", "logOut");
+            showModalAlert("Do you want to log out?", "Log Out", "logout");
         });
     }
 };
@@ -222,6 +236,25 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
+async function Logout() {
+    await fetch("/Member/Home/Logout", {
+        method: "POST"
+    });
+
+    window.location.replace("/Public/Account/LogIn"); // FIX THIS, CLIENTS MUST NOT CLICK BACK button and get to see the /member
+}
+
+async function getUserClient() {
+    try {
+        const res = await fetch("/Member/Home/GetClientInfo");
+        const client = await res.json();
+
+        debug("User Session", client);
+    } catch (err) {
+        debug("Error", err)
+    }
+}
+
 // FORMAT PHONE NUMBER
 function formatNumber(value) {
     // Remove non-digits
@@ -301,7 +334,7 @@ function showModalAlert(subhead, buttonText, actions) {
     modal.classList.add("show");
     alertModal.classList.add("show");
 
-    if (actions === "logOut") {
+    if (actions === "logout") {
         logOutIconModal.classList.remove("hidden");
         alertBtn.dataset.action = actions;
         alertSubhead.textContent = subhead;

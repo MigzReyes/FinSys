@@ -1,3 +1,4 @@
+@using System.Security.Claims
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,10 +169,10 @@
             </div>
 
             <div class="header-user-info">
-                <p class="header-user-name">Migz Reyes</p>
+                <p class="header-user-name">@User.FindFirstValue("FirstName") @User.FindFirstValue("LastName")</p>
 
                 <div class="header-user-role">
-                    <p>Admin</p>
+                    <p>@User.FindFirstValue("Role")</p>
                 </div>
             </div>
         </div>
@@ -446,6 +447,7 @@
 
     </div>
 
-    <script src="~/js/member.js"></script>
+    <script type="module" src="~/js/member.js">
+    </script>   
 </body>
 </html>

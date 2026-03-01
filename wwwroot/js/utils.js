@@ -92,3 +92,13 @@ export function passwordStrength(value) {
     const strength = (value / 4) * 100;
     return strength;
 }
+
+export function removeUserSession() {
+    window.addEventListener("pageshow", function (event) {
+        debug("Check", "Remove use session");
+        fetch("/Member/Home/Logout", { method: "POST" })
+        .then(() => {
+            window.location.href = "/Public/Account/LogIn?error=accessdenied";
+        });
+    });
+}
