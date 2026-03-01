@@ -270,3 +270,9 @@ TO-DO
     Make sign up and log in work
 
     create a dto for clients
+
+    JavaScript request?
+
+3/1/2026 ---
+
+    fix sign up validation
