@@ -1,4 +1,7 @@
 // GLOBAL ID / VAR
+const companyNameNav = document.getElementById("companyNameNav");
+const companyIndustryNav = document.getElementById("companyIndustryNav");
+
 const modal = document.getElementById("modal");
 const modalContent = document.querySelectorAll(".modal-content");
 const businessRegistrationModal = document.getElementById("businessRegistrationModal");
@@ -28,6 +31,7 @@ const employeeModalBtnText = document.getElementById("employeeModalBtnText");
 const employeeModalBtn = document.getElementById("employeeModalBtn");
 const alertBtn = document.getElementById("alertBtn");
 const cancel = document.querySelectorAll(".cancel");
+const cancelBusinessRegistration = document.getElementById("cancelBusinessRegistration");
 const closeIcon = document.querySelectorAll(".close-icon");
 
 // NAV OVERLAY
@@ -40,25 +44,9 @@ navOverlayQuery.addEventListener("change", navOverlayChange); // LISTENER WATCH 
     e.target.classList.add("active-nav-item");
 }); */
 
-// CANCEL / CLOSE BTN
-cancel.forEach(c => {
-    c.addEventListener("click", function () {
-        closeModal();
-    });
-});
 
-closeIcon.forEach(c => {
-    c.addEventListener("click", function () {
-        closeModal();
-    });
-});
-
-// OUTSIDE CLICK REMOVE THE MODAL
-modal.addEventListener("click", function (e) {
-    if (e.target === modal) {
-        closeModal();
-    } 
-});
+// DISPLAY COMPANY NAME AND INDUSTRY
+displayCompanyInfo();
 
 // ALERT MODAL BUTTON DATA ATTRIBUTE HANDLER
 alertBtn.addEventListener("click", function () {
@@ -109,10 +97,111 @@ employeeModalBtn.addEventListener("click", function () {
 const PageScripts = {
     dashboard: function() {
         debug("Page", "Dashboard");
+
+        // LOCAL VARIABLE
+        let companyRegistration = document.getElementById("companyRegistration");
+        let companyName = document.getElementById("companyName");
+        let companyIndustry = document.getElementById("companyIndustry");
+        let companyCountry = document.getElementById("companyCountry");
+        let companyEmployees = companyRegistration.elements["employees"].value;
+
+
+         // DISPLAY CLIENT INFO
+        fetch("/Member/Home/IsClientPayed")
+            .then(res => res.json())
+            .then(client => {
+                debug("Is payed", client.isPayed);
+
+                if (client.isPayed) {
+                    modal.classList.remove("show");
+                    businessRegistrationModal.classList.remove("show");
+                } else {
+                    modal.classList.add("show");
+                    businessRegistrationModal.classList.add("show");
+
+                    // CANCEL
+                    cancelBusinessRegistration.addEventListener("click", function () {
+                        Logout();
+                    })
+                }
+            })
+            .catch(err => debug("Error", err));
+
+        // COMPANY REGISTRATION
+        companyRegistration.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            let inputFields = companyRegistration.querySelectorAll("input, select");
+
+            const checkInputFields = Array.from(inputFields).every(function (input) {
+                return input.value.trim().length > 0;
+            });
+
+            if (checkInputFields) {
+
+                inputFields.forEach(i => {
+                    i.classList.remove("error-input");
+                })
+
+                const res = await fetch("/Member/Home/CompanyRegistration", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        CompanyName: companyName.value,
+                        CompanyIndustry: companyIndustry.value,
+                        CompanyCountry: companyCountry.value,
+                        Employees: companyEmployees
+                    })
+                }).then(res => res.json())
+                .then(data => {
+                    debug("Company Data", data.message);
+
+                    if (data.isPayed) {
+                        modal.classList.remove("show");
+                        businessRegistrationModal.classList.remove("show");
+                        displayCompanyInfo();
+                    } else {
+                        debug("Company registration", "Company has not been registered" + company);
+                    }
+                });
+            } else {
+                inputFields.forEach(i => {
+                    if (!i.value.trim()) {
+                        i.classList.add("error-input");
+                    } else {
+                        i.classList.remove("error-input");
+                    }
+                })
+            }
+
+        });
+
     },
 
     financialTransactions: function() {
         debug("Page", "Financial Transaction");
+
+        // CANCEL / CLOSE BTN
+        cancel.forEach(c => {
+            c.addEventListener("click", function () {
+                closeModal();
+            });
+        });
+
+        closeIcon.forEach(c => {
+            c.addEventListener("click", function () {
+                closeModal();
+            });
+        });
+
+        // OUTSIDE CLICK REMOVE THE MODAL
+        modal.addEventListener("click", function (e) {
+            if (e.target === modal) {
+                closeModal();
+            } 
+        });
 
         // PICKER
         const pickerAllTransaction = document.getElementById("pickerAllTransaction");
@@ -157,6 +246,26 @@ const PageScripts = {
     employees: function() {
         debug("Page", "Employees");
 
+        // CANCEL / CLOSE BTN
+        cancel.forEach(c => {
+            c.addEventListener("click", function () {
+                closeModal();
+            });
+        });
+
+        closeIcon.forEach(c => {
+            c.addEventListener("click", function () {
+                closeModal();
+            });
+        });
+
+        // OUTSIDE CLICK REMOVE THE MODAL
+        modal.addEventListener("click", function (e) {
+            if (e.target === modal) {
+                closeModal();
+            } 
+        });
+
         // ADD EMPLOYEE
         const addEmployeeBtn = document.getElementById("addEmployeeBtn");
         addEmployeeBtn.addEventListener("click", function () {
@@ -183,6 +292,26 @@ const PageScripts = {
     reports: function() {
         debug("Page", "Reports");
 
+        // CANCEL / CLOSE BTN
+        cancel.forEach(c => {
+            c.addEventListener("click", function () {
+                closeModal();
+            });
+        });
+
+        closeIcon.forEach(c => {
+            c.addEventListener("click", function () {
+                closeModal();
+            });
+        });
+
+        // OUTSIDE CLICK REMOVE THE MODAL
+        modal.addEventListener("click", function (e) {
+            if (e.target === modal) {
+                closeModal();
+            } 
+        });
+
         // INSERT FORM ID TO FORM VAR
         form = document.getElementById("addTransaction");
 
@@ -208,15 +337,25 @@ const PageScripts = {
     settings: function() {
         debug("Page", "Settings");
 
-        // DISPLAY CLIENT INFO
-        getUserClient();
+        // CANCEL / CLOSE BTN
+        cancel.forEach(c => {
+            c.addEventListener("click", function () {
+                closeModal();
+            });
+        });
 
-        fetch("/Member/Home/GetClientInfo")
-            .then(res => res.json())
-            .then(client => {
-                debug("Data", client);
-            })
-            .catch(err => debug("Error", err));
+        closeIcon.forEach(c => {
+            c.addEventListener("click", function () {
+                closeModal();
+            });
+        });
+
+        // OUTSIDE CLICK REMOVE THE MODAL
+        modal.addEventListener("click", function (e) {
+            if (e.target === modal) {
+                closeModal();
+            } 
+        });
 
         // LOG OUT BUTTON
         var logOutBtn = document.getElementById("logOutBtn");
@@ -236,23 +375,22 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
+function displayCompanyInfo() {
+    fetch("/Member/Home/GetCompanyInfo")
+        .then(res => res.json())
+        .then(data => {
+            companyNameNav.textContent = data.companyName;
+            companyIndustryNav.textContent = data.companyIndustry;
+        })
+        .catch(err => debug("Error", err))
+}
+
 async function Logout() {
     await fetch("/Member/Home/Logout", {
         method: "POST"
     });
 
     window.location.replace("/Public/Account/LogIn"); // FIX THIS, CLIENTS MUST NOT CLICK BACK button and get to see the /member
-}
-
-async function getUserClient() {
-    try {
-        const res = await fetch("/Member/Home/GetClientInfo");
-        const client = await res.json();
-
-        debug("User Session", client);
-    } catch (err) {
-        debug("Error", err)
-    }
 }
 
 // FORMAT PHONE NUMBER

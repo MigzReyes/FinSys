@@ -122,7 +122,7 @@ const PageScripts = {
                                     phone.classList.remove("error-input");
 
                                     if (agreement.checked) {
-                                        const res = await fetch("/Account/SignUpClient", {
+                                        const res = await fetch("/Public/Account/SignUpClient", {
                                             method: "POST",
                                             headers: {
                                                 "Content-Type": "application/json",
@@ -223,7 +223,7 @@ const PageScripts = {
         logInCient.addEventListener("submit", async function (e) {
             e.preventDefault();
 
-            fetch("/Account/Login", {
+            fetch("/Public/Account/Login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

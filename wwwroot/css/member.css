@@ -183,6 +183,17 @@ input[type=date] {
 
 /* COMPONENTS */
 
+/* ERRORS */
+.error-input {
+  border-color: var(--danger) !important;
+}
+
+.error-tag {
+  font-size: var(--body-sm);
+  font-weight: var(--font-regular);
+  color: var(--danger) !important;
+}
+
 /* RADIO CONTAINER */
 .radio-con {
     display: flex;
@@ -377,7 +388,7 @@ nav {
 
 .nav-member-info-con {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     padding: 0px var(--space-5);
     gap: var(--space-3);

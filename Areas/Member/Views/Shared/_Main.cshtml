@@ -20,8 +20,8 @@
             </div>
 
             <div class="nav-member-info">
-                <p class="nav-member-company-name">Home Ground Coffee Bar</p>
-                <p class="nav-member-industry">Coffee Shop</p>
+                <p class="nav-member-company-name" id="companyNameNav">Company Name</p>
+                <p class="nav-member-industry" id="companyIndustryNav">Industry</p>
             </div>
         </div>  
 
@@ -204,29 +204,29 @@
             </div>
 
             <div class="modal-body">
-                <form action="">
+                <form id="companyRegistration">
                     <div class="modal-body-row">
                         <p class="modal-input-label">Business Name</p>
                         <div class="modal-input">    
-                            <input type="text" name="businessName" placeholder="Enter your business name">
+                            <input id="companyName" type="text" name="businessName" placeholder="Enter your business name">
                         </div>
                     </div>
                     
                     <div class="modal-body-row">
                         <p class="modal-input-label">Industry</p>
                         <div class="modal-input">        
-                            <input type="search" name="businessName" placeholder="e.g. Restaurant, Retail Service">
+                            <input id="companyIndustry" type="search" name="businessName" placeholder="e.g. Restaurant, Retail Service">
                         </div>
                     </div>
                     
                     <div class="modal-body-row-wrap wrapped">
                         <div class="modal-body-row">
-                            <p class="modal-input-label">Business Name</p>
+                            <p class="modal-input-label">Location</p>
                             <div class="modal-input select-input">   
-                                <select class="full-width" name="country" id="country">
-                                    <option value="philippines">Philippines</option>
-                                    <option value="hongKong">Hong Kong</option>
-                                    <option value="singapore">Singapore</option>
+                                <select id="companyCountry" class="full-width" name="country" id="country">
+                                    <option value="Philippines">Philippines</option>
+                                    <option value="HongKong">Hong Kong</option>
+                                    <option value="Singapore">Singapore</option>
                                 </select>
                             </div>
                         </div>
@@ -239,19 +239,19 @@
 
                         <div class="radio-con">
                             <div class="modal-radio-input">    
-                                <input type="radio" name="employees" id="yes" checked>
+                                <input type="radio" name="employees" value="True" id="yes" checked>
                                 <label for="yes">Yes</label>
                             </div>
 
                             <div class="modal-radio-input">    
-                                <input type="radio" name="employees" id="no">
+                                <input type="radio" name="employees" value="False" id="no">
                                 <label for="no">No</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="modal-body-button-con">
-                        <button class="cancel full-width">Cancel</button>
+                        <button class="cancel full-width" id="cancelBusinessRegistration">Cancel</button>
                         <button type="submit" class="primary-button full-width">Buy Now</button>
                     </div>
                 </form>
