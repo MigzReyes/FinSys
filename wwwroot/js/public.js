@@ -87,7 +87,7 @@ const PageScripts = {
             });
 
 
-            if (checkInputFields) {
+            if (checkInputFields) { 
                 
                 debug("Input", "All fields contain something");
 

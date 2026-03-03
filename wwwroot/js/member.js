@@ -76,13 +76,15 @@ alertBtn.addEventListener("click", function () {
 });
 
 // EMPLOYEE MODAL BUTTON DATA ATTRIBUTE HANDLER
+let employeeBtnAction;
 employeeModalBtn.addEventListener("click", function () {
     const action = this.dataset.action;
     debug("Button action check", action);
-    
+        
+    employeeBtnAction = action;
+
     switch (action) {
         case "addEmployee":
-            // Gawa ka ng fetch function for sending the data papunta sa controller, rather than using the form itself
             break;
         case "editEmployee":
             break;
@@ -246,6 +248,23 @@ const PageScripts = {
     employees: function() {
         debug("Page", "Employees");
 
+        // LOCAL VARIABLE
+        const employeeRegistration = document.getElementById("employeeRegistration");
+        const firstName = document.getElementById("firstName");
+        const middleName = document.getElementById("middleName");
+        const lastName = document.getElementById("lastName");
+        const role = document.getElementById("role")
+        const position = document.getElementById("position");
+        const email = document.getElementById("email");
+        const phone = document.getElementById("phone");
+        const address = document.getElementById("address");
+
+
+        // PHONE FORMAT
+        phone.addEventListener("input", function (e) {
+            e.target.value = formatNumber(e.target.value);
+        });
+
         // CANCEL / CLOSE BTN
         cancel.forEach(c => {
             c.addEventListener("click", function () {
@@ -286,6 +305,47 @@ const PageScripts = {
             d.addEventListener("click", function () {
                 showModalAlert("Do you want to remove this employee?", "Remove Employee", "removeEmployee");
             });
+        });
+
+        // CEHCK IF ADD OR EDIT
+
+        employeeRegistration.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const form = selectAllInputFields(employeeRegistration);
+
+            if (employeeBtnAction === "addEmployee") { 
+                if (inputEmptyValidation(form)) {
+                    debug("Error", "Employee Added");
+
+                    await fetch("/Member/Home/EmployeeRegistration", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            FirstName: firstName.value,
+                            MiddleName: middleName.value,
+                            LastName: lastName.value,
+                            Position: position.value,
+                            Role: role.value,
+                            Email: email.value,
+                            Phone: phone.value,
+                            Address: address.value
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        debug("Employee Data", data);
+                        clearForm(employeeRegistration);
+                        closeModal();
+                    })
+                    .catch(err => debug("Error", err));
+                } else {
+                    clearErrorInputFields(form);
+                }
+        
+            } else {
+                // EDIT
+            }
         });
     },
 
@@ -375,6 +435,34 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
+function clearErrorInputFields(form) {
+    const inputFields = form;
+
+    inputFields.forEach(i => {
+        if (!i.value.trim()) {
+            i.classList.add("error-input");
+        } else {
+            i.classList.remove("error-input");
+        }
+    });
+}
+
+function inputEmptyValidation(form) {
+    const inputFields = form;
+
+    const checkInputFields = Array.from(inputFields).every(function (input) {
+        return input.value.trim().length > 0;
+    });
+
+    return checkInputFields;
+}
+
+function selectAllInputFields(form) {
+    const inputFields = form.querySelectorAll("input, select");
+
+    return inputFields;
+}
+
 function displayCompanyInfo() {
     fetch("/Member/Home/GetCompanyInfo")
         .then(res => res.json())

@@ -50,11 +50,32 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> EmployeeRegistration([FromBody] EmployeeRegistration employeeDto)
+    {
+        var employee = new Employees
+        {
+            CompanyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value),
+            FirstName = employeeDto.FirstName,
+            MiddleName = employeeDto.MiddleName,
+            LastName = employeeDto.LastName,
+            Position = employeeDto.Position,
+            Role = employeeDto.Role,
+            Email = employeeDto.Email,
+            Phone = employeeDto.Phone,
+            Address = employeeDto.Address
+        };
+
+        _context.Employees.Add(employee);
+        await _context.SaveChangesAsync();
+
+        return Ok(employee);
+    }
+
+    [HttpPost]
     public async Task<IActionResult> CompanyRegistration([FromBody] CompanyRegistrationDto companyDto)
     {
         int clientId = Convert.ToInt32(User.FindFirst("ClientId")?.Value);
 
-        Console.WriteLine(clientId);
         var company = new Companies
         {
             ClientId = clientId,

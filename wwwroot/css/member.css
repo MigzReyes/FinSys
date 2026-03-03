@@ -1449,18 +1449,16 @@ select {
     display: flex;
     position: relative;
     align-items: center;
-    border: var(--border);
     border-radius: var(--radius-md);
 }
 
-.phone-input input {
-    border: none;
+.phone-input input, select {
+    border: var(--border);
 }
 
 #phoneAreaCode {
     position: relative;
     z-index: 1;
-    border: none;
     border-right: var(--border);
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;

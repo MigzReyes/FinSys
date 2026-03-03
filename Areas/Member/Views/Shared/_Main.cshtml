@@ -269,12 +269,12 @@
             </div>
 
             <div class="modal-body">
-                <form action="">
+                <form id="employeeRegistration">
                     <div class="modal-body-row-wrap">
                         <div class="modal-input-con">
                             <p class="modal-input-label">First Name</p>
                             <div class="modal-input">
-                                <input type="text" name="firstName" placeholder="Enter first name">
+                                <input id="firstName" type="text" name="firstName" placeholder="Enter first name">
                             </div>
                         </div>
 
@@ -282,7 +282,7 @@
                         <div class="modal-input-con">
                             <p class="modal-input-label">Middle Name</p>
                             <div class="modal-input">
-                                <input type="text" name="middleName" placeholder="Enter middle name">
+                                <input id="middleName" type="text" name="middleName" placeholder="Enter middle name">
                             </div>
                         </div>
                     </div>
@@ -291,14 +291,14 @@
                         <div class="modal-input-con">
                             <p class="modal-input-label">Last Name</p>
                             <div class="modal-input">
-                                <input type="text" name="lastName" placeholder="Enter last name">
+                                <input id="lastName" type="text" name="lastName" placeholder="Enter last name">
                             </div>
                         </div>
 
                         <div class="modal-input-con">
                             <p class="modal-input-label">Role</p>
                             <div class="modal-input select-input">
-                                <select name="role" id=""role>
+                                <select id="role" name="role" id=""role>
                                     <option value="" disabled selected hidden>Choose a role</option>
                                     <option value="staff">Staff</option>
                                     <option value="moderator">Moderator</option>
@@ -309,9 +309,16 @@
                     </div>
 
                     <div class="modal-body-row">
+                        <p class="modal-input-label">Position</p>
+                        <div class="modal-input">
+                            <input id="position" type="text" name="position" placeholder="Enter employee position">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
                         <p class="modal-input-label">Email</p>
                         <div class="modal-input">
-                            <input type="email" name="email" placeholder="Enter employee email">
+                            <input id="email" type="email" name="email" placeholder="Enter employee email">
                         </div>
                     </div>
 
@@ -326,7 +333,7 @@
 
                             <div class="phone-input-area">    
                                 <p class="area-code">+63</p>
-                                <input type="text" inputmode="numeric" oninput="this.value = formatNumber(this.value)" minlength="11" maxlength="11" id="phone" name="phone" placeholder="Phone">
+                                <input id="phone" type="text" inputmode="numeric" minlength="11" maxlength="11" id="phone" name="phone" placeholder="Phone">
                             </div>
                         </div>
                     </div>
@@ -334,13 +341,13 @@
                     <div class="modal-body-row">
                         <p class="modal-input-label">Address</p>
                         <div class="modal-input">
-                            <input type="text" name="address" placeholder="Enter employee address">
+                            <input id="address" type="text" name="address" placeholder="Enter employee address">
                         </div>
                     </div>
 
                     <div class="modal-body-button-con">
                         <button type="button" class="cancel">Cancel</button>
-                        <button type="button" class="primary-button" id="employeeModalBtn"><span id="employeeModalBtnText"></span> Employee</button>
+                        <button type="submit" class="primary-button" id="employeeModalBtn"><span id="employeeModalBtnText"></span> Employee</button>
                     </div>
                 </form>
             </div>

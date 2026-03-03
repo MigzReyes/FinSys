@@ -281,4 +281,8 @@ TO-DO
 
     Log in functionality -- DONE
 
-    Business registration 
+    Business registration -- DONE
+
+3/3/2026 ---
+
+    Add, delete, and edit employees
