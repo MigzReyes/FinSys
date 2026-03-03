@@ -106,6 +106,50 @@ public class HomeController : Controller
         return Ok( new { isPayed = IsClientPayed.IsPayed });
     } 
 
+    [HttpPost] 
+    public async Task<IActionResult> DeleteEmployee([FromBody] EmployeeDto employeeDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var employee = await _context.Employees.Where(e => e.Id == employeeDto.Id && e.CompanyId == companyId).FirstOrDefaultAsync();
+
+        _context.Employees.Remove(employee);
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Deleted employee"});
+    }
+
+    [HttpPost] 
+    public async Task<IActionResult> EditEmployee([FromBody] EmployeeDto employeeDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var employee = await _context.Employees.Where(e => e.Id == employeeDto.Id && e.CompanyId == companyId).FirstOrDefaultAsync();
+
+        if (employee == null) return Ok (employee);
+
+        employee.FirstName = employeeDto.FirstName;
+        employee.MiddleName = employeeDto.MiddleName; 
+        employee.LastName = employeeDto.LastName;
+        employee.Position = employeeDto.Position;
+        employee.Role = employeeDto.Role;
+        employee.Email = employeeDto.Email;
+        employee.Phone = employeeDto.Phone;
+        employee.Address = employeeDto.Address;
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Employee updated successfully" });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GetEmployee([FromBody] EmployeeDto employeeDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var employee = await _context.Employees.Where(e => e.Id == employeeDto.Id && e.CompanyId == companyId).FirstOrDefaultAsync();
+
+        return Ok(employee);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetEmployees()
     {

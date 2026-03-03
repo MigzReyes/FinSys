@@ -286,3 +286,5 @@ TO-DO
 3/3/2026 ---
 
     Add, delete, and edit employees
+
+    Email and phone checker if it already exist 

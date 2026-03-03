@@ -268,12 +268,14 @@ const PageScripts = {
         // CANCEL / CLOSE BTN
         cancel.forEach(c => {
             c.addEventListener("click", function () {
+                clearForm(employeeRegistration);
                 closeModal();
             });
         });
 
         closeIcon.forEach(c => {
             c.addEventListener("click", function () {
+                clearForm(employeeRegistration);
                 closeModal();
             });
         });
@@ -312,6 +314,9 @@ const PageScripts = {
             const form = selectAllInputFields(employeeRegistration);
 
             if (employeeBtnAction === "addEmployee") { 
+                
+                debug("Action", "Add");
+
                 if (inputEmptyValidation(form)) {
                     debug("Error", "Employee Added");
 
@@ -344,14 +349,70 @@ const PageScripts = {
                 }
         
             } else {
+
+                debug("Action", "edit");
                 // EDIT
+                if (inputEmptyValidation(form)) {
+                    const employeeId = employeeModalBtn.dataset.id;
+
+                    await fetch("/Member/Home/EditEmployee", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            Id: employeeId,
+                            FirstName: firstName.value,
+                            MiddleName: middleName.value,
+                            LastName: lastName.value,
+                            Position: position.value,
+                            Role: role.value,
+                            Email: email.value,
+                            Phone: phone.value,
+                            Address: address.value  
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        debug("Employee", data.message);
+                        clearForm(employeeRegistration);
+                        closeModal();
+                        loadEmployees();
+                    })
+                    .catch(err => debug("Error", err));
+
+                } else {
+                    clearErrorInputFields(form);
+                }
             }
         });
 
 
         // DISPLAY EMPLOYEE
         loadEmployees();
+        let employeeId;
+        document.addEventListener("click", function (e) {
+            const employeeCardId = e.target.closest(".employees-card");
+            const editBtn = e.target.closest(".editEmployeeBtn");
+            const deleteBtn = e.target.closest(".deleteEmployeeBtn");
+            const btn = e.target.closest(".alertBtn");
 
+            if (editBtn) {
+                const employeeId = editBtn.dataset.id;
+                debug("Btn", "Clicked " + employeeId);
+                displayEmployee(employeeId);
+            } else if (deleteBtn) {
+                employeeId = employeeCardId.dataset.id;
+                debug("Action", "delete " + employeeId);
+                
+                showModalAlert("Do you want to remove this employee?", "Remove Employee", "removeEmployee");
+
+            }
+        });
+
+        document.querySelector(".confirm").addEventListener("click", function () {
+            deleteEmployee(employeeId);
+        });
+        
     },
 
     reports: function() {
@@ -440,6 +501,52 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
+async function deleteEmployee(id) {
+    const res = await fetch("/Member/Home/DeleteEmployee", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Id: id })
+    });
+
+    const data = await res.json();
+    await loadEmployees();
+}
+
+async function displayEmployee(id) {
+    showModalEmployee("Edit", "Edit", "editEmployee");
+
+    try {
+        await fetch("/Member/Home/GetEmployee", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                Id: id
+            })
+        }).then(res => res.json())
+        .then(data => {
+            debug("Employee Data", data);
+
+            firstName.value = data.firstName;
+            middleName.value = data.middleName;
+            lastName.value = data.lastName;
+            role.value = data.role;
+            position.value = data.position;
+            email.value = data.email;
+            phone.value = data.phone;
+            address.value = data.address;
+            employeeModalBtn.dataset.id = data.id;
+        })
+        .catch(err => debug("Error", err));
+
+    } catch (err) {
+        debug("Error", err);
+    }
+}
+
 function dateFormat(date) {
     const format = new Date(date).toLocaleDateString("en-US", {
         month: "short",
@@ -480,11 +587,11 @@ async function displayEmployees(data, listCon) {
                 </div>
 
                 <div class="employees-card-actions-con">
-                    <div class="action-con editEmployeeBtn">
+                    <div class="action-con editEmployeeBtn" data-id="${e.id}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
                     </div>
 
-                    <div class="action-con deleteEmployeeBtn">
+                    <div class="action-con deleteEmployeeBtn" data-id="${e.id}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
                     </div>
                 </div>
