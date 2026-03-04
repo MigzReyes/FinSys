@@ -285,6 +285,10 @@ TO-DO
 
 3/3/2026 ---
 
-    Add, delete, and edit employees
+    Add, delete, and edit employees -- DONE
 
-    Email and phone checker if it already exist 
+    Email and phone checker if it already exist  
+
+3/4/2026 ---
+
+    Add, delete, and edit financial transactions 

@@ -50,6 +50,26 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> RecordFinancialTransaction([FromBody] FinancialTransactionsDto transactionDto)
+    {
+        var transaction = new FinancialTransactions
+        {
+            CompanyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value),
+            Type = transactionDto.Type,
+            DateOfTransaction = transactionDto.DateOfTransaction,
+            Category = transactionDto.Category,
+            Description = transactionDto.Description,
+            Amount = transactionDto.Amount,
+            Payee = transactionDto.Payee
+        };
+
+        _context.FinancialTransactions.Add(transaction);
+        await _context.SaveChangesAsync();
+
+        return Ok(transaction);
+    }
+
+    [HttpPost]
     public async Task<IActionResult> EmployeeRegistration([FromBody] EmployeeRegistration employeeDto)
     {
         var employee = new Employees
@@ -106,6 +126,19 @@ public class HomeController : Controller
         return Ok( new { isPayed = IsClientPayed.IsPayed });
     } 
 
+    [HttpPost]
+    public async Task<IActionResult> DeleteTransaction([FromBody] FinancialTransactionsDto transactionsDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var transaction = await _context.FinancialTransactions.Where(t => t.Id == transactionsDto.Id && t.CompanyId == companyId).FirstOrDefaultAsync();
+
+        _context.FinancialTransactions.Remove(transaction);
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Deleted transaction"});
+    }
+
     [HttpPost] 
     public async Task<IActionResult> DeleteEmployee([FromBody] EmployeeDto employeeDto)
     {
@@ -118,6 +151,26 @@ public class HomeController : Controller
 
         return Ok( new { message = "Deleted employee"});
     }
+
+    [HttpPost]
+    public async Task<IActionResult> EditFinancialTransaction([FromBody] FinancialTransactionsDto transactionsDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var transaction = await _context.FinancialTransactions.Where(t => t.Id == transactionsDto.Id && t.CompanyId == companyId).FirstOrDefaultAsync();
+
+        if (transaction == null) return Ok (transaction);
+
+        transaction.Type = transactionsDto.Type;
+        transaction.Category = transactionsDto.Category;
+        transaction.Amount = transactionsDto.Amount;
+        transaction.Payee = transactionsDto.Payee;
+        transaction.Description = transactionsDto.Description;
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Transaction updated successfully" });
+    }
+
 
     [HttpPost] 
     public async Task<IActionResult> EditEmployee([FromBody] EmployeeDto employeeDto)
@@ -139,6 +192,24 @@ public class HomeController : Controller
         await _context.SaveChangesAsync();
 
         return Ok( new { message = "Employee updated successfully" });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GetFinancialTransaction([FromBody] FinancialTransactionsDto transactionDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var transaction = await _context.FinancialTransactions.Where(t => t.Id == transactionDto.Id && t.CompanyId == companyId).FirstOrDefaultAsync();
+        
+        return Ok(transaction);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetFinancialTransactions() 
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var transaction = await _context.FinancialTransactions.Where(t => t.CompanyId == companyId).ToListAsync();
+
+        return Ok(transaction);
     }
 
     [HttpPost]

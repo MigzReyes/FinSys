@@ -1,3 +1,4 @@
+
 // GLOBAL ID / VAR
 const companyNameNav = document.getElementById("companyNameNav");
 const companyIndustryNav = document.getElementById("companyIndustryNav");
@@ -22,6 +23,7 @@ let closeNavVar = document.getElementById("closeNav");
 const logOutIconModal = document.getElementById("logOutIconModal");
 
 // TEXTS
+const alertHead = document.getElementById("alertHead");
 const alertSubhead = document.getElementById("alertSubhead");
 const alertBtnText = document.getElementById("alertBtnText");
 const employeeModalHeadText = document.getElementById("employeeModalHeadText");
@@ -185,6 +187,16 @@ const PageScripts = {
     financialTransactions: function() {
         debug("Page", "Financial Transaction");
 
+        // LOCAL VARIABLE
+        const transactionTable = document.getElementById("transactionTable"); // just in case
+        const editTransaction = document.getElementById("editTransaction");
+        const category = document.getElementById("category");
+        const amount = document.getElementById("amount");
+        const payee = document.getElementById("payee");
+        const description = document.getElementById("description");
+        const updateTransactionBtn = document.getElementById("updateTransactionBtn");
+
+
         // CANCEL / CLOSE BTN
         cancel.forEach(c => {
             c.addEventListener("click", function () {
@@ -243,6 +255,70 @@ const PageScripts = {
                 showModalAlert("Do you want to remove this transaction?", "Remove Transaction", "removeTransaction");
             });
         });
+
+        // DISPLAY TRANSACTIONS
+        loadTransactions();
+
+        // EDIT TRANSACTION
+        editTransaction.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const form = selectAllInputFields(editTransaction);
+            const id = updateTransactionBtn.dataset.id;
+            const type = editTransaction.elements["editTransactionType"].value;
+
+            if (inputEmptyValidation(form)) {
+                clearErrorInputFields(form);
+
+                await fetch("/Member/Home/EditFinancialTransaction", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        Id: id,
+                        Type: type,
+                        Category: category.value,
+                        Amount: amount.value,
+                        Payee: payee.value,
+                        Description: description.value
+                    })
+                }).then(res => res.json())
+                .then(data => {
+                    debug("Message", data.message);
+                    clearForm(editTransaction);
+                    closeModal();
+                })
+                .catch(err => debug("Error", err));
+
+                await loadTransactions();
+            } else {
+                clearErrorInputFields(form);
+            }
+        });
+
+        // ONCLICK LISTENER FOR EDIT AND DELETE BUTTON
+        let transactionId;
+        document.addEventListener("click", function (e) {
+            const click = e.target;
+            const editBtn = click.closest(".editTransactionBtn");
+            const deleteBtn = click.closest(".deleteTransactionBtn");
+
+            if (editBtn) {
+                const id = editBtn.dataset.id;
+                debug("Clicked", "Edit" + id);
+                displayTransaction(id);
+            } else if (deleteBtn) {
+                transactionId = deleteBtn.dataset.id;
+                debug("Clicked", "Delete" + transactionId);
+
+                showModalAlert("Do you want to remove this transaction?", "Remove Transaction", "removeEmployee");
+            }
+        });
+        
+        document.querySelector(".confirm").addEventListener("click", function () {
+            deleteTransaction(transactionId);
+        });
+        
     },
 
     employees: function() {
@@ -318,6 +394,15 @@ const PageScripts = {
                 debug("Action", "Add");
 
                 if (inputEmptyValidation(form)) {
+
+                    // EMAIL AND PHONE AUTH, checks if it already exists
+                    /*if (isEmpty(email.value) && isEmpty(phone.value)) {
+                        const con = document.querySelectorAll(".modal-body-row");
+                        con.forEach(i => {
+                            i.querySelectorAll("input").classList.add("error-input");
+                        })
+                    }*/
+
                     debug("Error", "Employee Added");
 
                     await fetch("/Member/Home/EmployeeRegistration", {
@@ -418,6 +503,14 @@ const PageScripts = {
     reports: function() {
         debug("Page", "Reports");
 
+        // LOCAL VARIABLE
+        form = document.getElementById("addTransaction");
+        const dateOfTransaction = document.getElementById("date");
+        const category = document.getElementById("category");
+        const description = document.getElementById("description");
+        const amount = document.getElementById("amount");
+        const payee = document.getElementById("payee");
+
         // CANCEL / CLOSE BTN
         cancel.forEach(c => {
             c.addEventListener("click", function () {
@@ -428,6 +521,7 @@ const PageScripts = {
         closeIcon.forEach(c => {
             c.addEventListener("click", function () {
                 closeModal();
+                resetModal();
             });
         });
 
@@ -435,11 +529,9 @@ const PageScripts = {
         modal.addEventListener("click", function (e) {
             if (e.target === modal) {
                 closeModal();
+                resetModal();
             } 
         });
-
-        // INSERT FORM ID TO FORM VAR
-        form = document.getElementById("addTransaction");
 
         // DATE INPUT FOCUSED OUTLINE DESIGN
         const dateBtn = document.getElementById("date");
@@ -457,6 +549,43 @@ const PageScripts = {
         const clearForm = document.getElementById("clearForm");
         clearForm.addEventListener("click", function () {
             showModalAlert("Do you want to clear the form?", "Clear Form", "clearForm");
+        });
+
+        // INSERT FORM ID TO FORM VAR
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const type = form.elements["transactionType"].value; // GET type value
+
+            const formTransaction = selectAllInputFields(form);
+
+            if (inputEmptyValidation(formTransaction)) {
+                clearErrorInputFields(formTransaction);
+                
+                await fetch("/Member/Home/RecordFinancialTransaction", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        Type: type,
+                        DateOfTransaction: dateOfTransaction.value,
+                        Category: category.value,
+                        Description: description.value,
+                        Amount: amount.value,
+                        Payee: payee.value
+                    })
+                }).then(res => res.json())
+                .then(data => {
+                    debug("Transaction", data);
+                    showModal("Succes!", "Successfully added a new transaction.");
+                })
+                .catch(err => debug("Error", err));
+
+            } else {
+                clearErrorInputFields(formTransaction);
+            }
+
+
         });
     },
 
@@ -501,6 +630,182 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
+async function deleteTransaction(id) {
+    const res = await fetch("/Member/Home/DeleteTransaction", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            Id: id
+        })
+    });
+
+    const data = await res.json();
+    debug("Message", data.message);
+    await loadTransactions();
+}
+
+async function displayTransaction(id) {
+    showModalEditTransaction();
+
+    try {
+        await fetch("/Member/Home/GetFinancialTransaction", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                Id: id
+            })
+        }).then(res => res.json())
+        .then(data => {
+            debug("Transaction data", data);
+
+            const radio = document.querySelector(`input[name="editTransactionType"][value="${data.type}"]`);
+
+            if (radio) {
+                radio.checked = true;
+            }
+            category.value = data.category;
+            amount.value = data.amount;
+            payee.value = data.payee;
+            description.value = data.description;
+            updateTransactionBtn.dataset.id = data.id;
+        })
+        .catch(err => debug("Error", err));
+
+    } catch (err) {
+        debug("Error", err);
+    }
+}
+
+async function displayTransactions(data, tableId) {
+    const table = tableId;
+    table.innerHTML = "";
+
+    if (window.innerWidth < 760) { 
+        data.forEach(c => {
+            const card = document.createElement("div");
+            card.classList.add("financial-transaction-card");
+            card.dataset.id = c.id;
+
+            let type;
+
+            if (c.type === "Income") {
+                type = "income";
+            } else if (c.type === "Expense") {
+                type = "expense"
+            } else {
+                type = "undefined"
+            }
+
+            card.innerHTML = `
+                <div class="financial-transaction-card-header">
+                    <div class="financial-transaction-card-head">
+                        <p class="card-head">${c.category}</p>
+                        <p class="card-date">${dateFormat(c.dateOfTransaction)}</p>
+                    </div>
+
+                    <div class="financial-transaction-card-action-con">
+                        <div class="action-con editTransactionBtn" data-id="${c.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
+                        </div>
+
+                        <div class="action-con deleteTransactionBtn" data-id="${c.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="financial-transaction-card-body">
+                    <div class="card-body-row">
+                        <p class="card-body-row-label">Type:</p>
+                        <p class="card-body-row-data ${type}">${c.type}</p>
+                    </div>
+
+                    <div class="card-body-row">
+                        <p class="card-body-row-label">Amount:</p>
+                        <p class="card-body-row-data">₱${c.amount}</p>
+                    </div>
+
+                    <div class="card-body-row">
+                        <p class="card-body-row-label">Payee:</p>
+                        <p class="card-body-row-data">${c.payee}</p>
+                    </div>
+
+                    
+                    <div class="card-body-row-wrap">
+                        <p class="card-body-row-label">Description:</p>
+                        <p class="card-body-row-data">${c.description}</p>
+                    </div>
+                </div>
+            `
+
+            table.appendChild(card);
+        });
+
+    } else {
+        data.forEach(t => {
+            const row = document.createElement("tr");
+            row.dataset.id = t.id;
+
+            let type;
+
+            if (t.type === "Income") {
+                type = "income";
+            } else if (t.type === "Expense") {
+                type = "expense"
+            } else {
+                type = "undefined"
+            }
+
+            row.innerHTML = `
+                <tr data-id="${t.id}">
+                    <td>${dateFormat(t.dateOfTransaction)}</td>
+                    <td id="type" class="${type}">${t.type}</td>
+                    <td>${t.category}</td>
+                    <td>${t.description}</td> <!-- Re design this shit set a maximum words then gawa ka ng parang button na "see more" -->
+                    <td>₱${t.amount}</td>
+                    <td class="payee-col">${t.payee}</td>
+                    <td>
+                        <div class="action-con editTransactionBtn" data-id="${t.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
+                        </div>
+
+                        <div class="action-con deleteTransactionBtn" data-id="${t.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
+                        </div>
+                    </td>
+                </tr>
+            `
+
+            table.appendChild(row);
+        });
+    }
+}
+
+async function loadTransactions() {
+    try {
+        const res = await fetch("/Member/Home/GetFinancialTransactions");
+        const transactions = await res.json();
+
+        if (window.innerWidth < 760) {
+            const cardCon = document.getElementById("transactionCardCon");
+            displayTransactions(transactions, cardCon);
+        } else {
+            const table = document.getElementById("transactionTable");
+            displayTransactions(transactions, table);
+        }
+    } catch (err) {
+        debug("Error", err);    
+    }
+}
+
+function isEmpty(value) {
+    return (value == null || (typeof value === "string" && value.length === 0));
+}
+
 async function deleteEmployee(id) {
     const res = await fetch("/Member/Home/DeleteEmployee", {
         method: "POST",
@@ -664,7 +969,7 @@ function inputEmptyValidation(form) {
 }
 
 function selectAllInputFields(form) {
-    const inputFields = form.querySelectorAll("input, select");
+    const inputFields = form.querySelectorAll("input, select, textarea");
 
     return inputFields;
 }
@@ -778,6 +1083,15 @@ function showModalAlert(subhead, buttonText, actions) {
     }
 }   
 
+function showModal(head, subhead) {
+    modal.classList.add("show");
+    alertModal.classList.remove("modal-md");
+    alertModal.classList.add("show", "modal-sm");
+
+    alertHead.textContent = head;
+    alertSubhead.textContent = subhead;
+}   
+
 function clearForm(formId) {
     formId.reset();
 }
@@ -797,6 +1111,13 @@ function closeModal() {
         m.classList.remove("show");
     });
     modal.classList.remove("show");
+}
+
+function resetModal() {
+    alertModal.classList.remove("modal-sm");
+    alertModal.classList.add("modal-md");
+
+    alertHead.textContent = "Are you sure?";
 }
 
 function pageRefresh() {

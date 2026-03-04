@@ -364,19 +364,19 @@
             </div>
 
             <div class="modal-body">
-                <form action="">
+                <form id="editTransaction">
                     <div class="modal-body-row">
                         <p class="modal-input-label">Transaction Type</p>
 
                         <div class="radio-con">
                             <div class="modal-radio-input">
-                                <input type="radio" name="editTransactionType" id="modal-income">
+                                <input type="radio" name="editTransactionType" value="Income" id="modal-income" checked>
                                 <label for="modal-income">Income</label>
                             </div>
 
                             
                             <div class="modal-radio-input">
-                                <input type="radio" name="editTransactionType" id="modal-expense">
+                                <input type="radio" name="editTransactionType" value="Expense" id="modal-expense">
                                 <label for="modal-expense">Expense</label>
                             </div>
                         </div>
@@ -386,11 +386,12 @@
                         <p class="modal-input-label">Category</p>
                         
                         <div class="modal-input select-input">
-                            <select class="full-width" name="category" id="category">
+                            <select id="category" class="full-width" name="category" id="category">
                                 <option value="" disabled selected hidden>Select a category</option>
-                                <option value="orders">Orders</option>
-                                <option value="transaction">Transaction</option>
-                                <option value="equipments">Equipmentents</option>
+                                <option value="Orders">Orders</option>
+                                <option value="Transaction">Transaction</option>
+                                <option value="Equipment">Equipment</option>
+                                <option value="Supplies">Supplies</option>
                             </select>
                         </div>
                     </div>
@@ -399,14 +400,14 @@
                         <div class="modal-body-row">
                             <p class="modal-input-label">Amount</p>
                             <div class="modal-input amount-input">
-                                <input name="amount" type="number" inputmode="numeric" placeholder="0.00" oninput="this.value = this.value.replace(/[eE+\-]/g, '');">
+                                <input id="amount" name="amount" type="number" inputmode="numeric" placeholder="0.00" oninput="this.value = this.value.replace(/[eE+\-]/g, '');">
                             </div>
                         </div>
 
                         <div class="modal-body-row">
                             <p class="modal-input-label">Payee</p>
                             <div class="modal-input">
-                                <input type="text" name="payee" placeholder="Enter payee name">
+                                <input id="payee" type="text" name="payee" placeholder="Enter payee name">
                             </div>
                         </div>
                     </div>
@@ -414,13 +415,13 @@
                     <div class="modal-body-row">
                         <p class="modal-input-label">Description</p>
                         <div class="modal-input description-input">
-                            <textarea name="description" type="text" placeholder="Enter a description"></textarea>
+                            <textarea id="description" name="description" type="text" placeholder="Enter a description"></textarea>
                         </div>
                     </div>
 
                     <div class="modal-body-button-con">
                         <button class="cancel">Cancel</button>
-                        <button class="primary-button">Update Transaction</button>
+                        <button type="submit" id="updateTransactionBtn" class="primary-button">Update Transaction</button>
                     </div>
                 </form>
             </div>
@@ -436,7 +437,7 @@
 
             <div class="modal-body">
                 <div class="modal-body-header">    
-                    <p class="modal-body-head">Are you sure?</p>
+                    <p class="modal-body-head" id="alertHead">Are you sure?</p>
                     <p class="modal-body-subhead" id="alertSubhead">Do you want to remove this transaction?</p>
                 </div>
 

@@ -1388,6 +1388,10 @@ select {
     flex-direction: column;
 }
 
+.modal-sm .modal-body .modal-body-button-con {
+    display: none;
+}
+
 .modal-md {
     width: var(--modal-md);
     background: var(--white);
