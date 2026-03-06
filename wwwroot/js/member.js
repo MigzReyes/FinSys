@@ -142,6 +142,46 @@ const PageScripts = {
         displayNetProfit(netProfit);
         displayCommonSizeStatement(expenseStatement, netProfitStatement);
 
+        if (window.matchMedia("(max-width: 760px)").matches) {
+            // PIE CHART DISPLAY
+            const pieGraph = document.getElementById("pieGraphIncExpComp");
+
+            fetch("GetIncomeExpenseComparisonPieGraph")
+            .then(res => res.json())
+            .then(data => {
+                debug("data compa", data);
+                displayPieGraph(pieGraph, data);
+            })
+            .catch(err => {
+                debug("Error", err);
+            });
+        } else {
+            // LINE GRAPH DISPLAY
+            const lineGraph = document.getElementById("lineGraphIncExpComp");
+
+            fetch("/Member/Home/GetIncomeExpenseComparisonLineGraph")
+            .then(res => res.json())
+            .then(data => {
+                debug("Line Graph", data);
+                displayLineGraphIncExpComp(lineGraph, data);
+            })
+            .catch(err => {
+                debug("Error", err);
+            });
+        }
+
+        // BAR GRAPH DISPLAY
+        const barGraph = document.getElementById("barGraph");
+        fetch("/Member/Home/GetExpenseBreakdown")
+        .then(res => res.json())
+        .then(data => {
+            debug("Expense Breakdown Data", data);
+            displayBarGraph(barGraph, data);
+        })
+        .catch(err => {
+            debug("Error", err)
+        });
+
         // COMPANY REGISTRATION
         companyRegistration.addEventListener("submit", async function (e) {
             e.preventDefault();
@@ -192,6 +232,7 @@ const PageScripts = {
             }
 
         });
+
 
     },
 
@@ -664,6 +705,272 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
+function displayLineGraphIncExpComp(lineGraph, data) {
+     const legendItems = [
+        { label: "Income", color: "#53AC7F" },  
+        { label: "Expense", color: "#E64C4C" } 
+    ];
+
+    const width = lineGraph.clientWidth;
+    const height = 400;
+    const margin = { top: 20, right: 40, bottom: 60, left: 60 };
+
+    const svg = d3.select(`#${lineGraph.id}`)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    const chartWidth = width - margin.left - margin.right;
+    const chartHeight = height - margin.top - margin.bottom;
+
+    const chart = svg.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+
+    const xScale = d3.scaleBand()
+        .domain(data.map(d => d.month))
+        .range([0, chartWidth])
+        .padding(0.1);
+
+    const yMax = d3.max(data, d => Math.max(d.income, d.expense));
+
+    const yScale = d3.scaleLinear()
+        .domain([0, yMax])
+        .range([chartHeight, 0]);
+
+    const yAxis = d3.axisLeft(yScale)
+        .tickFormat(d3.format(".2s"));
+
+    chart.append("g")
+        .attr("transform", `translate(0,${chartHeight})`)
+        .call(d3.axisBottom(xScale));
+
+    chart.append("g")
+        .call(yAxis);
+
+
+    const line = d3.line()
+        .x(d => xScale(d.month) + xScale.bandwidth() / 2) 
+        .y(d => yScale(d.value));
+
+    const incomeLineData = data.map(d => ({ month: d.month, value: d.income }));
+    const expenseLineData = data.map(d => ({ month: d.month, value: d.expense }));
+
+    chart.append("path")
+        .datum(incomeLineData)
+        .attr("fill", "none")
+        .attr("stroke", "#53AC7F") 
+        .attr("stroke-width", 2)
+        .attr("d", line);
+
+    chart.append("path")
+        .datum(expenseLineData)
+        .attr("fill", "none")
+        .attr("stroke", "#E64C4C")
+        .attr("stroke-width", 2)
+        .attr("d", line);
+
+    chart.selectAll(".income-point")
+        .data(incomeLineData)
+        .enter()
+        .append("circle")
+        .attr("class", "income-point")
+        .attr("cx", d => xScale(d.month) + xScale.bandwidth() / 2)
+        .attr("cy", d => yScale(d.value))
+        .attr("r", 4)
+        .attr("fill", "#53AC7F");
+
+    chart.selectAll(".expense-point")
+        .data(expenseLineData)
+        .enter()
+        .append("circle")
+        .attr("class", "expense-point")
+        .attr("cx", d => xScale(d.month) + xScale.bandwidth() / 2)
+        .attr("cy", d => yScale(d.value))
+        .attr("r", 4)
+        .attr("fill", "#E64C4C");
+
+    const itemSpacing = 90; 
+    const circleRadius = 6;
+    const totalLegendWidth = legendItems.length * itemSpacing;
+    const legendY = chartHeight + margin.top + 40;
+    const legendX = (width - totalLegendWidth) / 2; 
+    const legend = svg.append("g")
+            .attr("transform", `translate(${legendX}, ${legendY})`);
+
+
+    legendItems.forEach((d, i) => {
+        // INCOME
+        legend.append("circle")
+            .attr("cx", i * itemSpacing)
+            .attr("cy", 0)
+            .attr("r", 6)
+            .attr("fill", d.color);
+
+        legend.append("text")
+            .attr("x", i * itemSpacing + circleRadius + 5)
+            .attr("y", 2)
+            .text(d.label)
+            .attr("alignment-baseline", "middle");
+    });
+
+}
+
+function displayPieGraph(pieGraph, data) {
+    const width = pieGraph.clientWidth;  
+    const height = 400;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select(`#${pieGraph.id}`)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width/2}, ${height/2})`);
+
+    const pie = d3.pie()
+    .value(d => d.value);
+
+    const arc = d3.arc()
+    .innerRadius(0)    
+    .outerRadius(radius);
+
+    const color = d3.scaleOrdinal()
+    .domain(data.map(d => d.key))
+    .range([ '#53AC7F', '#E64C4C']);
+
+    const label = d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius - 80);
+
+    svg.selectAll("path")
+        .data(pie(data))
+        .enter()
+        .append("path")
+        .attr("d", arc)
+        .attr("fill", d => {
+            if(d.data.key === "Income") return "#53AC7F"; 
+            if(d.data.key === "Expense") return "#E64C4C"; 
+            return "#ccc"; 
+        })
+        .attr("stroke", "white")
+        .style("stroke-width", "2px");
+
+    const total = d3.sum(data, d => d.value);
+
+    svg.selectAll("text")
+        .data(pie(data))
+        .enter()
+        .append("text")
+        .attr("transform", d => `translate(${label.centroid(d)})`)
+        .style("text-anchor", "middle")
+        .html(d => `
+            <tspan x="2" dy="0" class="percentage">${((d.data.value / total) * 100).toFixed(1)}%</tspan>
+            <tspan x="0" dy="20">${d.data.key}</tspan>
+        `);
+}
+
+function displayBarGraph(barGraph, data) {
+    // IF EVER CHANGED THE PASSED DATA KEY AND OBJECT NAME TO  {key: object} for modularity
+
+    if (window.matchMedia("(max-width: 760px)").matches) {
+        const width = barGraph.clientWidth;
+        const height = 300;
+        const margin = { top: 20, right: 20, bottom: 40, left: 100 }; 
+
+        const svg = d3.select(`#${barGraph.id}`)
+            .append("svg")
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("width", "100%")
+            .attr("height", height);
+
+        const chart = svg.append("g")
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        const xScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value)])
+            .range([0, chartWidth]);
+
+        const yScale = d3.scaleBand()
+            .domain(data.map(d => d.key))
+            .range([0, chartHeight])
+            .padding(0.2);
+
+        chart.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("y", d => yScale(d.key))
+            .attr("x", 0) 
+            .attr("height", yScale.bandwidth())
+            .attr("width", d => xScale(d.value))
+            .attr("fill", "steelblue");
+
+        chart.append("g")
+            .attr("transform", `translate(0, ${chartHeight})`)
+            .call(d3.axisBottom(xScale).tickFormat(d3.format(".2s")));
+
+        chart.append("g")
+            .call(d3.axisLeft(yScale));
+            
+    } else {
+        const width = barGraph.clientWidth;
+        const height = 300;
+
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+
+        const svg = d3.select(`#${barGraph.id}`)
+                    .append("svg")
+                    .attr("viewBox", `0 0 ${width} ${height}`)
+                    .attr("width", "100%")
+                    .attr("height", height);
+
+        const chart = svg
+            .append("g")
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        const xScale = d3
+            .scaleBand()
+            .domain(data.map(d => d.key)) // CHANGE THIS BASED ON THE KEY
+            .range([0, chartWidth])
+            .padding(0.2);
+
+        const yScale = d3
+            .scaleLinear()
+            .domain([0, d3.max(data, d => d.value)])
+            .range([chartHeight, 0]);
+
+        const yAxis = d3.axisLeft(yScale)
+        .tickFormat(d3.format(".2s"));
+
+        chart
+            .selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("x", d => xScale(d.key)) // CHANGE THIS BASED ON THE KEY
+            .attr("y", d => yScale(d.value))
+            .attr("width", xScale.bandwidth())
+            .attr("height", d => chartHeight - yScale(d.value))
+            .attr("fill", "steelblue");
+
+        chart
+            .append("g")
+            .attr("transform", `translate(0, ${chartHeight})`)
+            .call(d3.axisBottom(xScale));
+
+        chart
+            .append("g")
+            .call(yAxis);
+    }
+}
+
 async function displayStatementIcons(expense) {
     let incomeIncreaseIcon = document.querySelector(".increasedIncome");
     let incomeDecreaseIcon = document.querySelector(".decreasedIncome");

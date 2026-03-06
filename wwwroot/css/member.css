@@ -697,6 +697,7 @@ main {
     display: flex;
     flex-direction: column;
     padding: var(--space-3);
+    gap: var(--space-6);
 }
 
 .dashboard-fin-over-header {
@@ -742,6 +743,44 @@ main {
     font-size: var(--text-sm);
     color: var(--secondary-muted);
 }
+
+.dashboard svg text {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    font-family: "Inter", sans-serif;
+    fill: var(--secondary);
+}
+
+.bar-graph {
+    width: 100%;
+}
+
+.bar-graph svg rect {
+    fill: var(--primary);
+}
+
+.pie-graph {
+    width: 100%;
+}
+
+.pie-graph svg text {
+    fill: var(--white);
+}
+
+.pie-graph svg text .percentage {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+}
+
+.pie-graph svg text tspan {
+    width: 100%;
+    text-align: center;
+}
+
+.line-graph {
+    width: 100%;
+}
+
 
 /* FINANCIAL TRANSACTION */
 .financial-transaction {

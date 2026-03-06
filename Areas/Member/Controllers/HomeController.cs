@@ -196,6 +196,73 @@ public class HomeController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> GetIncomeExpenseComparisonLineGraph()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+
+        string[] monthNames = new string[]
+            {
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            };
+
+        var rawData = await _context.FinancialTransactions
+            .Where(t => t.CompanyId == companyId)
+            .GroupBy(t => t.DateOfTransaction.Month)
+            .Select(g => new
+            {
+                MonthNumber = g.Key,
+                Income = g.Where(x => x.Type == "Income").Sum(x => x.Amount),
+                Expense = g.Where(x => x.Type == "Expense").Sum(x => x.Amount)
+            })
+            .OrderBy(x => x.MonthNumber)
+            .ToListAsync();
+
+        var comparison = rawData.Select(r => new
+        {
+            month = monthNames[r.MonthNumber - 1],
+            income = r.Income,
+            expense = r.Expense
+        });
+
+        return Ok(comparison);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetIncomeExpenseComparisonPieGraph()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var comparison = await _context.FinancialTransactions
+                            .Where(t => t.CompanyId == companyId)
+                            .GroupBy(t => t.Type)
+                            .Select(t => new
+                            {
+                                key = t.Key,
+                                value = t.Sum(x => x.Amount)
+                            })
+                            .ToListAsync();
+
+        return Ok(comparison);
+    }
+
+    [HttpGet] 
+    public async Task<IActionResult> GetExpenseBreakdown()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var expense = await _context.FinancialTransactions
+                            .Where(t => t.CompanyId == companyId && t.Type == "Expense")
+                            .GroupBy(t => t.Category)
+                            .Select(t => new
+                            {
+                                key = t.Key,
+                                value = t.Sum(x => x.Amount)
+                            })
+                            .ToListAsync();
+
+        return Ok(expense);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> GetCommonSizeStatement()
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
