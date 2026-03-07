@@ -336,3 +336,5 @@ TO-DO
 
 
     employee search
+
+    Fix text labels for graphs -- DONE

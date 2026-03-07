@@ -899,6 +899,10 @@ function displayBarGraph(barGraph, data) {
             .range([0, chartHeight])
             .padding(0.2);
 
+        const maxLabels = Math.floor(chartWidth / 80);
+        const xAxis = d3.axisBottom(xScale)
+        .tickValues(xScale.domain().filter((d, i) => !(i % Math.ceil(data.length / maxLabels))));
+
         chart.selectAll("rect")
             .data(data)
             .enter()
@@ -911,7 +915,11 @@ function displayBarGraph(barGraph, data) {
 
         chart.append("g")
             .attr("transform", `translate(0, ${chartHeight})`)
-            .call(d3.axisBottom(xScale).tickFormat(d3.format(".2s")));
+            .call(d3.axisBottom(xScale)
+                    .tickFormat(d3.format(".2s")))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
 
         chart.append("g")
             .call(d3.axisLeft(yScale));
