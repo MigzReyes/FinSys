@@ -329,6 +329,8 @@ const PageScripts = {
                 if (checkEmail) {
                     debug("Email", "Email exists");
 
+                    document.querySelectorAll(".error-tag").forEach(e => e.remove());
+
                     // DISABLE BUTTON
                     sendBtn.disabled = true;
 
@@ -346,6 +348,7 @@ const PageScripts = {
                     window.location.href = data.redirect;
                 } else {
                     debug("Email", "Email does not exists");
+                    document.querySelectorAll(".error-tag").forEach(e => e.remove());
                     const emailCon = document.querySelector(".emailCon");
                     emailCon.appendChild(showError("Email does not exists"));
                 }
@@ -500,6 +503,7 @@ const PageScripts = {
                     }
                 } else {
                     debug("Error", "Confirm password is not the same as password");
+                    document.querySelectorAll(".error-tag").forEach(e => e.remove());
                     const con = document.querySelector(".conPassword");
                     con.appendChild(showError("Confirm password is not the same as password"));
                 }
