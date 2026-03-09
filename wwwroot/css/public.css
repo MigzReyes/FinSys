@@ -129,6 +129,10 @@ p, span {
   cursor: default;
 }
 
+input:disabled {
+  cursor: default !important;
+}
+
 button {
   display: flex;
   height: fit-content;

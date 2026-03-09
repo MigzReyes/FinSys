@@ -6,6 +6,7 @@ using FinSys.DTO;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using FinSys.Services.Interfaces;
 
 namespace FinSys.Areas.Public.Controllers;
 
@@ -16,10 +17,13 @@ public class AccountController : Controller
 
     private readonly ILogger<AccountController> _logger;
 
-    public AccountController(ILogger<AccountController> logger, ApplicationDbContext context)
+    private readonly IEmailService _email;
+
+    public AccountController(ILogger<AccountController> logger, ApplicationDbContext context, IEmailService email)
     {
         _logger = logger;
         _context = context;
+        _email = email;
     }
 
     public IActionResult LogIn()
@@ -45,6 +49,59 @@ public class AccountController : Controller
     public IActionResult ResetPass()
     {
         return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword([FromBody] ClientResetPasswordDto passwordDto)
+    {
+        var email = HttpContext.Session.GetString("Email");
+        var client = await _context.Clients.Where(c => c.Email == email).ExecuteUpdateAsync(c => c.SetProperty(c => c.Password, passwordDto.Password));
+
+        // END SESSION
+        HttpContext.Session.Remove("Email");
+
+        return Ok( new { message = "Updated password", redirect = "/Public/Account/LogIn"});
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> VerifyOTP([FromBody] ClientSendOTPDto otpDto)
+    {
+        var email = HttpContext.Session.GetString("Email");
+        var otp = await _context.ResetPasswordCodes.Where(o => o.Code == otpDto.Code && o.Email == email).FirstOrDefaultAsync();
+        //var checkOtp = await _context.ResetPasswordCodes.Where(o => o.Code == otpDto.Code && o.Email == email && o.IsUsed == true).FirstOrDefaultAsync();
+    
+        if (otp == null) return Ok( new { message = "OTP is wrong", otp = false });
+        if (otp.IsUsed) return Ok( new { message = "OTP already used", otp = false });
+
+        await _context.ResetPasswordCodes.Where(c => c.Email == email).ExecuteUpdateAsync(c => c.SetProperty(c => c.IsUsed, true)); // UPDATE IS USED TO TRUE
+
+        return Ok( new { message = "OTP is corect", otp = true, redirect = "/Public/Account/ResetPass"} );
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SendOTP([FromBody] ClientSendOTPDto emailDto)
+    {
+        Console.WriteLine("Email" + emailDto.Email);
+        Random ran = new();
+        string otp = ran.Next(0, 100000).ToString("D6");
+
+        var resetPass = new ResetPasswordCodes
+        {
+            Email = emailDto.Email,
+            Code = otp,
+            IsUsed = false
+        };
+
+        _context.ResetPasswordCodes.Add(resetPass);
+        await _context.SaveChangesAsync();
+
+        // SEND AN EMAIL
+        await _email.SendEmailAsync("johnmigzreyes0@gmail.com", "Reset Password", $"Your OTP code is {otp}"); // CHANGE THE SEND TO
+
+        // SESSION
+        HttpContext.Session.SetString("Email", emailDto.Email);
+
+        return Ok( new { message = "Otp code has been sent", isUsed = false, redirect = "/Public/Account/Verification" });
     }
 
     [HttpPost]
@@ -80,7 +137,7 @@ public class AccountController : Controller
     } 
 
     [HttpPost]
-    public async Task<IActionResult> CheckEmailExists([FromBody] ClientEmailVerifDtto emailDto) 
+    public async Task<IActionResult> CheckEmailExists([FromBody] ClientEmailVerifDto emailDto) 
     {
         var Client = await _context.Clients.FirstOrDefaultAsync(u => u.Email == emailDto.Email);
 
@@ -134,5 +191,12 @@ public class AccountController : Controller
                 return Ok( new { clientExists = true, isPassCorrect = false,  message = "Password is wrong"});
             }
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> RemoveForgotPassSession()
+    {
+        HttpContext.Session.Remove("Email");
+        return Ok( new { message = "Session Removed" });
     }
 }

@@ -102,3 +102,44 @@ export function removeUserSession() {
         });
     });
 }
+
+export function clearErrorInputFields(form) {
+    const inputFields = form;
+
+    inputFields.forEach(i => {
+        if (!i.value.trim()) {
+            i.classList.add("error-input");
+        } else {
+            i.classList.remove("error-input");
+        }
+    });
+}
+
+export function inputEmptyValidation(form) {
+    const inputFields = Array.from(form);
+
+    const allFilled = inputFields.every(i => {
+        if (i.id === "middleName") return true;
+        return i.value.trim().length > 0;
+    });
+
+    return allFilled;
+}
+
+export function selectAllInputFields(form) {
+    const inputFields = form.querySelectorAll("input, select, textarea");
+
+    return inputFields;
+}
+
+export async function RemoveForgotPassSession() {
+    try {
+        const res = await fetch("/Public/Account/RemoveForgotPassSession");
+        const data = await res.json();
+
+        debug("Session", data.message);
+        return data.message;
+    } catch (err) {
+        return debug("Error", err);
+    }
+}

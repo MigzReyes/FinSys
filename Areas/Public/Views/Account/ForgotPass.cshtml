@@ -23,18 +23,18 @@
     </div>
 
     <div class="account-body">
-        <form action="">
-            <div class="account-body-row">
+        <form id="forgotPassSendEmail">
+            <div class="account-body-row emailCon">
                 <p class="body-row-label">Email</p>
                 <div class="body-row-input">
-                    <input type="text" name="email" placeholder="Email">
+                    <input id="email" type="text" name="email" placeholder="Email">
                 </div>
             </div>
         </form>
     </div>
 
     <div class="account-btn-con">
-        <button class="primary-btn"><a asp-controller="Account" asp-action="Verification">Send</a></button>
+        <button id="sendBtn" form="forgotPassSendEmail" type="submit" class="primary-btn"><a>Send</a></button>
         <p class="link"><a asp-controller="Account" asp-action="LogIn">Back to log in</a></p>
     </div>
 </div>

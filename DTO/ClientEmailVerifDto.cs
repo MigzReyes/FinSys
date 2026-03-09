@@ -1,6 +1,6 @@
 namespace FinSys.DTO
 {
-    public class ClientEmailVerifDtto
+    public class ClientEmailVerifDto
     {
         public required string Email { get; set; }
     }

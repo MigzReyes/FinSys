@@ -23,19 +23,19 @@
     </div>
 
     <div class="account-body">
-        <form action="">
-            <div class="account-body-row">
+        <form id="verifyOtp">
+            <div class="account-body-row otpCon">
                 <p class="body-row-label">Enter the code</p>
                 <div class="body-row-input code-input">
                     <p class="code-prefix">G -</p>
-                    <input type="text" name="code">
+                    <input id="code" type="text" name="code">
                 </div>
             </div>
         </form>
     </div>
 
     <div class="account-btn-con">
-        <button class="primary-btn"><a asp-controller="Account" asp-action="ResetPass">Next</a></button>
-        <p class="link"><a asp-controller="Account" asp-action="LogIn">Cancel</a></p>
+        <button id="sendBtn" form="verifyOtp" type="submit" class="primary-btn"><a>Next</a></button>
+        <p id="removeSessionBtn" class="link"><a asp-controller="Account" asp-action="LogIn">Cancel</a></p>
     </div>
 </div>

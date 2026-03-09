@@ -337,3 +337,11 @@ TO-DO
     Fix text labels for graphs -- DONE
     
     employee search -- DONE
+
+3/9/2026
+
+    Forgot password -- DONE
+
+    REFACTOR -- Change showError() function to also get the input con in the params.
+
+    CHORE -- Fix send otp sending time, too slow -- FIXED

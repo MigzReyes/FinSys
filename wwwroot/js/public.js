@@ -1,4 +1,11 @@
-﻿import { debug, errorInput, formatNumber, isEmpty, showError, validateEmail, togglePasswordVisibility, passwordStrength, clearForm, formatEmail } from "./utils.js";
+﻿import { debug, errorInput, formatNumber, 
+    isEmpty, showError, validateEmail, 
+    togglePasswordVisibility, passwordStrength, clearForm, 
+    formatEmail, clearErrorInputFields, inputEmptyValidation,
+    selectAllInputFields, removeUserSession,
+    RemoveForgotPassSession
+
+ } from "./utils.js";
 
 // GLOBAL VAR
 
@@ -298,14 +305,208 @@ const PageScripts = {
 
     forgotPass: function() {
         debug("Page", "Forgot pass");
+
+        // LOCAL VARIABLE
+        const forgotPassSendEmail = document.getElementById("forgotPassSendEmail");
+        const email = document.getElementById("email");
+        const sendBtn = document.getElementById("sendBtn");
+
+        forgotPassSendEmail.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const form = selectAllInputFields(forgotPassSendEmail);
+
+            if (inputEmptyValidation(form)) {
+                clearErrorInputFields(form);
+
+                const checkEmail = await validateEmail(email.value);
+
+                if (checkEmail) {
+                    debug("Email", "Email exists");
+
+                    // DISABLE BUTTON
+                    sendBtn.disabled = true;
+
+                    const res = await fetch("/Public/Account/SendOTP", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            Email: email.value
+                        })
+                    });
+                    const data = await res.json();
+                    
+                    window.location.href = data.redirect;
+                } else {
+                    debug("Email", "Email does not exists");
+                    const emailCon = document.querySelector(".emailCon");
+                    emailCon.appendChild(showError("Email does not exists"));
+                }
+
+            } else {
+                clearErrorInputFields(form);
+            }
+        });
+
     },
 
     verification: function() {
         debug("Page", "Verification");
+
+        // LOCAL KNOWLEDGE 
+        const verifyOtp = document.getElementById("verifyOtp");
+        const code = document.getElementById("code");
+        const sendBtn = document.getElementById("sendBtn");
+        const removeSessionBtn = document.getElementById("removeSessionBtn");
+
+        verifyOtp.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const form = selectAllInputFields(verifyOtp);
+
+            if (inputEmptyValidation(form)) {
+                clearErrorInputFields(form);
+                const con = code.closest(".otpCon");
+                con.querySelectorAll(".error-tag").forEach(e => e.remove());    
+
+                const res = await fetch("/Public/Account/VerifyOTP", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        Code: code.value
+                    })
+                });
+
+                const data = await res.json();
+
+                debug("Otp", data.message);
+
+                if (data.otp) {
+                    // DISABLE BUTTON
+                    sendBtn.disabled = true;
+
+                    clearErrorInputFields(form)
+                    window.location.href = data.redirect;   
+                } else {
+                    const con = document.querySelector(".otpCon");
+                    con.appendChild(showError(data.message));
+                }
+
+            } else {    
+                clearErrorInputFields(form);
+            }
+
+        });
+
+        // REMOVE SESSION
+        removeSessionBtn.addEventListener("click", function () {
+            RemoveForgotPassSession();
+        });
     },
 
     resetPass: function() {
         debug("Page", "Reset pass");
+
+        // LOCAL VARIABLE
+        const resetPass = document.getElementById("resetPass");
+        const password = document.getElementById("password");
+        const conPassword = document.getElementById("conPassword");
+        const removeSessionBtn = document.getElementById("removeSessionBtn");
+
+        const visibilityToggle = document.querySelectorAll(".visibilityToggle");
+
+        let strength;
+        const strength1 = document.getElementById("strength1");
+        const strength2 = document.getElementById("strength2");
+        const strength3 = document.getElementById("strength3");
+        const strength4 = document.getElementById("strength4");
+
+        password.addEventListener("input", function (e) {
+            strength = 0;
+            const pass = e.target.value;
+
+            document.querySelectorAll(".password-con-item").forEach(e => {
+                e.classList.remove("completed");
+            });
+
+            if (pass.length >= 8) {
+                strength1.classList.add("completed"); 
+                strength++;
+            }
+            
+            if (/[A-Z]/.test(pass)) {
+                strength2.classList.add("completed"); 
+                strength++;
+            } 
+            
+            if (/[a-z]/.test(pass)) {
+                strength3.classList.add("completed");
+                strength++;
+            } 
+           
+            if (/\d/.test(pass)) {
+                strength4.classList.add("completed");
+                strength++;
+            }
+        });
+
+        visibilityToggle.forEach(i => {
+            i.addEventListener("click", function () {
+                const passwordInput = i.closest(".password-input");
+                const input = passwordInput.querySelector("input");
+
+                togglePasswordVisibility(input, i);
+            });
+        });
+
+        resetPass.addEventListener("submit", async function (e) {
+            e.preventDefault(e);
+            const form = resetPass.querySelectorAll(".password");
+
+            if (inputEmptyValidation(form)) {
+                clearErrorInputFields(form);
+
+                if (password.value === conPassword.value) {
+                    document.querySelectorAll(".error-tag").forEach(p => p.remove());
+
+                    debug("Error", "Confirm password is the same as password");
+                    if (passwordStrength(strength) === 100) {
+                        document.querySelectorAll(".error-tag").forEach(p => p.remove());
+                    
+                        const res = await fetch("/Public/Account/ResetPassword", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                Password: password.value
+                            })
+                        });
+
+                        const data = await res.json();
+                        debug("Password Data", data.message);
+                        window.location.href = data.redirect;
+                    } else {
+                        const con = document.querySelector(".conPassword");
+                        con.appendChild(showError("Weak password"));
+                    }
+                } else {
+                    debug("Error", "Confirm password is not the same as password");
+                    const con = document.querySelector(".conPassword");
+                    con.appendChild(showError("Confirm password is not the same as password"));
+                }
+            } else {    
+                clearErrorInputFields(form);
+            }
+
+        });
+
+        // REMOVE SESSION
+        removeSessionBtn.addEventListener("click", function () {
+            RemoveForgotPassSession();
+        });
     }
 };
 
