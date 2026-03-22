@@ -193,8 +193,8 @@ input[type=date] {
 }
 
 .error-tag {
-  font-size: var(--body-sm);
-  font-weight: var(--font-regular);
+  font-size: var(--text-sm);
+  font-weight: var(--font-regular) !important;
   color: var(--danger) !important;
 }
 

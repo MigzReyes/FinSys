@@ -489,32 +489,41 @@ const PageScripts = {
                         })
                     }*/
 
-                    debug("Error", "Employee Added");
+                    if (phone.value.trim().length === 11) {
+                        debug("Error", "Employee Added");
 
-                    await fetch("/Member/Home/EmployeeRegistration", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            FirstName: firstName.value,
-                            MiddleName: middleName.value,
-                            LastName: lastName.value,
-                            Position: position.value,
-                            Role: role.value,
-                            Email: email.value,
-                            Phone: phone.value,
-                            Address: address.value
+                        await fetch("/Member/Home/EmployeeRegistration", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                FirstName: firstName.value,
+                                MiddleName: middleName.value,
+                                LastName: lastName.value,
+                                Position: position.value,
+                                Role: role.value,
+                                Email: email.value,
+                                Phone: phone.value,
+                                Address: address.value
+                            })
+                        }).then(res => res.json())
+                        .then(data => {
+                            debug("Employee Data", data);
+                            clearForm(employeeRegistration);
+                            clearErrorInputFields(form);
+                            clearError(form);
+                            closeModal();
                         })
-                    }).then(res => res.json())
-                    .then(data => {
-                        debug("Employee Data", data);
-                        clearForm(employeeRegistration);
-                        closeModal();
-                    })
-                    .catch(err => debug("Error", err));
+                        .catch(err => debug("Error", err));
 
-                    await loadEmployees();
+                        await loadEmployees();
+                    } else {
+                        const phoneCon = document.querySelector(".phone-con");
+                        phoneCon.querySelectorAll(".error-tag").forEach(e => e.remove());
+                        phoneCon.appendChild(showError("Phone invalid"));
+                    }
+
                 } else {
                     clearErrorInputFields(form);
                 }
@@ -716,6 +725,25 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
+function clearError(form) {
+    const inputFields = form;
+
+    inputFields.forEach(i => {
+        i.classList.remove("error-input");
+        
+    });
+
+    
+    document.querySelectorAll(".error-tag").forEach(e => e.remove());
+} 
+
+function showError(message) {
+    const p = document.createElement("p");
+    p.textContent = message;
+    p.classList.add("error-tag");
+    return p;
+}
+
 async function employeeSearch(input) {
     try {
         const res = await fetch("/Member/Home/Search", {
