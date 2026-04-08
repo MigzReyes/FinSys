@@ -345,3 +345,77 @@ TO-DO
     REFACTOR -- Change showError() function to also get the input con in the params.
 
     CHORE -- Fix send otp sending time, too slow -- FIXED
+
+
+3/28/2026 
+
+    revenue (benta) - magkano ang kinita sa pagbenta ni client sa product or service niya ng di pa
+                    kinakaltas ang gastos 
+
+    profit (kita) - kita ng business matapos ibawas ang expense
+
+    cost of production/service - magkano ang ginagastos sa pag create or provide ng product/sevice
+
+    dividends (ROI) - Kita ng mga investors mo
+
+    Creditors - Mga taong inutanangan mo
+
+    Owners capital (puhunan) - ang perang nilaan ng may-ari sa business niya
+
+    Owners withdrawal - Withdrawn na pera sa capital
+
+    Shares - Yung perang ambag niya
+
+    How would you record the 
+        - assets?
+            * liabilities (Utang)?
+
+        - stockholders' equity ?
+
+            * Create a page called `Investors`, where it will record all of the investors equity and shares
+            * Also put the owners equity, limited to 1 only 
+            * Make a button that lets your add `Partners equity`
+            * Records the investors information such as their client id, name, email, TIN, investment amount, date of investment,
+            % of ownership, ROI (YTD)
+
+
+3/31/2026 
+
+    In the balance sheet, should you just total the investors investment in `Capital Stock`?
+
+        - First of all, the capital stock is the total of all the investors invested money.
+        SO technically, yes, `Capital Stock` in the balance sheet would indicate the total money the 
+        business have.
+
+    At the same time, I am also planning to create an Investors page that indicates the total capital and
+    investors info (Andun naden si owner)
+
+    - What the fuck is a `Creditors` in cash flow? 
+
+    ***Statement of Owners equity
+        - Paano pag may withdrawal? 
+
+
+    Its ok to put graphs in the pages, it doesn't mean that even though you have a dashboard, its the
+    only place you can put graphs.
+
+
+
+4/7/2026 
+
+    Free trial?
+
+    What are the questions should we ask business owners for it to be useful for our study?
+
+    Assets type
+        Tangible Assets
+        - Equities
+        - Property (Real estate)
+        - Commodities
+        - Operating Asset
+
+4/8/2026
+
+    Update ERD 
+
+    Add assets and investors
