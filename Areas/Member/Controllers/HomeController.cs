@@ -44,6 +44,11 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult Investors()
+    {
+        return View();
+    }
+
     
     public IActionResult Settings()
     {

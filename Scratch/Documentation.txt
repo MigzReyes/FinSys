@@ -419,3 +419,102 @@ TO-DO
     Update ERD 
 
     Add assets and investors
+
+4/9/2026
+
+    Calculation for ROI 
+
+    ROI (%) - (income - investment) / investment
+
+    *** If its negative, the income is less than the invested amount (Red)
+    *** If its positive, the income amount is greater than the invested amount (Blue)
+
+    research on how an investment create income, by each product selled? by monthly profit?,
+    fixed or set price per monthly (contract)?
+
+    Add an additional input in business registration
+
+        - Capital investment
+
+    Add a Pay button in liabilities
+
+    let the user search for what liability they will pay and display which liability is that
+
+    Liabilities Types
+        - Loan
+        - Tax
+        - Wages
+        - Accounts Payable
+        - Dividends 
+
+
+4/10/2026
+
+    Create a customizable clients and orders (optional) for it to be usable by any website (homegroundcoffee bar or by vividpath).
+
+    Allow CORS in program.cs 
+
+        `builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowLocal",
+                policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });`
+
+        `app.UseCors("AllowLocal");`
+
+        `app.MapControllers();`
+
+    
+    Create an `Api` folder in the root project structure for maintenability and organization
+
+        `
+        [ApiController]
+        [Route("api/test")]
+        public class TestController : ControllerBase
+        {
+            [HttpPost]
+            public IActionResult Test([FromBody] TestDto dto)
+            {
+                Console.WriteLine("POST RECEIVED");
+                Console.WriteLine(dto?.Message);
+
+                // VALIDATE FOR DATA TYPES AND MISSING DATA 
+                // STORE IN DATABASE 
+
+                return Ok(new { message = dto.Message, cors = dto.Cors });
+            }
+        }`
+
+    The received json data from `/api/` will automatically get transferred to a database, then JavaScript will use async to detect if a new data has been stored
+        
+
+    Create a Client and Orders table/page
+
+    medyo complex pala pag customizable table 
+
+        Rather than customizable, dynamic display nalang, kung anong key value pairs iaadd nalang sa information
+
+    *** THIS IS NOT AN ERP
+    Yung clients and orders will only be use for data presentation
+
+    Gawa ka ng button sa navigation bar na `Add a Section` or something, then may choices dun either Clients or Order tas short description kung ano difference nila 
+
+
+        Clients 
+            - This can also mean a subscriber or a customer of a construction or any SaaS 
+
+        Ordering System (Order Page) ** If ever ordering system, automatically may Administrator and user page
+            - If completed orders lang ang ipapasa 
+            
+            Administrator
+                - User *** This records customer that has an account on a SaaS 
+
+
+4/12/2026
+
+    Centralise and modularize close functionality of modals and add buttons, by using either a data attribute to determine the functionality.

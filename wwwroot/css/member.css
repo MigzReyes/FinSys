@@ -187,6 +187,43 @@ input[type=date] {
 
 /* COMPONENTS */
 
+/* SEARCH */
+.search {
+    position: relative;
+    width: 100%;
+    min-width: 100px;
+    max-width: 400px;
+    flex: 1;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.search input {
+    width: 100%;
+    height: 100%;
+    background: var(--white-muted-bg);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-4);
+}
+
+.search p {
+    font-size: var(--text-sm);
+    color: var(--secondary-muted);
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    display: flex; /* DIKO ALAM BAT GUMANA TO HAHA */
+}
+
+
 /* ERRORS */
 .error-input {
   border-color: var(--danger) !important;
@@ -240,6 +277,39 @@ input[type="radio"] {
     width: 100%;
 }
 
+/* MODAL LOG OUT ICON DISPLAY */
+.hidden {
+    display: none !important;
+}
+
+/* COLOR IDENTIFIER */
+.danger {
+    color: var(--danger);
+}
+
+.safe {
+    color: var(--primary);
+}
+
+/* ADD PRIMARY BUTTON */
+.add-primary-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: var(--accent);
+    border: none;
+    padding: var(--space-2) var(--space-4);
+}
+
+
+/* FLEX COMPONENTS */
+.flex-column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+}
+
 /* WRAPPED */
 .wrapped {
     flex-direction: column;
@@ -251,9 +321,113 @@ input[type="radio"] {
     display: flex !important;
 }
 
-/* MODAL LOG OUT ICON DISPLAY */
-.hidden {
-    display: none !important;
+
+/* TABLE CARD */
+.add-icon {
+    display: flex;
+    width: 15px;
+}
+
+.table-card-con {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+}
+
+.table-card {
+    width: 100%; /* CHANGE THIS */
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    box-shadow: var(--box-shadow);
+}
+
+.table-card-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.table-card-header-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-card-name {
+    font-size: var(--text-md);
+    font-weight: var(--font-medium);
+}
+
+.table-card-role {
+    font-size: var(--text-xs);
+    color: var(--secondary-muted);
+}
+
+.table-card-actions-con {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.table-card-info-con {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.table-card-info {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.table-card-info p {
+    font-size: var(--text-sm);
+}
+
+.table-info-left {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.table-info-right {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--space-2);
+}
+
+.table-info-right p {
+    font-weight: var(--font-medium);
+}
+
+.role-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    border-radius: var(--radius-md);
+    padding: var(--space-1) var(--space-2);
+}
+
+.role-con p {
+    display: inline;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+.table-card-border {
+    content: "";
+    border-bottom: var(--border);
+}
+
+.table-card-created-at p {
+    font-size: var(--text-xs);
+    color: var(--secondary-muted);
 }
 
 /* MODAL STRUCTURE */
@@ -1010,153 +1184,6 @@ main {
     gap: var(--space-4);
 }
 
-.employees-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-5);
-}
-
-.employees-search {
-    position: relative;
-    min-width: 100px;
-    max-width: 400px;
-    flex: 1;
-    height: fit-content;
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-}
-
-.employees-search input {
-    width: 100%;
-    height: 100%;
-    background: var(--white-muted-bg);
-    border: var(--border);
-    border-radius: var(--radius-md);
-    padding: var(--space-2) var(--space-4);
-}
-
-.employees-search p {
-    font-size: var(--text-sm);
-    color: var(--secondary-muted);
-}
-
-.search-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 15px;
-    display: flex; /* DIKO ALAM BAT GUMANA TO HAHA */
-}
-
-.add-employee {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    background: var(--accent);
-    border: none;
-    padding: var(--space-2) var(--space-4);
-}
-
-.add-icon {
-    display: flex;
-    width: 15px;
-}
-
-.employees-card-con {
-    display: grid;
-    gap: var(--space-5);
-    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-}
-
-.employees-card {
-    width: 100%; /* CHANGE THIS */
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    border: var(--border);
-    border-radius: var(--radius-md);
-    padding: var(--space-4) var(--space-5);
-    box-shadow: var(--box-shadow);
-}
-
-.employees-card-header {
-    display: flex;
-    justify-content: space-between;
-}
-
-.employees-card-header-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.employees-card-name {
-    font-size: var(--text-md);
-    font-weight: var(--font-medium);
-}
-
-.employees-card-role {
-    font-size: var(--text-xs);
-    color: var(--secondary-muted);
-}
-
-.employees-card-actions-con {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-}
-
-.employees-card-info-con {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-}
-
-.employees-card-info {
-    display: flex;
-    gap: var(--space-2);
-}
-
-.employees-card-info p {
-    font-size: var(--text-sm);
-}
-
-.employees-info-left {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-}
-
-.employees-info-right {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: var(--space-2);
-}
-
-.employees-info-right p {
-    font-weight: var(--font-medium);
-}
-
-.role-con {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: fit-content;
-    border-radius: var(--radius-md);
-    padding: var(--space-1) var(--space-2);
-}
-
-.role-con p {
-    display: inline;
-    font-size: var(--text-sm);
-    font-weight: var(--font-medium);
-}
-
 .staff {
     background: var(--secondary-muted);
 
@@ -1177,16 +1204,6 @@ main {
 
 .admin {
     background: var(--accent);
-}
-
-.employees-card-border {
-    content: "";
-    border-bottom: var(--border);
-}
-
-.employees-card-created-at p {
-    font-size: var(--text-xs);
-    color: var(--secondary-muted);
 }
 
 /* REPORTS */
@@ -1493,6 +1510,17 @@ select {
     fill: white;
 }
 
+/* INVESTORS */
+.investors {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.investors-header {
+    display: flex;
+    justify-content: space-between;
+}
 
 /* MODAL -- POP UP */
 .modal {
@@ -1718,7 +1746,7 @@ select {
         display: none;
     }
 
-    .employees-card-con {
+    .table-card-con {
         grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
     }
 
@@ -1738,7 +1766,7 @@ select {
 }
 
 @media screen and (max-width: 430px) {
-    .employees-header {
+    .flex-column-header {
         flex-direction: column;
         gap: var(--space-3);
     }
@@ -1747,7 +1775,7 @@ select {
         width: 100%;
     }
 
-    .add-employee {
+    .add-primary-btn {
         width: 100%;
         justify-content: center;
     }
