@@ -1,3 +1,42 @@
+export function initCloseModalListener() {
+    document.addEventListener("click", function (e) {
+        const parentModal = document.querySelector(".modal");
+        const parentModalStatus = parentModal.dataset.status;
+
+        if (parentModalStatus === "active") {     
+            const isClosedBtn = e.target.closest(".close-icon") || e.target.closest(".cancel");
+            const isOutsideClick = e.target === parentModal;
+
+            if (isClosedBtn || isOutsideClick) {
+                parentModal.dataset.status = "inactive";  
+                const form = document.querySelectorAll("form"); // REFACTOR add data action for form activity check which is active
+
+                debug("form", form);
+                clearForm(form);
+                closeModal(parentModal);
+            }
+        } 
+    });
+}
+
+
+export function closeModal(modal) {
+    modal.classList.remove("show");
+    modal.querySelectorAll(".closeable-modal").forEach(m => {
+        m.classList.remove("show");
+    });
+}
+
+export function showParentModal(modal) {
+    modal.classList.add("show");
+    modal.dataset.status = "active";
+}
+
+export function hideParentModal(modal) {
+    modal.classList.remove("show");
+    modal.dataset.status = "inactive";
+}
+
 export function pageRefresh() {
     window.location.reload(true);
 }
@@ -7,7 +46,7 @@ export function debug(type, description) {
 }
 
 export function clearForm(formId) {
-    formId.reset();
+    formId.forEach(f => f.reset());   
 }
 
 export function setDateToday(dateInput) {
@@ -62,6 +101,8 @@ export function formatEmail(email) {
     return emailPattern.test(email);
 }
 
+
+// REFACTOR Rename for clarity
 export function showError(message) {
     const p = document.createElement("p");
     p.textContent = message;

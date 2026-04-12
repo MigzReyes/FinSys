@@ -518,3 +518,12 @@ TO-DO
 4/12/2026
 
     Centralise and modularize close functionality of modals and add buttons, by using either a data attribute to determine the functionality.
+
+    Refactor employeeModal and EditModal for it to be centralise.
+
+    CREATE A `showEditEntityModal` and `showAddEntityModal` for a centralise function
+
+    Think of a way you can make close modal funcitonality global, rather than copy and pasting it on each page 
+
+
+    REFACTOR modal, everytime you show a modal set the modal parent data attribute to true

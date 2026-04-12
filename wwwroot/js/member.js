@@ -1,3 +1,4 @@
+import * as utils from "./utils.js";
 
 // GLOBAL ID / VAR
 const companyNameNav = document.getElementById("companyNameNav");
@@ -6,8 +7,8 @@ const companyIndustryNav = document.getElementById("companyIndustryNav");
 const modal = document.getElementById("modal");
 const modalContent = document.querySelectorAll(".modal-content");
 const businessRegistrationModal = document.getElementById("businessRegistrationModal");
-const employeeModal  = document.getElementById("employeeModal");
-const editTransactionModal = document.getElementById("editTransactionModal");
+const employeeModal  = document.getElementById("employeeModal"); // REFACTOR
+const editTransactionModal = document.getElementById("editTransactionModal"); // REFACTOR
 const alertModal = document.getElementById("alertModal");
 let form = "";
 
@@ -26,14 +27,18 @@ const logOutIconModal = document.getElementById("logOutIconModal");
 const alertHead = document.getElementById("alertHead");
 const alertSubhead = document.getElementById("alertSubhead");
 const alertBtnText = document.getElementById("alertBtnText");
-const employeeModalHeadText = document.getElementById("employeeModalHeadText");
-const employeeModalBtnText = document.getElementById("employeeModalBtnText");
+
+const employeeModalHeadText = document.getElementById("employeeModalHeadText"); // REFACTOR
+const employeeModalBtnText = document.getElementById("employeeModalBtnText"); // REFACTOR
 
 // BUTTONS
-const employeeModalBtn = document.getElementById("employeeModalBtn");
+const employeeModalBtn = document.getElementById("employeeModalBtn"); // REFACTOR
+
 const alertBtn = document.getElementById("alertBtn");
 const cancel = document.querySelectorAll(".cancel");
-const cancelBusinessRegistration = document.getElementById("cancelBusinessRegistration");
+
+const cancelBusinessRegistration = document.getElementById("cancelBusinessRegistration"); // REFACTOR
+
 const closeIcon = document.querySelectorAll(".close-icon");
 
 // NAV OVERLAY
@@ -51,6 +56,8 @@ navOverlayQuery.addEventListener("change", navOverlayChange); // LISTENER WATCH 
 displayCompanyInfo();
 
 // ALERT MODAL BUTTON DATA ATTRIBUTE HANDLER
+// RENAME THIS FOR CLARITY
+// `alertBtn` is the primary button for the primary pop up  
 alertBtn.addEventListener("click", function () {
     const action = this.dataset.action;
     debug("Button action check", action); // DEBUGGER
@@ -78,8 +85,8 @@ alertBtn.addEventListener("click", function () {
 });
 
 // EMPLOYEE MODAL BUTTON DATA ATTRIBUTE HANDLER
-let employeeBtnAction;
-employeeModalBtn.addEventListener("click", function () {
+let employeeBtnAction; // REFACTOR 
+employeeModalBtn.addEventListener("click", function () { // REFACTOR THIS CODE BLOCK
     const action = this.dataset.action;
     debug("Button action check", action);
         
@@ -95,6 +102,8 @@ employeeModalBtn.addEventListener("click", function () {
             break;
     }
 });
+
+utils.initCloseModalListener();
 
 
 // PAGE BASED INITIALIZATION PATTERN **Para confined yung js code for each page
@@ -427,7 +436,9 @@ const PageScripts = {
             e.target.value = formatNumber(e.target.value);
         });
 
+        /*
         // CANCEL / CLOSE BTN
+        // REFACTOR
         cancel.forEach(c => {
             c.addEventListener("click", function () {
                 clearForm(employeeRegistration);
@@ -435,6 +446,7 @@ const PageScripts = {
             });
         });
 
+        // REFACTOR
         closeIcon.forEach(c => {
             c.addEventListener("click", function () {
                 clearForm(employeeRegistration);
@@ -442,12 +454,15 @@ const PageScripts = {
             });
         });
 
+        // REFACTOR
         // OUTSIDE CLICK REMOVE THE MODAL
         modal.addEventListener("click", function (e) {
             if (e.target === modal) {
                 closeModal();
             } 
         });
+
+        */
 
         // ADD EMPLOYEE
         const addEmployeeBtn = document.getElementById("addEmployeeBtn");
@@ -571,7 +586,7 @@ const PageScripts = {
         loadEmployees();
         let employeeId;
         document.addEventListener("click", function (e) {
-            const employeeCardId = e.target.closest(".employees-card");
+            const employeeCardId = e.target.closest(".table-card");
             const editBtn = e.target.closest(".editEmployeeBtn");
             const deleteBtn = e.target.closest(".deleteEmployeeBtn");
             const btn = e.target.closest(".alertBtn");
@@ -736,6 +751,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // FUNCTIONS
 function showModalInvestor(head, buttonText, actions) {
+    // REFACTOR
     modal.classList.add("show");
     employeeModal.classList.add("show");
 
@@ -1615,12 +1631,18 @@ function navOverlayChange(event) {
 }
 
 function showModalEditTransaction() {
-    modal.classList.add("show");
+    // REFACTOR centralise this
+
+    utils.showParentModal(modal);
+
     editTransactionModal.classList.add("show");
 }
 
 function showModalEmployee(head, buttonText, actions) {
-    modal.classList.add("show");
+    // REFACTOR centralise this
+
+    utils.showParentModal(modal);
+    
     employeeModal.classList.add("show");
 
     employeeModalBtn.dataset.action = actions;
@@ -1629,7 +1651,9 @@ function showModalEmployee(head, buttonText, actions) {
 }
 
 function showModalAlert(subhead, buttonText, actions) {
-    modal.classList.add("show");
+    // REFACTOR centralise this 
+
+    utils.showParentModal(modal);
     alertModal.classList.add("show");
 
     if (actions === "logout") {
@@ -1645,7 +1669,7 @@ function showModalAlert(subhead, buttonText, actions) {
 }   
 
 function showModal(head, subhead) {
-    modal.classList.add("show");
+    utils.showParentModal(modal);
     alertModal.classList.remove("modal-md");
     alertModal.classList.add("show", "modal-sm");
 
