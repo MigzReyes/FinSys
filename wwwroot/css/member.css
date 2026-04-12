@@ -452,12 +452,6 @@ input[type="radio"] {
     gap: var(--space-5);
 }
 
-.modal-body form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-}
-
 .modal-body-row {
     display: flex;
     flex-direction: column;
@@ -1535,6 +1529,16 @@ select {
     padding: var(--space-5);
 }
 
+.modal-entity {
+    display: none;
+}
+
+.modal-entity-form {
+    display: none;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
 .modal-sm {
     width: var(--modal-sm);
     background: var(--white);
@@ -1562,6 +1566,25 @@ select {
     padding: var(--space-4);
     flex-direction: column;
     gap: var(--space-5);
+}
+
+/* INPUTS */
+.amount-input {
+    position: relative;
+}
+
+.amount-input input {
+    padding-left: var(--space-7);
+}
+
+.currency-prefix {
+    position: absolute;
+    font-size: var(--text-md);
+    font-weight: var(--font-semi-bold);
+    color: var(--secondary-muted);
+    top: 50%;
+    left: var(--space-3);
+    transform: translateY(-50%);
 }
 
 /* MODAL - BUSINESSES REGISTRATION */
@@ -1600,10 +1623,6 @@ select {
 }
 
 /* MODAL EMPLOYEE */
-.modal-employee {
-    display: none;
-}
-
 .phone-input {
     display: flex;
     position: relative;
@@ -1615,7 +1634,7 @@ select {
     border: var(--border);
 }
 
-#phoneAreaCode {
+.phoneAreaCode {
     position: relative;
     z-index: 1;
     border-right: var(--border);

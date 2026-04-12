@@ -1,3 +1,5 @@
+
+
 export function initCloseModalListener() {
     document.addEventListener("click", function (e) {
         const parentModal = document.querySelector(".modal");
@@ -9,20 +11,39 @@ export function initCloseModalListener() {
 
             if (isClosedBtn || isOutsideClick) {
                 parentModal.dataset.status = "inactive";  
-                const form = document.querySelectorAll("form"); // REFACTOR add data action for form activity check which is active
 
-                debug("form", form);
-                clearForm(form);
-                closeModal(parentModal);
+                if (!checkPage("reports")) {
+                    const form = document.querySelectorAll("form"); // REFACTOR add data action for form activity check which is active
+
+                    clearAllForm(form);
+                    closeCloseableModal(parentModal);
+                }
+
+                closeCloseableModal(parentModal);
             }
         } 
     });
 }
 
+function checkPage(page) {
+    if (page === document.body.dataset.page) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+export function closeCloseableModal(modal) {
+    modal.classList.remove("show");
+    modal.querySelectorAll(".closeable-modal").forEach(m => {
+        m.classList.remove("show");
+    });
+}
 
 export function closeModal(modal) {
     modal.classList.remove("show");
-    modal.querySelectorAll(".closeable-modal").forEach(m => {
+    modal.querySelectorAll(".modal-content").forEach(m => {
         m.classList.remove("show");
     });
 }
@@ -45,8 +66,12 @@ export function debug(type, description) {
     console.log(type,": ", description);
 }
 
-export function clearForm(formId) {
+export function clearAllForm(formId) {
     formId.forEach(f => f.reset());   
+}
+
+export function clearForm(formId) {
+    formId.reset();
 }
 
 export function setDateToday(dateInput) {
@@ -60,9 +85,9 @@ export function setDateToday(dateInput) {
 }
 
 export function formatNumber(value) {
-    value = String(value);
     value = value.replace(/\D/g, '');
 
+    // Apply format: 2 3 4 grouping
     if (value.length > 2 && value.length <= 5)
         return value.replace(/(\d{2})(\d+)/, "$1 $2");
 
@@ -183,4 +208,12 @@ export async function RemoveForgotPassSession() {
     } catch (err) {
         return debug("Error", err);
     }
+}
+
+export async function logout() {
+    await fetch("/Member/Home/Logout", {
+        method: "POST"
+    });
+
+    window.location.replace("/Public/Account/LogIn"); // FIX THIS, CLIENTS MUST NOT CLICK BACK button and get to see the /member
 }

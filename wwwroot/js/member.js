@@ -7,7 +7,7 @@ const companyIndustryNav = document.getElementById("companyIndustryNav");
 const modal = document.getElementById("modal");
 const modalContent = document.querySelectorAll(".modal-content");
 const businessRegistrationModal = document.getElementById("businessRegistrationModal");
-const employeeModal  = document.getElementById("employeeModal"); // REFACTOR
+const modalEntity  = document.getElementById("modalEntity"); // REFACTOR
 const editTransactionModal = document.getElementById("editTransactionModal"); // REFACTOR
 const alertModal = document.getElementById("alertModal");
 let form = "";
@@ -28,11 +28,10 @@ const alertHead = document.getElementById("alertHead");
 const alertSubhead = document.getElementById("alertSubhead");
 const alertBtnText = document.getElementById("alertBtnText");
 
-const employeeModalHeadText = document.getElementById("employeeModalHeadText"); // REFACTOR
-const employeeModalBtnText = document.getElementById("employeeModalBtnText"); // REFACTOR
+const modalEntityText = document.querySelectorAll(".modal-entity-text"); // REFACTOR
 
 // BUTTONS
-const employeeModalBtn = document.getElementById("employeeModalBtn"); // REFACTOR
+const modalEntityBtn = document.querySelector(".modal-entity-btn"); // REFACTOR
 
 const alertBtn = document.getElementById("alertBtn");
 const cancel = document.querySelectorAll(".cancel");
@@ -60,56 +59,38 @@ displayCompanyInfo();
 // `alertBtn` is the primary button for the primary pop up  
 alertBtn.addEventListener("click", function () {
     const action = this.dataset.action;
-    debug("Button action check", action); // DEBUGGER
+    utils.debug("Button action check", action); // utils.debugGER
 
     switch (action) {
         case "clearForm": 
-            clearForm(form);
-            closeModal();
+            utils.clearForm(form);
+            utils.closeModal(modal);
             break;
         case "removeEmployee":
             // create a function that sends a req to the controller with js fetch 
-            closeModal();
+            utils.closeModal(modal);
             break;
         case "removeTransaction":
-            closeModal();
+            utils.closeModal(modal);
             break;
         case "logout": 
-            closeModal();
-            Logout();
+            utils.closeModal(modal);
+            utils.logout();
             break;
         default:
-            debug("Action", "No action data attribute received");
+            utils.debug("Action", "No action data attribute received");
             break;
     }
 });
 
-// EMPLOYEE MODAL BUTTON DATA ATTRIBUTE HANDLER
-let employeeBtnAction; // REFACTOR 
-employeeModalBtn.addEventListener("click", function () { // REFACTOR THIS CODE BLOCK
-    const action = this.dataset.action;
-    debug("Button action check", action);
-        
-    employeeBtnAction = action;
-
-    switch (action) {
-        case "addEmployee":
-            break;
-        case "editEmployee":
-            break;
-        default:
-            debug("Action", "No specified action to do");
-            break;
-    }
-});
-
-utils.initCloseModalListener();
+let modalEntityBtnAction; // REFACTOR this variable is used to determine the functionality of the modal entity primary button 
+utils.initCloseModalListener(); 
 
 
 // PAGE BASED INITIALIZATION PATTERN **Para confined yung js code for each page
 const PageScripts = {
     dashboard: function() {
-        debug("Page", "Dashboard");
+        utils.debug("Page", "Dashboard");
 
         // LOCAL VARIABLE
         let companyRegistration = document.getElementById("companyRegistration");
@@ -128,7 +109,7 @@ const PageScripts = {
         fetch("/Member/Home/IsClientPayed")
             .then(res => res.json())
             .then(client => {
-                debug("Is payed", client.isPayed);
+                utils.debug("Is payed", client.isPayed);
 
                 if (client.isPayed) {
                     modal.classList.remove("show");
@@ -139,11 +120,11 @@ const PageScripts = {
 
                     // CANCEL
                     cancelBusinessRegistration.addEventListener("click", function () {
-                        Logout();
+                        utils.logout();
                     })
                 }
             })
-            .catch(err => debug("Error", err));
+            .catch(err => utils.debug("Error", err));
 
         // DISPLAY DASHBOARD
         displayIncome(income);
@@ -158,11 +139,11 @@ const PageScripts = {
             fetch("GetIncomeExpenseComparisonPieGraph")
             .then(res => res.json())
             .then(data => {
-                debug("data compa", data);
+                utils.debug("data compa", data);
                 displayPieGraph(pieGraph, data);
             })
             .catch(err => {
-                debug("Error", err);
+                utils.debug("Error", err);
             });
         } else {
             // LINE GRAPH DISPLAY
@@ -171,11 +152,11 @@ const PageScripts = {
             fetch("/Member/Home/GetIncomeExpenseComparisonLineGraph")
             .then(res => res.json())
             .then(data => {
-                debug("Line Graph", data);
+                utils.debug("Line Graph", data);
                 displayLineGraphIncExpComp(lineGraph, data);
             })
             .catch(err => {
-                debug("Error", err);
+                utils.debug("Error", err);
             });
         }
 
@@ -184,11 +165,11 @@ const PageScripts = {
         fetch("/Member/Home/GetExpenseBreakdown")
         .then(res => res.json())
         .then(data => {
-            debug("Expense Breakdown Data", data);
+            utils.debug("Expense Breakdown Data", data);
             displayBarGraph(barGraph, data);
         })
         .catch(err => {
-            debug("Error", err)
+            utils.debug("Error", err)
         });
 
         // COMPANY REGISTRATION
@@ -220,14 +201,14 @@ const PageScripts = {
                     })
                 }).then(res => res.json())
                 .then(data => {
-                    debug("Company Data", data.message);
+                    utils.debug("Company Data", data.message);
 
                     if (data.isPayed) {
                         modal.classList.remove("show");
                         businessRegistrationModal.classList.remove("show");
                         displayCompanyInfo();
                     } else {
-                        debug("Company registration", "Company has not been registered" + company);
+                        utils.debug("Company registration", "Company has not been registered" + company);
                     }
                 });
             } else {
@@ -246,7 +227,7 @@ const PageScripts = {
     },
 
     financialTransactions: function() {
-        debug("Page", "Financial Transaction");
+        utils.debug("Page", "Financial Transaction");
 
         // LOCAL VARIABLE
         const transactionTable = document.getElementById("transactionTable"); // just in case
@@ -256,27 +237,6 @@ const PageScripts = {
         const payee = document.getElementById("payee");
         const description = document.getElementById("description");
         const updateTransactionBtn = document.getElementById("updateTransactionBtn");
-
-
-        // CANCEL / CLOSE BTN
-        cancel.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        closeIcon.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        // OUTSIDE CLICK REMOVE THE MODAL
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                closeModal();
-            } 
-        });
 
         // PICKER
         const pickerAllTransaction = document.getElementById("pickerAllTransaction");
@@ -327,19 +287,19 @@ const PageScripts = {
             const expenses = e.target.closest(".pickerExpense")?.dataset.item;
 
             if (allTransaction) {
-                debug("Picker", "all transaction " + allTransaction);
+                utils.debug("Picker", "all transaction " + allTransaction);
                 selectedType = allTransaction;
                 pickerTransaction(allTransaction);
             } else if (income) {
-                debug("Picker", "Income " + income);
+                utils.debug("Picker", "Income " + income);
                 selectedType = income;
                 pickerTransaction(income);
             } else if (expenses) {  
-                debug("Picker", "Expenses " + expenses);
+                utils.debug("Picker", "Expenses " + expenses);
                 selectedType = expenses;
                 pickerTransaction(expenses);
             } else {
-                debug("Picker error", "Nothing picked");
+                utils.debug("Picker error", "Nothing picked");
             }
         });
 
@@ -368,11 +328,11 @@ const PageScripts = {
                     })
                 }).then(res => res.json())
                 .then(data => {
-                    debug("Message", data.message);
-                    clearForm(editTransaction);
-                    closeModal();
+                    utils.debug("Message", data.message);
+                    utils.clearForm(editTransaction);
+                    utils.closeModal(modal);
                 })
-                .catch(err => debug("Error", err));
+                .catch(err => utils.debug("Error", err));
 
                 await pickerTransaction(selectedType);
             } else {
@@ -389,11 +349,11 @@ const PageScripts = {
 
             if (editBtn) {
                 const id = editBtn.dataset.id;
-                debug("Clicked", "Edit" + id);
+                utils.debug("Clicked", "Edit" + id);
                 displayTransaction(id);
             } else if (deleteBtn) {
                 transactionId = deleteBtn.dataset.id;
-                debug("Clicked", "Delete" + transactionId);
+                utils.debug("Clicked", "Delete" + transactionId);
 
                 showModalAlert("Do you want to remove this transaction?", "Remove Transaction", "removeEmployee");
             }
@@ -406,18 +366,18 @@ const PageScripts = {
     },
 
     employees: function() {
-        debug("Page", "Employees");
+        utils.debug("Page", "Employees");
 
         // LOCAL VARIABLE
         const employeeRegistration = document.getElementById("employeeRegistration");
-        const firstName = document.getElementById("firstName");
-        const middleName = document.getElementById("middleName");
-        const lastName = document.getElementById("lastName");
-        const role = document.getElementById("role")
-        const position = document.getElementById("position");
-        const email = document.getElementById("email");
-        const phone = document.getElementById("phone");
-        const address = document.getElementById("address");
+        const firstName = document.querySelector(".firstName");
+        const middleName = document.querySelector(".middleName");
+        const lastName = document.querySelector(".lastName");
+        const role = document.querySelector(".role")
+        const position = document.querySelector(".position");
+        const email = document.querySelector(".email");
+        const phone = document.querySelector(".phone");
+        const address = document.querySelector(".address");
 
 
         // SEARCH EMPLOYEE
@@ -433,48 +393,20 @@ const PageScripts = {
 
         // PHONE FORMAT
         phone.addEventListener("input", function (e) {
-            e.target.value = formatNumber(e.target.value);
+            e.target.value = utils.formatNumber(e.target.value);
         });
-
-        /*
-        // CANCEL / CLOSE BTN
-        // REFACTOR
-        cancel.forEach(c => {
-            c.addEventListener("click", function () {
-                clearForm(employeeRegistration);
-                closeModal();
-            });
-        });
-
-        // REFACTOR
-        closeIcon.forEach(c => {
-            c.addEventListener("click", function () {
-                clearForm(employeeRegistration);
-                closeModal();
-            });
-        });
-
-        // REFACTOR
-        // OUTSIDE CLICK REMOVE THE MODAL
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                closeModal();
-            } 
-        });
-
-        */
 
         // ADD EMPLOYEE
         const addEmployeeBtn = document.getElementById("addEmployeeBtn");
         addEmployeeBtn.addEventListener("click", function () {
-            showModalEmployee("Add", "Add", "addEmployee");
+            showModalEntity("Add Employee", "addEmployee", "employee");
         });
 
         // EDIT EMPLOYEE
         const editEmployeeBtn = document.querySelectorAll(".editEmployeeBtn");
         editEmployeeBtn.forEach(e => {
             e.addEventListener("click", function () {
-                showModalEmployee("Edit", "Edit", "editEmployee");
+                showModalEntity("Edit Employee", "editEmployee", "employee");
             });
         });
 
@@ -485,14 +417,14 @@ const PageScripts = {
                 showModalAlert("Do you want to remove this employee?", "Remove Employee", "removeEmployee");
             });
         });
-
+    
         employeeRegistration.addEventListener("submit", async function (e) {
             e.preventDefault();
             const form = selectAllInputFields(employeeRegistration);
 
-            if (employeeBtnAction === "addEmployee") { 
+            if (modalEntityBtnAction === "addEmployee") { 
                 
-                debug("Action", "Add");
+                utils.debug("Action", "Add");
 
                 if (inputEmptyValidation(form)) {
 
@@ -505,7 +437,7 @@ const PageScripts = {
                     }*/
 
                     if (phone.value.trim().length === 11) {
-                        debug("Error", "Employee Added");
+                        utils.debug("Error", "Employee Added");
 
                         await fetch("/Member/Home/EmployeeRegistration", {
                             method: "POST",
@@ -524,13 +456,13 @@ const PageScripts = {
                             })
                         }).then(res => res.json())
                         .then(data => {
-                            debug("Employee Data", data);
-                            clearForm(employeeRegistration);
+                            utils.debug("Employee Data", data);
+                            utils.clearForm(employeeRegistration);
                             clearErrorInputFields(form);
                             clearError(form);
-                            closeModal();
+                            utils.closeModal(modal);
                         })
-                        .catch(err => debug("Error", err));
+                        .catch(err => utils.debug("Error", err));
 
                         await loadEmployees();
                     } else {
@@ -545,10 +477,10 @@ const PageScripts = {
         
             } else {
 
-                debug("Action", "edit");
+                utils.debug("Action", "edit");
                 // EDIT
                 if (inputEmptyValidation(form)) {
-                    const employeeId = employeeModalBtn.dataset.id;
+                    const employeeId = modalEntityBtn.dataset.id;
 
                     await fetch("/Member/Home/EditEmployee", {
                         method: "POST",
@@ -568,12 +500,12 @@ const PageScripts = {
                         })
                     }).then(res => res.json())
                     .then(data => {
-                        debug("Employee", data.message);
-                        clearForm(employeeRegistration);
-                        closeModal();
+                        utils.debug("Employee", data.message);
+                        utils.clearForm(employeeRegistration);
+                        utils.closeModal(modal);
                         loadEmployees();
                     })
-                    .catch(err => debug("Error", err));
+                    .catch(err => utils.debug("Error", err));
 
                 } else {
                     clearErrorInputFields(form);
@@ -589,15 +521,14 @@ const PageScripts = {
             const employeeCardId = e.target.closest(".table-card");
             const editBtn = e.target.closest(".editEmployeeBtn");
             const deleteBtn = e.target.closest(".deleteEmployeeBtn");
-            const btn = e.target.closest(".alertBtn");
 
             if (editBtn) {
                 const employeeId = editBtn.dataset.id;
-                debug("Btn", "Clicked " + employeeId);
+                utils.debug("Btn", "Clicked " + employeeId);
                 displayEmployee(employeeId);
             } else if (deleteBtn) {
                 employeeId = employeeCardId.dataset.id;
-                debug("Action", "delete " + employeeId);
+                utils.debug("Action", "delete " + employeeId);
                 
                 showModalAlert("Do you want to remove this employee?", "Remove Employee", "removeEmployee");
 
@@ -611,7 +542,7 @@ const PageScripts = {
     },
 
     reports: function() {
-        debug("Page", "Reports");
+        utils.debug("Page", "Reports");
 
         // LOCAL VARIABLE
         form = document.getElementById("addTransaction");
@@ -620,28 +551,6 @@ const PageScripts = {
         const description = document.getElementById("description");
         const amount = document.getElementById("amount");
         const payee = document.getElementById("payee");
-
-        // CANCEL / CLOSE BTN
-        cancel.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        closeIcon.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-                resetModal();
-            });
-        });
-
-        // OUTSIDE CLICK REMOVE THE MODAL
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                closeModal();
-                resetModal();
-            } 
-        });
 
         // DATE INPUT FOCUSED OUTLINE DESIGN
         const dateBtn = document.getElementById("date");
@@ -653,7 +562,7 @@ const PageScripts = {
             dateBtn.classList.remove("active-input");
         });
 
-        setDateToday(dateBtn);
+        utils.setDateToday(dateBtn);
 
         // CLEAR FORM
         const clearForm = document.getElementById("clearForm");
@@ -686,10 +595,10 @@ const PageScripts = {
                     })
                 }).then(res => res.json())
                 .then(data => {
-                    debug("Transaction", data);
+                    utils.debug("Transaction", data);
                     showModal("Succes!", "Successfully added a new transaction.");
                 })
-                .catch(err => debug("Error", err));
+                .catch(err => utils.debug("Error", err));
 
             } else {
                 clearErrorInputFields(formTransaction);
@@ -700,37 +609,18 @@ const PageScripts = {
     },
 
     investors: function() {
-        debug("Page", "Investors");
+        utils.debug("Page", "Investors");
 
-        // ADD EMPLOYEE
+        // ADD INVESTOR
         const addInvestorBtn = document.getElementById("addInvestorBtn");
         addInvestorBtn.addEventListener("click", function () {
-            showModalInvestor("Add", "Add", "addInvestor");
+            showModalEntity("Add Investor", "addInvestor", "investor");
         });
+
     },
 
     settings: function() {
-        debug("Page", "Settings");
-
-        // CANCEL / CLOSE BTN
-        cancel.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        closeIcon.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        // OUTSIDE CLICK REMOVE THE MODAL
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                closeModal();
-            } 
-        });
+        utils.debug("Page", "Settings");
 
         // LOG OUT BUTTON
         var logOutBtn = document.getElementById("logOutBtn");
@@ -750,16 +640,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
-function showModalInvestor(head, buttonText, actions) {
-    // REFACTOR
-    modal.classList.add("show");
-    employeeModal.classList.add("show");
-
-    employeeModalBtn.dataset.action = actions;
-    employeeModalHeadText.textContent = head;
-    employeeModalBtnText.textContent = buttonText;
-}
-
 function clearError(form) {
     const inputFields = form;
 
@@ -793,12 +673,12 @@ async function employeeSearch(input) {
 
         const data = await res.json();
 
-        debug("Employee", data);
+        utils.debug("Employee", data);
 
         const employeesCardCon = document.getElementById("employeesCardCon");
         displayEmployees(data, employeesCardCon);
     } catch (err) {
-        debug("Employee Display Error", err);
+        utils.debug("Employee Display Error", err);
     }
 }
 
@@ -1091,7 +971,7 @@ async function displayStatementIcons(expense) {
     let financialValue = document.querySelectorAll(".financialValue");
 
     if (expense > 100) {
-        debug("Expense", "HIgh");
+        utils.debug("Expense", "HIgh");
 
         incomeIncreaseIcon.classList.remove("show");
         incomeDecreaseIcon.classList.add("show");
@@ -1107,7 +987,7 @@ async function displayStatementIcons(expense) {
         })
 
     } else {
-        debug("Expense", "low");
+        utils.debug("Expense", "low");
         incomeIncreaseIcon.classList.add("show");
         incomeDecreaseIcon.classList.remove("show");
 
@@ -1128,12 +1008,12 @@ async function displayCommonSizeStatement(expenseId, netProfitId) {
         const res = await fetch("/Member/Home/GetCommonSizeStatement");
         const data = await res.json();
 
-        debug("Expense %", data.expense);
+        utils.debug("Expense %", data.expense);
         expenseId.textContent = data.expense;
         netProfitId.textContent = data.netProfit;
         displayStatementIcons(data.expense);
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
 
@@ -1143,9 +1023,9 @@ async function displayNetProfit(id) {
         const data = await res.json();
 
         id.textContent = data.totalProfit;
-        debug("Net profit", data.totalProfit);
+        utils.debug("Net profit", data.totalProfit);
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     } 
 }
 
@@ -1155,9 +1035,9 @@ async function displayExpense(id) {
         const data = await res.json();
 
         id.textContent = data.totalExpense;
-        debug("Total Expense", data.totalExpense);
+        utils.debug("Total Expense", data.totalExpense);
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
 
@@ -1168,9 +1048,9 @@ async function displayIncome(id) {
         const data = await res.json();
 
         id.textContent = data.totalIncome;
-        debug("Total Income", data.totalIncome);
+        utils.debug("Total Income", data.totalIncome);
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
 
@@ -1200,7 +1080,7 @@ async function pickerTransaction(selected) {
                 displayTransactions(transactions, table);
             }
         } catch (err) {
-            debug("Error", err);    
+            utils.debug("Error", err);    
         }
     } else {
         loadTransactions();
@@ -1219,7 +1099,7 @@ async function deleteTransaction(id, type) {
     });
 
     const data = await res.json();
-    debug("Message", data.message);
+    utils.debug("Message", data.message);
     await pickerTransaction(type);
 }
 
@@ -1237,7 +1117,7 @@ async function displayTransaction(id) {
             })
         }).then(res => res.json())
         .then(data => {
-            debug("Transaction data", data);
+            utils.debug("Transaction data", data);
 
             const radio = document.querySelector(`input[name="editTransactionType"][value="${data.type}"]`);
 
@@ -1250,10 +1130,10 @@ async function displayTransaction(id) {
             description.value = data.description;
             updateTransactionBtn.dataset.id = data.id;
         })
-        .catch(err => debug("Error", err));
+        .catch(err => utils.debug("Error", err));
 
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
 
@@ -1375,7 +1255,7 @@ async function loadTransactions() {
             displayTransactions(transactions, table);
         }
     } catch (err) {
-        debug("Error", err);    
+        utils.debug("Error", err);    
     }
 }
 
@@ -1397,7 +1277,17 @@ async function deleteEmployee(id) {
 }
 
 async function displayEmployee(id) {
-    showModalEmployee("Edit", "Edit", "editEmployee");
+    showModalEntity("Edit Employee", "editEmployee", "employee");
+
+    // REFACTOR
+    const firstName = document.querySelector(".firstName");
+    const middleName = document.querySelector(".middleName");
+    const lastName = document.querySelector(".lastName");
+    const role = document.querySelector(".role")
+    const position = document.querySelector(".position");
+    const email = document.querySelector(".email");
+    const phone = document.querySelector(".phone");
+    const address = document.querySelector(".address");
 
     try {
         await fetch("/Member/Home/GetEmployee", {
@@ -1410,7 +1300,7 @@ async function displayEmployee(id) {
             })
         }).then(res => res.json())
         .then(data => {
-            debug("Employee Data", data);
+            utils.debug("Employee Data", data);
 
             firstName.value = data.firstName;
             middleName.value = data.middleName;
@@ -1420,12 +1310,12 @@ async function displayEmployee(id) {
             email.value = data.email;
             phone.value = data.phone;
             address.value = data.address;
-            employeeModalBtn.dataset.id = data.id;
+            modalEntityBtn.dataset.id = data.id;
         })
-        .catch(err => debug("Error", err));
+        .catch(err => utils.debug("Error", err));
 
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
 
@@ -1518,7 +1408,7 @@ async function loadEmployees() {
         const employeesCardCon = document.getElementById("employeesCardCon");
         displayEmployees(employees, employeesCardCon);
     } catch (err) {
-        debug("Employee Display Error", err);
+        utils.debug("Employee Display Error", err);
     }
 }
 
@@ -1558,35 +1448,12 @@ function displayCompanyInfo() {
             companyNameNav.textContent = data.companyName;
             companyIndustryNav.textContent = data.companyIndustry;
         })
-        .catch(err => debug("Error", err))
-}
-
-async function Logout() {
-    await fetch("/Member/Home/Logout", {
-        method: "POST"
-    });
-
-    window.location.replace("/Public/Account/LogIn"); // FIX THIS, CLIENTS MUST NOT CLICK BACK button and get to see the /member
-}
-
-// FORMAT PHONE NUMBER
-function formatNumber(value) {
-    // Remove non-digits
-    value = value.replace(/\D/g, '');
-
-    // Apply format: 2 3 4 grouping
-    if (value.length > 2 && value.length <= 5)
-        return value.replace(/(\d{2})(\d+)/, "$1 $2");
-
-    if (value.length > 5)
-        return value.replace(/(\d{2})(\d{3})(\d+)/, "$1 $2 $3");
-
-    return value;
+        .catch(err => utils.debug("Error", err))
 }
 
 function navOverlayChange(event) {
     if (event.matches) {
-        debug("Media Query", "It works"); // REMOVE THIS
+        utils.debug("Media Query", "It works"); // REMOVE THIS
         document.body.classList.add("relative");
         openNavVar.classList.add("absolute");
 
@@ -1598,13 +1465,13 @@ function navOverlayChange(event) {
             if (e.target.closest(".nav-item")) return;  
             openNavVar.classList.add("show");
 
-            debug("Text Sidebar", "Open");
+            utils.debug("Text Sidebar", "Open");
         });
 
         openNavVar.addEventListener("click", function () {
             openNavVar.classList.remove("show");
         
-            debug("Text Sidebar", "Close");
+            utils.debug("Text Sidebar", "Close");
         });
 
 
@@ -1638,37 +1505,78 @@ function showModalEditTransaction() {
     editTransactionModal.classList.add("show");
 }
 
-function showModalEmployee(head, buttonText, actions) {
+function showModalEntity(text, actions, entity) {
     // REFACTOR centralise this
-
     utils.showParentModal(modal);
-    
-    employeeModal.classList.add("show");
+    modalEntity.classList.add("show");
 
-    employeeModalBtn.dataset.action = actions;
-    employeeModalHeadText.textContent = head;
-    employeeModalBtnText.textContent = buttonText;
+    modalEntity.dataset.entity = entity;
+    modalEntityBtn.dataset.action = actions;
+    modalEntityText.forEach(m => m.textContent = text);
+    
+    modalEntityBtnAction = actions; // THIS WILL BE USED TO IDENTIFY THE MODAL ENTITY (Investor, Employee, Clients, etc)
+
+    switch(entity) {
+        case "employee": 
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "investor":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        default:
+            utils.debug("Modal Entity", "No entity");
+    }
+}
+
+function showModalEntityForm(entity) {
+    switch (entity) {
+        case "employee":
+            document.querySelector(".employee-form").classList.add("show");
+            break;
+
+        case "investor":
+            document.querySelector(".investor-form").classList.add("show");
+            break;
+
+        default:
+            utils.debug("Modal Entity Form", "Unavailable");
+    }
+}
+
+function showEditEntityModal() {
+
+}
+
+function showAddEntityModal() {
+
 }
 
 function showModalAlert(subhead, buttonText, actions) {
-    // REFACTOR centralise this 
-
     utils.showParentModal(modal);
+    alertModal.classList.remove("modal-sm");
+    alertModal.classList.add("modal-md");
     alertModal.classList.add("show");
 
     if (actions === "logout") {
         logOutIconModal.classList.remove("hidden");
         alertBtn.dataset.action = actions;
+        alertHead.textContent = "Are you sure?";
         alertSubhead.textContent = subhead;
         alertBtnText.textContent = buttonText;
     } else {
         alertBtn.dataset.action = actions;
+        alertHead.textContent = "Are you sure?";
         alertSubhead.textContent = subhead;
         alertBtnText.textContent = buttonText;
     }
 }   
 
 function showModal(head, subhead) {
+    // REFACTOR rename for clarity, this is a function for small alert pop up
     utils.showParentModal(modal);
     alertModal.classList.remove("modal-md");
     alertModal.classList.add("show", "modal-sm");
@@ -1676,39 +1584,3 @@ function showModal(head, subhead) {
     alertHead.textContent = head;
     alertSubhead.textContent = subhead;
 }   
-
-function clearForm(formId) {
-    formId.reset();
-}
-
-function setDateToday(dateInput) {
-    let date = new Date();
-
-    let day = ("0" + date.getDate()).slice(-2);
-    let month = ("0" + (date.getMonth() + 1)).slice(-2);
-    let today = date.getFullYear() + "-" + month + "-" + day;
-
-    dateInput.value = today;
-}
-
-function closeModal() {
-    modalContent.forEach(m => {
-        m.classList.remove("show");
-    });
-    modal.classList.remove("show");
-}
-
-function resetModal() {
-    alertModal.classList.remove("modal-sm");
-    alertModal.classList.add("modal-md");
-
-    alertHead.textContent = "Are you sure?";
-}
-
-function pageRefresh() {
-    window.location.reload(true);
-}
-
-function debug(type, description) {
-    console.log(type,": ", description);
-}

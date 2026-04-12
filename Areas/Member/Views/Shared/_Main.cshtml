@@ -229,7 +229,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="companyRegistration">
+                <form id="companyRegistration" data-form="businessRegistrationForm">
                     <div class="modal-body-row">
                         <p class="modal-input-label">Business Name</p>
                         <div class="modal-input">    
@@ -283,10 +283,10 @@
             </div>
         </div>
 
-        <!-- MODAL - EMPLOYEE -->
-        <div class="modal-employee modal-lg modal-content closeable-modal" id="employeeModal">
+        <!-- MODAL - ENTITY -->
+        <div class="modal-entity modal-lg modal-content closeable-modal" id="modalEntity">
             <div class="modal-header">
-                <p><span id="employeeModalHeadText"></span> Employee</p> <!-- REFACTOR id  -->
+                <p><span class="modal-entity-text"></span></p> <!-- REFACTOR id  -->
 
                 <div class="close-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"/></svg>
@@ -294,12 +294,12 @@
             </div>
 
             <div class="modal-body">
-                <form id="employeeRegistration">
+                <form class="modal-entity-form employee-form" id="employeeRegistration" data-form="employeeForm">
                     <div class="modal-body-row-wrap">
                         <div class="modal-input-con">
                             <p class="modal-input-label">First Name</p>
                             <div class="modal-input">
-                                <input id="firstName" type="text" name="firstName" placeholder="Enter first name">
+                                <input class="firstName" type="text" name="firstName" placeholder="Enter first name">
                             </div>
                         </div>
 
@@ -307,7 +307,7 @@
                         <div class="modal-input-con">
                             <p class="modal-input-label">Middle Name</p>
                             <div class="modal-input">
-                                <input id="middleName" type="text" name="middleName" placeholder="Enter middle name">
+                                <input class="middleName" type="text" name="middleName" placeholder="Enter middle name">
                             </div>
                         </div>
                     </div>
@@ -316,14 +316,14 @@
                         <div class="modal-input-con">
                             <p class="modal-input-label">Last Name</p>
                             <div class="modal-input">
-                                <input id="lastName" type="text" name="lastName" placeholder="Enter last name">
+                                <input class="lastName" type="text" name="lastName" placeholder="Enter last name">
                             </div>
                         </div>
 
                         <div class="modal-input-con">
                             <p class="modal-input-label">Role</p>
                             <div class="modal-input select-input">
-                                <select id="role" name="role" id=""role>
+                                <select class="role" name="role" id=""role>
                                     <option value="" disabled selected hidden>Choose a role</option>
                                     <option value="Staff">Staff</option>
                                     <option value="Moderator">Moderator</option>
@@ -336,14 +336,14 @@
                     <div class="modal-body-row">
                         <p class="modal-input-label">Position</p>
                         <div class="modal-input">
-                            <input id="position" type="text" name="position" placeholder="Enter employee position">
+                            <input class="position" type="text" name="position" placeholder="Enter employee position">
                         </div>
                     </div>
 
                     <div class="modal-body-row">
                         <p class="modal-input-label">Email</p>
                         <div class="modal-input">
-                            <input id="email" type="email" name="email" placeholder="Enter employee email">
+                            <input class="email" type="email" name="email" placeholder="Enter employee email">
                         </div>
                     </div>
 
@@ -351,14 +351,14 @@
                         <p class="modal-input-label">Phone</p>
                         <div class="modal-input phone-input">
                             <div class="select-input">
-                                <select name="phoneAreaCode" id="phoneAreaCode">
+                                <select name="phoneAreaCode" class="phoneAreaCode">
                                     <option value="ph">PH</option>
                                 </select>
                             </div>
 
                             <div class="phone-input-area">    
                                 <p class="area-code">+63</p>
-                                <input id="phone" type="text" inputmode="numeric" minlength="11" maxlength="11" id="phone" name="phone" placeholder="Phone">
+                                <input class="phone" type="text" inputmode="numeric" minlength="11" maxlength="11" name="phone" placeholder="Phone">
                             </div>
                         </div>
                     </div>
@@ -366,15 +366,106 @@
                     <div class="modal-body-row">
                         <p class="modal-input-label">Address</p>
                         <div class="modal-input">
-                            <input id="address" type="text" name="address" placeholder="Enter employee address">
+                            <input class="address" type="text" name="address" placeholder="Enter employee address">
                         </div>
                     </div>
 
                     <div class="modal-body-button-con">
                         <button type="button" class="cancel">Cancel</button>
-                        <button type="submit" class="primary-button" id="employeeModalBtn"><span id="employeeModalBtnText"></span> Employee</button>
+                        <button type="submit" class="primary-button modal-entity-btn"><span class="modal-entity-text"></span></button>
                     </div>
                 </form>
+
+                 <form class="modal-entity-form investor-form" id="investorRegistration" data-form="investorForm">
+                    <div class="modal-body-row-wrap">
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">First Name</p>
+                            <div class="modal-input">
+                                <input class="firstName" type="text" name="firstName" placeholder="Enter first name">
+                            </div>
+                        </div>
+
+                        
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Middle Name</p>
+                            <div class="modal-input">
+                                <input class="middleName" type="text" name="middleName" placeholder="Enter middle name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row-wrap">
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Last Name</p>
+                            <div class="modal-input">
+                                <input class="lastName" type="text" name="lastName" placeholder="Enter last name">
+                            </div>
+                        </div>
+
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Stakeholder</p>
+                            <div class="modal-input select-input">
+                                <select class="role" name="role" id=""role>
+                                    <option value="" disabled selected hidden>Choose a Stakeholder</option>
+                                    <option value="Owner">Owner</option>
+                                    <option value="Investor">Investor</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Investment</p>
+                        <div class="modal-input amount-input">
+                            <p class="currency-prefix">₱</p>
+                            <input class="Investment" type="text" name="Investment" placeholder="e.g. 1,000,000">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Email</p>
+                        <div class="modal-input">
+                            <input class="email" type="email" name="email" placeholder="Enter investor email">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row phone-con">
+                        <p class="modal-input-label">Phone</p>
+                        <div class="modal-input phone-input">
+                            <div class="select-input">
+                                <select name="phoneAreaCode" class="phoneAreaCode">
+                                    <option value="ph">PH</option>
+                                </select>
+                            </div>
+
+                            <div class="phone-input-area">    
+                                <p class="area-code">+63</p>
+                                <input class="phone" type="text" inputmode="numeric" minlength="11" maxlength="11" name="phone" placeholder="Phone">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Address</p>
+                        <div class="modal-input">
+                            <input class="address" type="text" name="address" placeholder="Enter investor address">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">TIN</p>
+                        <div class="modal-input">
+                            <input class="TIN" type="text" name="TIN" placeholder="Enter Tax Identification Number">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-button-con">
+                        <button type="button" class="cancel">Cancel</button>
+                        <button type="submit" class="primary-button modal-entity-btn"><span class="modal-entity-text"></span></button>
+                    </div>
+                </form>
+
+
             </div>
         </div>
 
@@ -389,7 +480,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="editTransaction">
+                <form id="editTransaction" data-form="transactionForm">
                     <div class="modal-body-row">
                         <p class="modal-input-label">Transaction Type</p>
 

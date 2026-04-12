@@ -527,3 +527,5 @@ TO-DO
 
 
     REFACTOR modal, everytime you show a modal set the modal parent data attribute to true
+
+    create a function that formats amount-input with `,`
