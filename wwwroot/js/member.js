@@ -640,47 +640,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
-function clearError(form) {
-    const inputFields = form;
 
-    inputFields.forEach(i => {
-        i.classList.remove("error-input");
-        
-    });
-
-    
-    document.querySelectorAll(".error-tag").forEach(e => e.remove());
-} 
-
-function showError(message) {
-    const p = document.createElement("p");
-    p.textContent = message;
-    p.classList.add("error-tag");
-    return p;
-}
-
-async function employeeSearch(input) {
-    try {
-        const res = await fetch("/Member/Home/Search", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                EmployeeName: input
-            })
-        });
-
-        const data = await res.json();
-
-        utils.debug("Employee", data);
-
-        const employeesCardCon = document.getElementById("employeesCardCon");
-        displayEmployees(data, employeesCardCon);
-    } catch (err) {
-        utils.debug("Employee Display Error", err);
-    }
-}
+// DASHBOARD
 
 function displayLineGraphIncExpComp(lineGraph, data) {
      const legendItems = [
@@ -1054,6 +1015,8 @@ async function displayIncome(id) {
     }
 }
 
+// FINANCIAL TRANSACTION
+
 async function pickerTransaction(selected) {
 
     if (selected === "Income" || selected === "Expenses") {
@@ -1259,8 +1222,30 @@ async function loadTransactions() {
     }
 }
 
-function isEmpty(value) {
-    return (value == null || (typeof value === "string" && value.length === 0));
+
+// EMPLOYEE
+
+async function employeeSearch(input) {
+    try {
+        const res = await fetch("/Member/Home/Search", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                EmployeeName: input
+            })
+        });
+
+        const data = await res.json();
+
+        utils.debug("Employee", data);
+
+        const employeesCardCon = document.getElementById("employeesCardCon");
+        displayEmployees(data, employeesCardCon);
+    } catch (err) {
+        utils.debug("Employee Display Error", err);
+    }
 }
 
 async function deleteEmployee(id) {
@@ -1317,16 +1302,6 @@ async function displayEmployee(id) {
     } catch (err) {
         utils.debug("Error", err);
     }
-}
-
-function dateFormat(date) {
-    const format = new Date(date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric"
-    });
-
-    return format;
 }
 
 async function displayEmployees(data, listCon) {
@@ -1410,6 +1385,41 @@ async function loadEmployees() {
     } catch (err) {
         utils.debug("Employee Display Error", err);
     }
+}
+
+
+// VALIDATION
+function dateFormat(date) {
+    const format = new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric"
+    });
+
+    return format;
+}
+
+function clearError(form) {
+    const inputFields = form;
+
+    inputFields.forEach(i => {
+        i.classList.remove("error-input");
+        
+    });
+
+    
+    document.querySelectorAll(".error-tag").forEach(e => e.remove());
+} 
+
+function showError(message) {
+    const p = document.createElement("p");
+    p.textContent = message;
+    p.classList.add("error-tag");
+    return p;
+}
+
+function isEmpty(value) {
+    return (value == null || (typeof value === "string" && value.length === 0));
 }
 
 function clearErrorInputFields(form) {
@@ -1496,6 +1506,8 @@ function navOverlayChange(event) {
         });
     }
 }
+
+// MODAL
 
 function showModalEditTransaction() {
     // REFACTOR centralise this
