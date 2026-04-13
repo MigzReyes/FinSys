@@ -1,4 +1,29 @@
 
+// LISTENER INITIALIZATION
+export function initInputListener() {
+    document.addEventListener("input", function (e) {
+        let input = e.target;
+        let inputType = checkInputType(e.target);
+        let inputValue = input.value;
+
+        switch (inputType) {
+            case "amount":
+                input.value = amountInputFormatToHundreds(inputValue);
+                break;
+            
+            case "phone":
+                input.value = phoneNumberInputFormat(inputValue);
+                break;
+                
+            case "tin":
+                input.value = tinInputFormat(inputValue);
+                break;
+
+            default:
+                debug("Input Listener", "No input type");
+        }
+    });
+}
 
 export function initCloseModalListener() {
     document.addEventListener("click", function (e) {
@@ -25,8 +50,71 @@ export function initCloseModalListener() {
     });
 }
 
+// CHECK FUNCTIONS
+function checkInputType(input) { 
+    const type = input.dataset.input;
+
+    switch (type) {
+        case "amount":
+            return type;
+        case "phone":
+            return type;
+        case "tin":
+            return type;
+        default:
+            debug("Check Input Type", "No input");
+    }
+}   
+
 function checkPage(page) {
     if (page === document.body.dataset.page) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+// INPUT FORMAT
+function tinInputFormat(value) {
+    value = textInputFormatToNumber(value);
+
+    if (value.length > 6) {
+        value = value.replace(/(\d{3})(\d{3})(\d+)/, "$1-$2-$3");
+    } else if (value.length > 3) {
+        value = value.replace(/(\d{3})(\d+)/, "$1-$2");
+    }
+
+    return value;
+}
+
+function amountInputFormatToHundreds(value) {
+    value = textInputFormatToNumber(value);
+
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function phoneNumberInputFormat(value) {
+    value = textInputFormatToNumber(value);
+
+    // e.g. 09 394 2444
+    if (value.length > 2 && value.length <= 5)
+        return value.replace(/(\d{2})(\d+)/, "$1 $2");
+
+    if (value.length > 5)
+        return value.replace(/(\d{2})(\d{3})(\d+)/, "$1 $2 $3");
+
+    return value;
+}
+
+function textInputFormatToNumber(value) {
+   return value.replace(/\D/g, '');
+}
+
+export function limitInputLength(input, length) {
+    input = input.value.trim();
+
+    if (input.length === length) {
         return true;
     } else {
         return false;
@@ -82,19 +170,6 @@ export function setDateToday(dateInput) {
     let today = date.getFullYear() + "-" + month + "-" + day;
 
     dateInput.value = today;
-}
-
-export function formatNumber(value) {
-    value = value.replace(/\D/g, '');
-
-    // Apply format: 2 3 4 grouping
-    if (value.length > 2 && value.length <= 5)
-        return value.replace(/(\d{2})(\d+)/, "$1 $2");
-
-    if (value.length > 5)
-        return value.replace(/(\d{2})(\d{3})(\d+)/, "$1 $2 $3");
-
-    return value;
 }
 
 export function isEmpty(value) {

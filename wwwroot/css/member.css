@@ -301,6 +301,9 @@ input[type="radio"] {
     padding: var(--space-2) var(--space-4);
 }
 
+.text-bold {
+    font-weight: var(--font-bold);
+}
 
 /* FLEX COMPONENTS */
 .flex-column-header {
@@ -319,6 +322,14 @@ input[type="radio"] {
 /* SHOW */
 .show {
     display: flex !important;
+}
+
+.flex-header {
+    display: flex;
+}
+
+.flex-header-text {
+    font-size: var(--text-xl);
 }
 
 

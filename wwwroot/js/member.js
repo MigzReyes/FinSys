@@ -84,6 +84,7 @@ alertBtn.addEventListener("click", function () {
 });
 
 let modalEntityBtnAction; // REFACTOR this variable is used to determine the functionality of the modal entity primary button 
+utils.initInputListener();
 utils.initCloseModalListener(); 
 
 
@@ -391,11 +392,6 @@ const PageScripts = {
             }, 200);
         });
 
-        // PHONE FORMAT
-        phone.addEventListener("input", function (e) {
-            e.target.value = utils.formatNumber(e.target.value);
-        });
-
         // ADD EMPLOYEE
         const addEmployeeBtn = document.getElementById("addEmployeeBtn");
         addEmployeeBtn.addEventListener("click", function () {
@@ -480,6 +476,7 @@ const PageScripts = {
                 utils.debug("Action", "edit");
                 // EDIT
                 if (inputEmptyValidation(form)) {
+                    // FIX do not check for middle name input
                     const employeeId = modalEntityBtn.dataset.id;
 
                     await fetch("/Member/Home/EditEmployee", {
@@ -611,10 +608,22 @@ const PageScripts = {
     investors: function() {
         utils.debug("Page", "Investors");
 
+
         // ADD INVESTOR
         const addInvestorBtn = document.getElementById("addInvestorBtn");
         addInvestorBtn.addEventListener("click", function () {
             showModalEntity("Add Investor", "addInvestor", "investor");
+        });
+
+        const form = document.getElementById("investorRegistration");
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            if (modalEntityBtnAction === "addInvestor") {
+                // send the data to the database
+
+                
+            }
         });
 
     },

@@ -529,3 +529,10 @@ TO-DO
     REFACTOR modal, everytime you show a modal set the modal parent data attribute to true
 
     create a function that formats amount-input with `,`
+
+
+4/13/2026
+
+    Create a function and a listener for formatting the amount input and phone number
+
+    Create a centralise search function 

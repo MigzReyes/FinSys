@@ -1,13 +1,15 @@
-﻿import { debug, errorInput, formatNumber, 
+﻿import { debug, errorInput, 
     isEmpty, showError, validateEmail, 
     togglePasswordVisibility, passwordStrength, clearForm, 
     formatEmail, clearErrorInputFields, inputEmptyValidation,
     selectAllInputFields, removeUserSession,
-    RemoveForgotPassSession
+    RemoveForgotPassSession, initInputListener,
+    limitInputLength
 
  } from "./utils.js";
 
-// GLOBAL VAR
+// INITIALLIZATION OF LISTENERS
+initInputListener();
 
 // PAGE BASE INITIALIZATION FOR DYNAMIC JS CODE
 const PageScripts = {
@@ -163,10 +165,7 @@ const PageScripts = {
                 strength++;
             }
         });
-        // FORMAT PHONE NUMBER
-        phone.addEventListener("input", function (e) {
-            e.target.value = formatNumber(e.target.value);
-        }); // TO-DO not working fix this later
+
 
         visibilityToggle.forEach(i => {
             i.addEventListener("click", function () {
@@ -218,7 +217,7 @@ const PageScripts = {
                                 password.classList.remove("error-input");
                                 conPassword.classList.remove("error-input");
 
-                                if (phone.value.trim().length === 11) {       
+                                if (limitInputLength(phone, 11)) { 
                                     const phoneCon = document.querySelector(".phone-con");
                                     phoneCon.querySelectorAll(".error-tag").forEach(e => e.remove());
 
