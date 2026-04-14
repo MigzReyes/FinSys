@@ -89,6 +89,49 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> InvestorRegistration([FromBody] InvestorRegistration investorDto) 
+    {
+        var random = new Random();
+        string prefix = "";
+        for (int i = 0; i < 3; i++)
+        {
+            char letter = (char)random.Next('A', 'Z' + 1);
+            prefix += letter;
+        }
+
+        string threeDigitNumber = random.Next(100, 999).ToString();
+        string stakeholderId = prefix + threeDigitNumber;
+
+        Console.WriteLine("Company Id " + Convert.ToInt32(User.FindFirst("CompanyId")?.Value));
+        Console.WriteLine("Stakeholder Id " + stakeholderId);
+        Console.WriteLine("address" + investorDto.FirstName);
+        
+
+        var investor = new Investors
+        {
+            CompanyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value),
+            StakeholderId = stakeholderId,
+            FirstName = investorDto.FirstName,
+            MiddleName = investorDto.MiddleName,
+            LastName = investorDto.LastName,
+            Stakeholder = investorDto.Stakeholder,
+            Ownership = 50M, // CHANGE
+            Investment = investorDto.Investment,
+            Income = 10000, // CHANGE
+            Roi = 69.75M, // CHANGE
+            Email = investorDto.Email,
+            Phone = investorDto.Phone,
+            Address = investorDto.Address,
+            Tin = investorDto.Tin
+        };
+
+        _context.Investors.Add(investor);
+        await _context.SaveChangesAsync();
+
+        return Ok(investor);
+    }
+
+    [HttpPost]
     public async Task<IActionResult> EmployeeRegistration([FromBody] EmployeeRegistration employeeDto)
     {
         var employee = new Employees

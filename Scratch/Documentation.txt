@@ -536,3 +536,11 @@ TO-DO
     Create a function and a listener for formatting the amount input and phone number
 
     Create a centralise search function 
+
+4/14/2026
+
+    Find a way you can make .querySelector for input tag to work.
+
+    Calculate ownership, income, and roi in the back end
+
+    use form data for transferring of data

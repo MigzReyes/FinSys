@@ -311,7 +311,7 @@ const PageScripts = {
             const id = updateTransactionBtn.dataset.id;
             const type = editTransaction.elements["editTransactionType"].value;
 
-            if (inputEmptyValidation(form)) {
+            if (utils.inputEmptyValidation(form)) {
                 clearErrorInputFields(form);
 
                 await fetch("/Member/Home/EditFinancialTransaction", {
@@ -422,7 +422,7 @@ const PageScripts = {
                 
                 utils.debug("Action", "Add");
 
-                if (inputEmptyValidation(form)) {
+                if (utils.inputEmptyValidation(form)) {
 
                     // EMAIL AND PHONE AUTH, checks if it already exists
                     /*if (isEmpty(email.value) && isEmpty(phone.value)) {
@@ -440,7 +440,7 @@ const PageScripts = {
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            body: JSON.stringify({
+                            body: JSON.stringify({ // REFACTOR this used the getFormData()
                                 FirstName: firstName.value,
                                 MiddleName: middleName.value,
                                 LastName: lastName.value,
@@ -475,7 +475,7 @@ const PageScripts = {
 
                 utils.debug("Action", "edit");
                 // EDIT
-                if (inputEmptyValidation(form)) {
+                if (utils.inputEmptyValidation(form)) {
                     // FIX do not check for middle name input
                     const employeeId = modalEntityBtn.dataset.id;
 
@@ -574,7 +574,7 @@ const PageScripts = {
 
             const formTransaction = selectAllInputFields(form);
 
-            if (inputEmptyValidation(formTransaction)) {
+            if (utils.inputEmptyValidation(formTransaction)) {
                 clearErrorInputFields(formTransaction);
                 
                 await fetch("/Member/Home/RecordFinancialTransaction", {
@@ -615,14 +615,28 @@ const PageScripts = {
             showModalEntity("Add Investor", "addInvestor", "investor");
         });
 
+        // FIX THIS .querySelector
         const form = document.getElementById("investorRegistration");
         form.addEventListener("submit", async function (e) {
             e.preventDefault();
 
             if (modalEntityBtnAction === "addInvestor") {
-                // send the data to the database
 
-                
+                // Validate input, check for input data if it contains a data
+
+                const formData = utils.getFormData(form);
+
+                await fetch("/Member/Home/InvestorRegistration", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                }).then(res => res.json())
+                .then(data => {
+                    utils.debug("Investor data", data);
+                })
+                .catch(err => utils.debug("Error", err));
             }
         });
 
@@ -1443,17 +1457,6 @@ function clearErrorInputFields(form) {
     });
 }
 
-function inputEmptyValidation(form) {
-    const inputFields = Array.from(form);
-
-    const allFilled = inputFields.every(i => {
-        if (i.id === "middleName") return true;
-        return i.value.trim().length > 0;
-    });
-
-    return allFilled;
-}
-
 function selectAllInputFields(form) {
     const inputFields = form.querySelectorAll("input, select, textarea");
 
@@ -1556,11 +1559,11 @@ function showModalEntity(text, actions, entity) {
 function showModalEntityForm(entity) {
     switch (entity) {
         case "employee":
-            document.querySelector(".employee-form").classList.add("show");
+            document.querySelector(".employee-form").classList.add("show", "active");
             break;
 
         case "investor":
-            document.querySelector(".investor-form").classList.add("show");
+            document.querySelector(".investor-form").classList.add("show", "active");
             break;
 
         default:

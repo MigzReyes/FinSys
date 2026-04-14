@@ -6,7 +6,7 @@ namespace FinSys.Models
 
         public required int CompanyId { get; set; }
 
-        public required int StakeholderId{ get; set; }
+        public required string StakeholderId{ get; set; }
 
         public required string FirstName { get; set; }
 

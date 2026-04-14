@@ -122,6 +122,34 @@ export function limitInputLength(input, length) {
 }
 
 
+
+
+export function getFormData(form = null) {
+    form = form || document.querySelector(".modal-entity-form.active");
+    const rawData = Object.fromEntries(new FormData(form).entries());
+    const formData = normalizeFormData(rawData);
+
+    debug("Get Form Data", formData);
+
+    return formData;
+}
+
+function normalizeFormData(data) {
+    delete data.phoneAreaCode; // Temporarily removes phone area code, as it is not included in the database schema (Fix this) 
+
+    return {
+        ...data, // keep data
+
+        investment: data.investment
+            ? Number(data.investment.replace(/,/g, ""))
+            : null,
+
+        tin: data.tin
+            ? Number(data.tin.replace(/-/g, ""))
+            : null
+        };
+}
+
 export function closeCloseableModal(modal) {
     modal.classList.remove("show");
     modal.querySelectorAll(".closeable-modal").forEach(m => {
@@ -260,7 +288,7 @@ export function inputEmptyValidation(form) {
     const inputFields = Array.from(form);
 
     const allFilled = inputFields.every(i => {
-        if (i.id === "middleName") return true;
+        if (i.classList.contains("middleName")) return true;
         return i.value.trim().length > 0;
     });
 
