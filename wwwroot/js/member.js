@@ -232,7 +232,7 @@ const PageScripts = {
 
         // LOCAL VARIABLE
         const transactionTable = document.getElementById("transactionTable"); // just in case
-        const editTransaction = document.getElementById("editTransaction");
+        const form = document.getElementById("editTransaction");
         const category = document.getElementById("category");
         const amount = document.getElementById("amount");
         const payee = document.getElementById("payee");
@@ -305,14 +305,13 @@ const PageScripts = {
         });
 
         // EDIT TRANSACTION
-        editTransaction.addEventListener("submit", async function (e) {
+        form.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const form = selectAllInputFields(editTransaction);
             const id = updateTransactionBtn.dataset.id;
-            const type = editTransaction.elements["editTransactionType"].value;
+            const type = form.elements["editTransactionType"].value;
 
             if (utils.inputEmptyValidation(form)) {
-                clearErrorInputFields(form);
+                utils.validateInputFieldsValue(form);
 
                 await fetch("/Member/Home/EditFinancialTransaction", {
                     method: "POST",
@@ -337,7 +336,7 @@ const PageScripts = {
 
                 await pickerTransaction(selectedType);
             } else {
-                clearErrorInputFields(form);
+                utils.validateInputFieldsValue(form);
             }
         });
 
@@ -370,16 +369,6 @@ const PageScripts = {
         utils.debug("Page", "Employees");
 
         // LOCAL VARIABLE
-        const employeeRegistration = document.getElementById("employeeRegistration");
-        const firstName = document.querySelector(".firstName");
-        const middleName = document.querySelector(".middleName");
-        const lastName = document.querySelector(".lastName");
-        const role = document.querySelector(".role")
-        const position = document.querySelector(".position");
-        const email = document.querySelector(".email");
-        const phone = document.querySelector(".phone");
-        const address = document.querySelector(".address");
-
 
         // SEARCH EMPLOYEE
         const search = document.getElementById("searchEmployee");
@@ -414,9 +403,20 @@ const PageScripts = {
             });
         });
     
-        employeeRegistration.addEventListener("submit", async function (e) {
+        const form = document.getElementById("employeeRegistration");
+
+        // REFACTOR
+        const firstName = form.querySelector(".firstName");
+        const middleName = form.querySelector(".middleName");
+        const lastName = form.querySelector(".lastName");
+        const role = form.querySelector(".role")
+        const position = form.querySelector(".position");
+        const address = form.querySelector(".address");
+
+        const email = form.querySelector(".email");
+        const phone = form.querySelector(".phone");
+        form.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const form = selectAllInputFields(employeeRegistration);
 
             if (modalEntityBtnAction === "addEmployee") { 
                 
@@ -425,37 +425,29 @@ const PageScripts = {
                 if (utils.inputEmptyValidation(form)) {
 
                     // EMAIL AND PHONE AUTH, checks if it already exists
-                    /*if (isEmpty(email.value) && isEmpty(phone.value)) {
+                    /*if (utils.isEmpty(email.value) && utils.isEmpty(phone.value)) {
                         const con = document.querySelectorAll(".modal-body-row");
                         con.forEach(i => {
                             i.querySelectorAll("input").classList.add("error-input");
                         })
                     }*/
 
-                    if (phone.value.trim().length === 11) {
-                        utils.debug("Error", "Employee Added");
+                    if (utils.limitInputLength(phone, 11)) {
+                        const formData = utils.getFormData(form);
+
+                        utils.debug("Error", "Employee Added"); // REMOVE
 
                         await fetch("/Member/Home/EmployeeRegistration", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            body: JSON.stringify({ // REFACTOR this used the getFormData()
-                                FirstName: firstName.value,
-                                MiddleName: middleName.value,
-                                LastName: lastName.value,
-                                Position: position.value,
-                                Role: role.value,
-                                Email: email.value,
-                                Phone: phone.value,
-                                Address: address.value
-                            })
+                            body: JSON.stringify(formData)
                         }).then(res => res.json())
                         .then(data => {
-                            utils.debug("Employee Data", data);
-                            utils.clearForm(employeeRegistration);
-                            clearErrorInputFields(form);
-                            clearError(form);
+                            utils.debug("Employee Data", data); // REMOVE
+                            utils.validateInputFieldsValue(form);
+                            utils.clearForm(form);
                             utils.closeModal(modal);
                         })
                         .catch(err => utils.debug("Error", err));
@@ -463,49 +455,51 @@ const PageScripts = {
                         await loadEmployees();
                     } else {
                         const phoneCon = document.querySelector(".phone-con");
-                        phoneCon.querySelectorAll(".error-tag").forEach(e => e.remove());
-                        phoneCon.appendChild(showError("Phone invalid"));
+                        utils.displayErrorInputTag(phoneCon, "Phone invalid");
                     }
 
                 } else {
-                    clearErrorInputFields(form);
+                    utils.validateInputFieldsValue(form);
                 }
         
             } else {
-
                 utils.debug("Action", "edit");
                 // EDIT
                 if (utils.inputEmptyValidation(form)) {
-                    // FIX do not check for middle name input
-                    const employeeId = modalEntityBtn.dataset.id;
+                    if (utils.limitInputLength(phone, 11)) {     
+                        const employeeId = modalEntityBtn.dataset.id;
 
-                    await fetch("/Member/Home/EditEmployee", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            Id: employeeId,
-                            FirstName: firstName.value,
-                            MiddleName: middleName.value,
-                            LastName: lastName.value,
-                            Position: position.value,
-                            Role: role.value,
-                            Email: email.value,
-                            Phone: phone.value,
-                            Address: address.value  
+                        await fetch("/Member/Home/EditEmployee", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                Id: employeeId, // REFACTOR
+                                FirstName: firstName.value,
+                                MiddleName: middleName.value,
+                                LastName: lastName.value,
+                                Position: position.value,
+                                Role: role.value,
+                                Email: email.value,
+                                Phone: phone.value,
+                                Address: address.value  
+                            })
+                        }).then(res => res.json())
+                        .then(data => {
+                            utils.debug("Employee", data.message);
+                            utils.validateInputFieldsValue(form);
+                            utils.closeModal(modal);
+                            loadEmployees();
                         })
-                    }).then(res => res.json())
-                    .then(data => {
-                        utils.debug("Employee", data.message);
-                        utils.clearForm(employeeRegistration);
-                        utils.closeModal(modal);
-                        loadEmployees();
-                    })
-                    .catch(err => utils.debug("Error", err));
-
+                        .catch(err => utils.debug("Error", err));
+                    } else {
+                        utils.debug("phone input", "error");
+                        const phoneCon = document.querySelector(".phone-con");
+                        utils.displayErrorInputTag(phoneCon, "Phone invalid");
+                    }
                 } else {
-                    clearErrorInputFields(form);
+                    utils.validateInputFieldsValue(form);
                 }
             }
         });
@@ -572,10 +566,8 @@ const PageScripts = {
             e.preventDefault();
             const type = form.elements["transactionType"].value; // GET type value
 
-            const formTransaction = selectAllInputFields(form);
-
-            if (utils.inputEmptyValidation(formTransaction)) {
-                clearErrorInputFields(formTransaction);
+            if (utils.inputEmptyValidation(form)) {
+                utils.validateInputFieldsValue(form);
                 
                 await fetch("/Member/Home/RecordFinancialTransaction", {
                     method: "POST",
@@ -598,7 +590,7 @@ const PageScripts = {
                 .catch(err => utils.debug("Error", err));
 
             } else {
-                clearErrorInputFields(formTransaction);
+                utils.validateInputFieldsValue(form);
             }
 
 
@@ -617,26 +609,52 @@ const PageScripts = {
 
         // FIX THIS .querySelector
         const form = document.getElementById("investorRegistration");
+        const email = form.querySelector(".email");
+        const phone = form.querySelector(".phone");
+        const tin = form.querySelector(".tin");
         form.addEventListener("submit", async function (e) {
             e.preventDefault();
 
             if (modalEntityBtnAction === "addInvestor") {
+                if (utils.inputEmptyValidation(form)) {
+                    utils.validateInputFieldsValue(form);
 
-                // Validate input, check for input data if it contains a data
+                    if (utils.limitInputLength(phone, 11)) { 
+                        utils.clearErrorInputTag(form);      
 
-                const formData = utils.getFormData(form);
+                        if (utils.limitInputLength(tin, 11)) {
+                            utils.clearErrorInputTag(form);      
+    
+                            const formData = utils.getFormData(form);
 
-                await fetch("/Member/Home/InvestorRegistration", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(formData)
-                }).then(res => res.json())
-                .then(data => {
-                    utils.debug("Investor data", data);
-                })
-                .catch(err => utils.debug("Error", err));
+                            await fetch("/Member/Home/InvestorRegistration", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(formData)
+                            }).then(res => res.json())
+                            .then(data => {
+                                utils.debug("Investor data", data);
+                                utils.validateInputFieldsValue(form);
+                                utils.clearForm(form);
+                                utils.closeModal(modal);
+                            })
+                            .catch(err => utils.debug("Error", err));
+                        } else {
+                            const tinCon = form.querySelector(".tin-con");
+                            utils.displayErrorInputTag(tinCon, "Tin invalid");
+                        }
+
+                    } else {
+                        const phoneCon = form.querySelector(".phone-con");
+                        utils.displayErrorInputTag(phoneCon, "Phone invalid");
+                    }
+                } else {
+                    utils.debug("input field", "does mot contain anyting");
+                    utils.validateInputFieldsValue(form);
+                }
+
             }
         });
 
@@ -1420,47 +1438,6 @@ function dateFormat(date) {
     });
 
     return format;
-}
-
-function clearError(form) {
-    const inputFields = form;
-
-    inputFields.forEach(i => {
-        i.classList.remove("error-input");
-        
-    });
-
-    
-    document.querySelectorAll(".error-tag").forEach(e => e.remove());
-} 
-
-function showError(message) {
-    const p = document.createElement("p");
-    p.textContent = message;
-    p.classList.add("error-tag");
-    return p;
-}
-
-function isEmpty(value) {
-    return (value == null || (typeof value === "string" && value.length === 0));
-}
-
-function clearErrorInputFields(form) {
-    const inputFields = form;
-
-    inputFields.forEach(i => {
-        if (!i.value.trim()) {
-            i.classList.add("error-input");
-        } else {
-            i.classList.remove("error-input");
-        }
-    });
-}
-
-function selectAllInputFields(form) {
-    const inputFields = form.querySelectorAll("input, select, textarea");
-
-    return inputFields;
 }
 
 function displayCompanyInfo() {

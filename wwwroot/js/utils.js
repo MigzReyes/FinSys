@@ -122,6 +122,112 @@ export function limitInputLength(input, length) {
 }
 
 
+// INPUT VALIDATIONS
+
+// REFACTOR Rename for clarity
+export function displayErrorInputTag(inputCon, message) {
+    const phoneCon = document.querySelector(".phone-con");
+    inputCon.querySelectorAll(".error-tag").forEach(e => e.remove());
+    inputCon.appendChild(displayErrorTagMessage(message));
+}
+
+function displayErrorTagMessage(message) {
+    const p = document.createElement("p");
+    p.textContent = message;
+    p.classList.add("error-tag");
+    return p;
+}
+
+export function clearErrorInputTag(form) {
+    form.querySelectorAll(".error-tag").forEach(e => e.remove());
+} 
+
+export async function validateEmail(email) {
+    const res = await fetch("/Account/CheckEmailExists", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            Email: email
+        })
+    });
+
+    const data = await res.json();
+
+    return data.signedIn;
+}
+
+export function isEmpty(value) {
+    return (value == null || (typeof value === "string" && value.length === 0));
+}
+
+export function errorInput(id) {
+    id.classList.add("error-input");
+}
+
+export function passwordStrength(value) {
+    const strength = (value / 4) * 100;
+    return strength;
+}
+
+// REFACTOR rename for clarity, it does two things add a class `error-input` when it does not
+// contain anyhting vice vera. Misleading function name
+export function validateInputFieldsValue(form) {
+    const formInput = selectAllInputFields(form);
+
+    formInput.forEach(i => {
+        if (!i.value.trim()) {
+            i.classList.add("error-input");
+        } else {
+            i.classList.remove("error-input");
+        }
+    });
+}
+
+export function inputEmptyValidation(form) {
+    const formInput = selectAllInputFields(form);
+
+    const inputFields = Array.from(formInput);
+
+    const allFilled = inputFields.every(i => {
+        if (i.classList.contains("middleName")) return true;
+        return i.value.trim().length > 0;
+    });
+
+    return allFilled;
+}
+
+export function selectAllInputFields(form) {
+    const inputFields = form.querySelectorAll("input, select, textarea");
+
+    inputFields.forEach(input => {
+        console.log(input.name, "=>", input.value);
+    });
+
+    return inputFields;
+}
+
+
+export function clearErrorInputFields(form) { // REFACTOR remove this
+    const inputFields = form;
+
+    inputFields.forEach(i => {
+        if (!i.value.trim()) {
+            i.classList.add("error-input");
+        } else {
+            i.classList.remove("error-input");
+        }
+    });
+}
+
+export function showError(message) { // REFACTOR remove this
+    const p = document.createElement("p");
+    p.textContent = message;
+    p.classList.add("error-tag");
+    return p;
+}
+
 
 
 export function getFormData(form = null) {
@@ -187,7 +293,7 @@ export function clearAllForm(formId) {
 }
 
 export function clearForm(formId) {
-    formId.reset();
+    formId.reset();   
 }
 
 export function setDateToday(dateInput) {
@@ -200,29 +306,7 @@ export function setDateToday(dateInput) {
     dateInput.value = today;
 }
 
-export function isEmpty(value) {
-    return (value == null || (typeof value === "string" && value.length === 0));
-}
 
-export function errorInput(id) {
-    id.classList.add("error-input");
-}
-
-export async function validateEmail(email) {
-    const res = await fetch("/Account/CheckEmailExists", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            Email: email
-        })
-    });
-
-    const data = await res.json();
-
-    return data.signedIn;
-}
 
 export function formatEmail(email) {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -230,13 +314,6 @@ export function formatEmail(email) {
 }
 
 
-// REFACTOR Rename for clarity
-export function showError(message) {
-    const p = document.createElement("p");
-    p.textContent = message;
-    p.classList.add("error-tag");
-    return p;
-}
 
 export function togglePasswordVisibility(input, icon) {
     const con = icon.closest(".password-input");
@@ -257,10 +334,6 @@ export function togglePasswordVisibility(input, icon) {
     }
 }
 
-export function passwordStrength(value) {
-    const strength = (value / 4) * 100;
-    return strength;
-}
 
 export function removeUserSession() {
     window.addEventListener("pageshow", function (event) {
@@ -270,35 +343,6 @@ export function removeUserSession() {
             window.location.href = "/Public/Account/LogIn?error=accessdenied";
         });
     });
-}
-
-export function clearErrorInputFields(form) {
-    const inputFields = form;
-
-    inputFields.forEach(i => {
-        if (!i.value.trim()) {
-            i.classList.add("error-input");
-        } else {
-            i.classList.remove("error-input");
-        }
-    });
-}
-
-export function inputEmptyValidation(form) {
-    const inputFields = Array.from(form);
-
-    const allFilled = inputFields.every(i => {
-        if (i.classList.contains("middleName")) return true;
-        return i.value.trim().length > 0;
-    });
-
-    return allFilled;
-}
-
-export function selectAllInputFields(form) {
-    const inputFields = form.querySelectorAll("input, select, textarea");
-
-    return inputFields;
 }
 
 export async function RemoveForgotPassSession() {
