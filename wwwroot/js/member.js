@@ -599,7 +599,10 @@ const PageScripts = {
 
     investors: function() {
         utils.debug("Page", "Investors");
-
+        
+        // DISPLAY CAPITAL INVETSMENT
+        const capitalInvestmentSpan = document.getElementById("capitalInvestmentSpan");
+        getCapitalInvestment(capitalInvestmentSpan);
 
         // ADD INVESTOR
         const addInvestorBtn = document.getElementById("addInvestorBtn");
@@ -638,9 +641,13 @@ const PageScripts = {
                                 utils.debug("Investor data", data);
                                 utils.validateInputFieldsValue(form);
                                 utils.clearForm(form);
+                                utils.clearAllErrorInputFields(utils.selectAllInputFields(form));
                                 utils.closeModal(modal);
                             })
                             .catch(err => utils.debug("Error", err));
+
+                            getCapitalInvestment(capitalInvestmentSpan);
+                            loadInvestors();
                         } else {
                             const tinCon = form.querySelector(".tin-con");
                             utils.displayErrorInputTag(tinCon, "Tin invalid");
@@ -657,6 +664,10 @@ const PageScripts = {
 
             }
         });
+
+
+        // DISPLAY INVESTORS
+        loadInvestors();
 
     },
 
@@ -681,6 +692,112 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
+
+// INVESTORS
+async function getCapitalInvestment(tag) {
+    try {
+        const res = await fetch("/Member/Home/GetCapitalInvestment");
+        const data = await res.json();
+
+        tag.textContent = utils.amountInputFormatToHundreds(data);
+    } catch (err) {
+        utils.debug("Get Capital Investment Error", err);
+    }
+}
+
+async function displayInvestors(data, listCon) {
+
+    const list = listCon;
+    list.innerHTML = "";
+
+    data.forEach(e => {
+        const li = document.createElement("div");
+        li.classList.add("table-card");
+        li.dataset.id = e.id;
+
+        let stakeholder;
+
+        utils.debug("Stakeholder", e.stakeholder);
+
+        if (e.stakeholder === "Owner") {
+            stakeholder = "owner";
+        } else if (e.stakeholder === "Investor") {
+            stakeholder = "investor";
+        } else {
+            stakeholder = "Undefined"
+        }
+
+        li.innerHTML = 
+        `<div class="table-card-header">
+                <div class="table-card-header-info">
+                    <p class="table-card-name">${e.firstName} ${e.middleName ?? ""} ${e.lastName}</p>
+                    <p class="table-card-role">${e.stakeholderId}</p>
+                </div>
+
+                <div class="table-card-actions-con">
+                    <div class="action-con editEmployeeBtn" data-id="${e.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
+                    </div>
+
+                    <div class="action-con deleteEmployeeBtn" data-id="${e.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-card-info-con">
+                <div class="role-con ${stakeholder}">
+                    <p>${e.stakeholder}</p>
+                </div>
+
+                <div class="table-card-info">
+                    <div class="table-info-left">
+                        <p>Ownership:</p>
+                        <p>Investment:</p>
+                        <p>Income:</p>
+                        <p>ROI(YTD)</p>
+                        <p>Email:</p>
+                        <p>Phone:</p>
+                        <p>Address:</p>
+                        <p>TIN:</p>
+                    </div>
+
+                    <div class="table-info-right">
+                        <p>${e.ownership}%</p>
+                        <p class="safe">₱${utils.amountInputFormatToHundreds(e.investment)}</p>
+                        <p>₱${utils.amountInputFormatToHundreds(e.income)}</p>
+                        <p class="danger">${e.roi}%</p>
+                        <p>${e.email}</p>
+                        <p>+63 (09) ${e.phone}</p>
+                        <p>${e.address}</p>
+                        <p>${utils.tinInputFormat(e.tin)}</p>
+                    </div>
+                </div>
+
+                <div class="table-card-border"></div>
+
+                <div class="table-card-created-at">
+                    <p>Date of Investment: ${dateFormat(e.createdAt)}</p>
+                </div>
+            </div>
+            `;
+        
+        list.appendChild(li);
+    });
+}
+
+async function loadInvestors() {
+    try {
+        const res = await fetch("/Member/Home/GetInvestors");
+        const investors = await res.json();
+
+        const investorsCardCon = document.getElementById("investorsCardCon");
+        displayInvestors(investors, investorsCardCon);
+    } catch (err) {
+        utils.debug("Investors Display Error", err);
+    }
+}
+
 
 // DASHBOARD
 

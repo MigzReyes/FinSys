@@ -88,9 +88,67 @@ public class HomeController : Controller
         return Ok(transaction);
     }
 
+    private async Task CalculateOwnership(int companyId)
+    {   
+        var investors = await _context.Investors.Where(i => i.CompanyId == companyId).ToListAsync();
+
+        var totalInvestment = investors.Sum(i => i.Investment);
+
+        foreach (var inv in investors)
+        {
+            inv.Ownership = totalInvestment == 0 ? 100M : Math.Round(((decimal)inv.Investment / (decimal)totalInvestment) * 100M, 3, MidpointRounding.AwayFromZero); 
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task CalculateRoi(int companyId, string stockholderId)
+    {   
+        // Income should be based on the earned ionvestment of the investopr not on the total income of thje business
+        var income = await _context.FinancialTransactions.Where(i => i.CompanyId == companyId && i.Type == "Income").SumAsync(i => i.Amount);
+        var expense = await _context.FinancialTransactions.Where(i => i.CompanyId == companyId && i.Type == "Expense").SumAsync(i => i.Amount);
+        var netProfit = income - expense;
+
+        var investor = await _context.Investors.FirstOrDefaultAsync(i => i.CompanyId == companyId && i.StakeholderId == stockholderId);
+        
+        if (investor == null) return;
+
+        decimal investment = investor.Investment;
+
+        var roi = investment == 0 ? 0M : Math.Round((netProfit - investment) / investment, 3, MidpointRounding.AwayFromZero);
+
+        investor.Roi = roi;
+
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task CalculateIncome(int companyId, string stockholderId)
+    {   
+        // Income should be based on the earned ionvestment of the investopr not on the total income of thje business
+        var income = await _context.FinancialTransactions.Where(i => i.CompanyId == companyId && i.Type == "Income").SumAsync(i => i.Amount);
+        var expense = await _context.FinancialTransactions.Where(i => i.CompanyId == companyId && i.Type == "Expense").SumAsync(i => i.Amount);
+        var netProfit = income - expense;
+
+        var investor = await _context.Investors.FirstOrDefaultAsync(i => i.CompanyId == companyId && i.StakeholderId == stockholderId);
+        
+        if (investor == null) return;
+
+        decimal ownership = investor.Ownership / 100M;
+
+        int investorIncome = ownership == 0 ? 0 : (int)Math.Round(netProfit * ownership, 2);
+
+        investor.Income = investorIncome;
+
+        Console.WriteLine("Income " + investorIncome);
+        await _context.SaveChangesAsync();
+    }
+
     [HttpPost]
     public async Task<IActionResult> InvestorRegistration([FromBody] InvestorRegistration investorDto) 
     {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+
+        // STAKEHOLDER ID
         var random = new Random();
         string prefix = "";
         for (int i = 0; i < 3; i++)
@@ -106,6 +164,10 @@ public class HomeController : Controller
         Console.WriteLine("Stakeholder Id " + stakeholderId);
         Console.WriteLine("address" + investorDto.FirstName);
         
+        // INCOME
+
+        // ROI
+
 
         var investor = new Investors
         {
@@ -115,10 +177,10 @@ public class HomeController : Controller
             MiddleName = investorDto.MiddleName,
             LastName = investorDto.LastName,
             Stakeholder = investorDto.Stakeholder,
-            Ownership = 50M, // CHANGE
+            Ownership = 0M, // CHANGE
             Investment = investorDto.Investment,
-            Income = 10000, // CHANGE
-            Roi = 69.75M, // CHANGE
+            Income = 0, // CHANGE
+            Roi = 0M, // CHANGE
             Email = investorDto.Email,
             Phone = investorDto.Phone,
             Address = investorDto.Address,
@@ -127,6 +189,12 @@ public class HomeController : Controller
 
         _context.Investors.Add(investor);
         await _context.SaveChangesAsync();
+
+        await CalculateOwnership(companyId);
+        await CalculateRoi(companyId, stakeholderId);
+        await CalculateIncome(companyId, stakeholderId);
+
+        await _context.Entry(investor).ReloadAsync();
 
         return Ok(investor);
     }
@@ -394,6 +462,24 @@ public class HomeController : Controller
         var transaction = await _context.FinancialTransactions.Where(t => t.CompanyId == companyId).ToListAsync();
 
         return Ok(transaction);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCapitalInvestment()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var capital = await _context.Investors.Where(i => i.CompanyId == companyId).SumAsync(i => i.Investment);
+
+        return Ok(capital);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetInvestors()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var investors = await _context.Investors.Where(i => i.CompanyId == companyId).ToListAsync();
+
+        return Ok(investors);
     }
 
     [HttpPost]

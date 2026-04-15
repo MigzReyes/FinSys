@@ -36,13 +36,17 @@ export function initCloseModalListener() {
 
             if (isClosedBtn || isOutsideClick) {
                 parentModal.dataset.status = "inactive";  
-
-                if (!checkPage("reports")) {
-                    const form = document.querySelectorAll("form"); // REFACTOR add data action for form activity check which is active
+                const form = document.querySelectorAll("form"); // REFACTOR add data action for form activity check which is active
+                
+                if (!checkPage("reports")) { 
 
                     clearAllForm(form);
                     closeCloseableModal(parentModal);
                 }
+
+                form.forEach(f => {
+                    clearAllErrorInputFields(selectAllInputFields(f));
+                });
 
                 closeCloseableModal(parentModal);
             }
@@ -76,7 +80,7 @@ function checkPage(page) {
 
 
 // INPUT FORMAT
-function tinInputFormat(value) {
+export function tinInputFormat(value) {
     value = textInputFormatToNumber(value);
 
     if (value.length > 6) {
@@ -88,7 +92,7 @@ function tinInputFormat(value) {
     return value;
 }
 
-function amountInputFormatToHundreds(value) {
+export function amountInputFormatToHundreds(value) {
     value = textInputFormatToNumber(value);
 
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -108,7 +112,7 @@ function phoneNumberInputFormat(value) {
 }
 
 function textInputFormatToNumber(value) {
-   return value.replace(/\D/g, '');
+   return String(value).replace(/\D/g, '');
 }
 
 export function limitInputLength(input, length) {
@@ -218,6 +222,14 @@ export function clearErrorInputFields(form) { // REFACTOR remove this
         } else {
             i.classList.remove("error-input");
         }
+    });
+}
+
+export function clearAllErrorInputFields(form) { // REFACTOR remove this
+    const inputFields = form;
+
+    inputFields.forEach(i => {
+        i.classList.remove("error-input");
     });
 }
 

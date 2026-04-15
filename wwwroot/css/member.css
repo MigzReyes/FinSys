@@ -1198,7 +1198,7 @@ main {
     }
 }
 
-.moderator {
+.moderator, .owner {
     background: var(--primary);
 
     & p {
@@ -1207,8 +1207,13 @@ main {
     }
 }
 
-.admin {
+.admin, .investor {
     background: var(--accent);
+
+    & p {
+        color: var(--secondary);
+        font-weight: var(--font-medium);
+    }
 }
 
 /* REPORTS */

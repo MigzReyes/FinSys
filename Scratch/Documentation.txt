@@ -539,8 +539,28 @@ TO-DO
 
 4/14/2026
 
-    Find a way you can make .querySelector for input tag to work.
+    Find a way you can make .querySelector for input tag to work. -- DONE 
 
     Calculate ownership, income, and roi in the back end
 
-    use form data for transferring of data
+    use form data for transferring of data -- DONE 
+
+4/15/2026 
+
+    Display investors -- DONE 
+
+    displa Capital
+
+    How to get ROI and Income (Dividends)?
+
+    Income formula
+        income (dividends) = net profit * ownership %
+
+
+    Fix Calculation
+
+    Should ROI depends on income and investment? Or should ROI depends on net profit and invstment, then income will depends on net profit and ownership?
+
+    fix amountInputToHundreds format do not remove `-`
+
+    validate `-` values for red and positive for blue
