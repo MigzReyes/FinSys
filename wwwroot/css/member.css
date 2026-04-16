@@ -285,7 +285,11 @@ input[type="radio"] {
 
 /* FULL WIDTH */
 .full-width {
-    width: 100%;
+    width: 100% !important;
+}
+
+.fit-content {
+    width: fit-content !important;
 }
 
 /* MODAL LOG OUT ICON DISPLAY */
@@ -346,27 +350,6 @@ input[type="radio"] {
 
 .padding-bottom-2 {
     padding-bottom: var(--space-2);
-}
-
-/* ADD PRIMARY BUTTON */
-.accent-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    background: var(--accent);
-    border: none;
-    padding: var(--space-2) var(--space-4);
-}
-
-.primary-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    background: var(--primary);
-    border: none;
-    padding: var(--space-2) var(--space-4);
-    color: var(--white);
-    font-weight: var(--font-medium);
 }
 
 /* TEXT */
@@ -593,14 +576,32 @@ input[type="radio"] {
 }
 
 /* BUTTONS */
-.cancel {
-    background: white;
+.accent-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: var(--accent);
+    border: none;
+    padding: var(--space-2) var(--space-4);
 }
 
-.primary-button {
-    background: var(--accent);
-    border: var(--border);
-    border-color: var(--accent);
+.primary-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: var(--primary);
+    border: none;
+    padding: var(--space-2) var(--space-4);
+    color: var(--white) !important;
+    font-weight: var(--font-medium);
+}
+
+.primary-btn span {
+    color: var(--white);
+}
+
+.cancel {
+    background: white;
 }
 
 .danger-button {
@@ -1393,6 +1394,7 @@ select {
 }
 
 .select-input {
+    width: fit-content;
     position: relative;
 }
 
@@ -2322,7 +2324,12 @@ select {
     gap: var(--space-3);
 }
 
-.modal-body-button-con button {
+.modal-body-button-con-alert {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.modal-body-button-con-alert button {
     flex: 1;
 }
 

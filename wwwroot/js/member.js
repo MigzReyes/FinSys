@@ -671,6 +671,29 @@ const PageScripts = {
 
     },
 
+    financialStatement: function() {
+        utils.debug("Page", "Financial Statement");
+    },
+
+    assetsAndLiabilities: function() {
+        utils.debug("Page", "Assets and Liabilities");
+
+        const addAssetBtn = document.getElementById("addAssetBtn");
+        addAssetBtn.addEventListener("click", function () {
+            showModalEntity("Add Asset", "addAsset", "assets");
+        });
+
+        const addLiabilityBtn = document.getElementById("addLiabilityBtn");
+        addLiabilityBtn.addEventListener("click", function () {
+            showModalEntity("Add Liability", "addLiability", "liabilities");
+        });
+
+        const payLiabilityBtn = document.getElementById("payLiabilityBtn");
+        payLiabilityBtn.addEventListener("click", function () {
+            showModalEntity("Pay Liability", "payLiability", "payLiability");
+        });
+    },
+
     settings: function() {
         utils.debug("Page", "Settings");
 
@@ -1645,6 +1668,26 @@ function showModalEntity(text, actions, entity) {
             showModalEntityForm(entity);
             break;
 
+        case "financialStatement":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "assets":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "liabilities":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "payLiability":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
         default:
             utils.debug("Modal Entity", "No entity");
     }
@@ -1658,6 +1701,22 @@ function showModalEntityForm(entity) {
 
         case "investor":
             document.querySelector(".investor-form").classList.add("show", "active");
+            break;
+
+        case "financialStatement":
+            document.querySelector(".financialStatement-form").classList.add("show", "active");
+            break;
+
+        case "assets":
+            document.querySelector(".assets-form").classList.add("show", "active");
+            break;
+
+        case "liabilities":
+            document.querySelector(".liabilities-form").classList.add("show", "active");
+            break;
+
+        case "payLiability":
+            document.querySelector(".pay-a-liability-form").classList.add("show", "active");
             break;
 
         default:

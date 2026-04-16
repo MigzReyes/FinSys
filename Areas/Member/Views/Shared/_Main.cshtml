@@ -326,7 +326,7 @@
 
                     <div class="modal-body-button-con">
                         <button class="cancel full-width" id="cancelBusinessRegistration">Cancel</button>
-                        <button type="submit" class="primary-button full-width">Buy Now</button>
+                        <button type="submit" class="accent-btn full-width">Buy Now</button>
                     </div>
                 </form>
             </div>
@@ -343,6 +343,8 @@
             </div>
 
             <div class="modal-body">
+                
+                <!-- EMPLOYEE -->
                 <form class="modal-entity-form employee-form" id="employeeRegistration" data-form="employeeForm">
                     <div class="modal-body-row-wrap">
                         <div class="modal-input-con">
@@ -421,10 +423,11 @@
 
                     <div class="modal-body-button-con">
                         <button type="button" class="cancel">Cancel</button>
-                        <button type="submit" class="primary-button modal-entity-btn"><span class="modal-entity-text"></span></button>
+                        <button type="submit" class="accent-btn modal-entity-btn"><span class="modal-entity-text"></span></button>
                     </div>
                 </form>
 
+                <!-- INVESTOR -->
                  <form class="modal-entity-form investor-form" id="investorRegistration" data-form="investorForm">
                     <div class="modal-body-row-wrap">
                         <div class="modal-input-con">
@@ -510,10 +513,157 @@
 
                     <div class="modal-body-button-con">
                         <button type="button" class="cancel">Cancel</button>
-                        <button type="submit" class="primary-button modal-entity-btn"><span class="modal-entity-text"></span></button>
+                        <button type="submit" class="accent-btn modal-entity-btn"><span class="modal-entity-text"></span></button>
                     </div>
                 </form>
 
+                <!-- ASSET -->
+                <form class="modal-entity-form assets-form" id="assetsRegistration" data-form="assetsForm">
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">First Name</p>
+                        <div class="modal-input">
+                            <input class="firstName" type="text" name="firstName" placeholder="Enter first name">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Category</p>
+                        <div class="modal-input select-input">
+                            <select class="category" name="category" id="category">
+                                <option value="" disabled selected hidden>Choose a Category</option>
+                                <option value="Commodities">Commodities</option>
+                                <option value="Property">Property</option>
+                                <option value="Equities">Equities</option>
+                                <option value="OperatingAsset">Operating Asset</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Investment</p>
+                        <div class="modal-input amount-input">
+                            <p class="currency-prefix">₱</p>
+                            <input class="investment" type="text" data-input="amount" name="investment" placeholder="e.g. 1,000,000">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-button-con">
+                        <button type="button" class="cancel">Cancel</button>
+                        <button type="submit" class="accent-btn modal-entity-btn"><span class="modal-entity-text"></span></button>
+                    </div>
+                </form>
+
+                <!-- LIABILITY -->
+                <form class="modal-entity-form liabilities-form" id="liabilitiesRegistration" data-form="liabilitiesForm">
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Status</p>
+
+                        <div class="radio-con">
+                            <div class="modal-radio-input">
+                                <input type="radio" name="status" value="Active" id="modal-active" checked>
+                                <label for="modal-active">Active</label>
+                            </div>
+
+                            
+                            <div class="modal-radio-input">
+                                <input type="radio" name="status" value="Paid" id="modal-paid">
+                                <label for="modal-paid">Paid</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Type</p>
+                        <div class="modal-input select-input full-width">
+                            <select class="type full-width" name="type" id="type">
+                                <option value="" disabled selected hidden>Choose a Type</option>
+                                <option value="Loan">Loan</option>
+                                <option value="Tax">Tax</option>
+                                <option value="Wages">Wages</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Investment</p>
+                        <div class="modal-input amount-input">
+                            <p class="currency-prefix">₱</p>
+                            <input class="investment" type="text" data-input="amount" name="investment" placeholder="e.g. 1,000,000">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-button-con">
+                        <button type="button" class="cancel">Cancel</button>
+                        <button type="submit" class="accent-btn modal-entity-btn"><span class="modal-entity-text"></span></button>
+                    </div>
+                </form>
+
+                <!-- PAY A LIABILITY -->
+                 <form class="modal-entity-form pay-a-liability-form" id="payALiabilityRegistration" data-form="payALiabilityForm">
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Search</p>
+                        <div class="modal-input">        
+                            <input id="liabilities" type="search" name="liabilities" placeholder="Search a liability...">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Pay</p>
+                        <div class="modal-input amount-input">
+                            <p class="currency-prefix">₱</p>
+                            <input class="pay" type="text" data-input="amount" name="pay" placeholder="e.g. 5,000">
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row">
+                        <p class="modal-input-label">Due</p>
+                        <div class="modal-input fit-content">
+                            <input class="due" type="text" name="due" data-input="due" placeholder="April 30, 2026" disabled>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row-wrap">
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Name</p>
+                            <div class="modal-input">
+                                <input class="name" type="text" name="name" placeholder="Metrobank" disabled>
+                            </div>
+                        </div>
+
+                        
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Type</p>
+                            <div class="modal-input">
+                                <input class="type" type="text" name="type" placeholder="Loan" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body-row-wrap">
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Debt</p>
+                            <div class="modal-input amount-input">
+                                <p class="currency-prefix">₱</p>
+                                <input class="debt" type="text" data-input="amount" name="debt" placeholder="10,000" disabled>
+                            </div>
+                        </div>
+
+                        
+                        <div class="modal-input-con">
+                            <p class="modal-input-label">Balance</p>
+                            <div class="modal-input amount-input">
+                                <p class="currency-prefix">₱</p>
+                                <input class="balance" type="text" data-input="amount" name="balance" placeholder="5,000" disabled>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-body-button-con">
+                        <button type="button" class="cancel">Cancel</button>
+                        <button type="submit" class="primary-btn modal-entity-btn"><span class="modal-entity-text"></span></button>
+                    </div>
+                </form>
 
             </div>
         </div>
@@ -586,7 +736,7 @@
 
                     <div class="modal-body-button-con">
                         <button class="cancel">Cancel</button>
-                        <button type="submit" id="updateTransactionBtn" class="primary-button">Update Transaction</button>
+                        <button type="submit" id="updateTransactionBtn" class="accent-btn">Update Transaction</button>
                     </div>
                 </form>
             </div>
@@ -606,7 +756,7 @@
                     <p class="modal-body-subhead" id="alertSubhead">Do you want to remove this transaction?</p>
                 </div>
 
-                <div class="modal-body-button-con">
+                <div class="modal-body-button-con-alert">
                     <button class="cancel">Cancel</button>
                     <button class="danger-button confirm" id="alertBtn">
                         <div class="log-out-icon hidden" id="logOutIconModal">
