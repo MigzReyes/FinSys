@@ -568,4 +568,7 @@ TO-DO
 4/16/2026
 
     Focus on front-end first, napapa refactor bigla pag nag back-end eh tang ina HAHA 
-    
+
+4/17/2026 
+
+    Remove `show` in classlist for forms inside modals 

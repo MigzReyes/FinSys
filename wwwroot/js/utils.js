@@ -48,6 +48,7 @@ export function initCloseModalListener() {
                     clearAllErrorInputFields(selectAllInputFields(f));
                 });
 
+                hideModalForms(form);
                 closeCloseableModal(parentModal);
             }
         } 
@@ -241,6 +242,9 @@ export function showError(message) { // REFACTOR remove this
 }
 
 
+function hideModalForms(forms) {
+    forms.forEach(f => f.classList.remove("show"));
+}
 
 export function getFormData(form = null) {
     form = form || document.querySelector(".modal-entity-form.active");
