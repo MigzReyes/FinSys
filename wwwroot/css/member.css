@@ -300,6 +300,19 @@ input[type="radio"] {
     color: var(--primary) !important;
 }
 
+/* ICON */
+.icon path {
+    fill: var(--secondary);
+}
+
+.icon-20 {
+    width: 20px;
+}
+
+.icon-15 {
+    width: 15px;
+}
+
 /* PADDING */
 .padding-left-1 {
     padding-left: var(--space-1);
@@ -1082,11 +1095,11 @@ main {
     color: var(--secondary);
 }
 
-.financial-transaction-table-con {
+.table-con {
     display: flex;
 }
 
-.financial-transaction-table-con table {
+.table-con table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
@@ -1094,16 +1107,16 @@ main {
     border-radius: var(--radius-md);
 }
 
-.financial-transaction-table-con th:first-child {
+.table-con th:first-child {
     padding-left: var(--space-5);
 } 
 
-.financial-transaction-table-con th:last-child {
+.table-con th:last-child {
     padding-right: var(--space-5);
     text-align: end;
 } 
 
-.financial-transaction-table-con th {
+.table-con th {
     font-weight: var(--font-medium);
     text-align: start;
     padding: var(--space-3) 0px;
@@ -1113,28 +1126,28 @@ main {
     text-align: center !important;
 }
 
-.financial-transaction-table-con td:first-child {
+.table-con td:first-child {
     padding-left: var(--space-5);
 }
 
-.financial-transaction-table-con th, td {
+.table-con th, td {
     color: var(--secondary);
     font-size: var(--text-sm);
     border-bottom: var(--border);
 }
 
-.financial-transaction-table-con td {
+.table-con td {
     padding: var(--space-4) 0px;
 }
 
-.financial-transaction-table-con td:last-child {
+.table-con td:last-child {
     display: flex;
     justify-content: end;
     padding-right: var(--space-5);
     gap: var(--space-3);
 } 
 
-.financial-transaction-table-con tr:last-child td {
+.table-con tr:last-child td {
     border: none;
 }
 
@@ -1770,6 +1783,176 @@ select {
     border-top: var(--border);
     border-bottom: var(--border);
 }
+
+
+/* ASSETS AND LIABILITIES */
+.assets-and-liabilities {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-7);
+}
+
+.assets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.assets-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.assets-head {
+    font-weight: var(--font-bold);
+    font-size: var(--text-xl);
+}
+
+.assets-body {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.assets-body-table-con {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+.pagination p {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+.pagination-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-1) var(--space-2);
+}
+
+.pagination-item:hover {
+    border-color: var(--primary);
+
+    & p, .icon path {
+        color: var(--primary);
+        fill: var(--primary) !important;
+    }
+}
+
+.page-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.pagination-item-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.page-number {
+    min-width: 25px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* PIE GRAPH CON */
+.pie-graph-con {
+    min-width: 380px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: var(--border);
+    border-radius: var(--radius-md);
+    gap: var(--space-6);
+    padding: var(--space-5);
+}
+
+.pie-graph-con-header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.pie-graph-con-header-title {
+    font-weight: var(--font-medium);
+    font-size: var(--text-sm);
+}
+
+.pie-graph-con-head-con {
+    display: flex;
+    align-items: end;
+    gap: var(--space-1);
+    padding-left: var(--space-1);
+}
+
+.pie-graph-con-head {
+    font-weight: var(--font-bold);
+    font-size: var(--text-2xl);
+}
+
+.pie-graph-con-subhead {
+    font-weight: var(--font-semi-bold);
+    font-size: var(--text-sm);
+}
+
+.pie-graph-legend {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.pie-graph-legend-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.pie-graph-legend-key {
+    content: "";
+    width: 16px;
+    height: 14px;
+    border-radius: var(--radius-full);
+    background: var(--primary);
+}
+
+.pie-graph-legend-data {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.pie-graph-legend-data-key {
+    font-weight: var(--font-medium);
+    font-size: var(--text-sm);
+    color: var(--secondary-muted);
+}
+
+.pie-graph-legend-data-value {
+    font-weight: var(--font-medium);
+    font-size: var(--text-sm);
+}
+
+
+
+
 
 
 
