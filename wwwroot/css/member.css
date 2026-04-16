@@ -33,6 +33,7 @@
   --danger-h: 0;
   --danger-s: 75%;
   --danger-l: 60%;
+  --danger-a: 1;
 
   --black: hsla(var(--black-h), var(--black-s), var(--black-l), var(--black-a));
   --black-muted-bg: hsla(var(--black-h), var(--black-s), var(--black-l), calc(var(--black-a) - 0.65));
@@ -49,6 +50,7 @@
   --decrease: hsl(var(--decrease-h), var(--decrease-s), var(--decrease-l));
   --increase: hsl(var(--increase-h), var(--increase-s), var(--increase-l));
   --danger: hsl(var(--danger-h), var(--danger-s), var(--danger-l));
+  --danger-muted-bg: hsla(var(--danger-h), var(--danger-s), var(--danger-l), calc(var(--danger-a) - 0.85));
 
   /* THIS IS BASED ON THE `font-size: 16px;` in `html{}`. wherein, 1rem == 16px  */
   --space-1: 0.25rem; /* 4px */
@@ -347,13 +349,24 @@ input[type="radio"] {
 }
 
 /* ADD PRIMARY BUTTON */
-.add-primary-btn {
+.accent-btn {
     display: flex;
     align-items: center;
     gap: var(--space-1);
     background: var(--accent);
     border: none;
     padding: var(--space-2) var(--space-4);
+}
+
+.primary-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: var(--primary);
+    border: none;
+    padding: var(--space-2) var(--space-4);
+    color: var(--white);
+    font-weight: var(--font-medium);
 }
 
 /* TEXT */
@@ -1792,28 +1805,23 @@ select {
     gap: var(--space-7);
 }
 
-.assets {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-}
-
-.assets-header{
+.assets-and-liabilities-header{
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
-.assets-head {
+.assets-and-liabilities-head {
     font-weight: var(--font-bold);
     font-size: var(--text-xl);
 }
 
-.assets-body {
+.assets-and-liabilities-header-btn-con {
     display: flex;
     gap: var(--space-3);
 }
 
-.assets-body-table-con {
+.table {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -1867,6 +1875,18 @@ select {
     min-width: 25px;
     max-width: 100%;
     height: auto;
+}
+
+/* ASSETS */
+.assets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.assets-body {
+    display: flex;
+    gap: var(--space-3);
 }
 
 /* PIE GRAPH CON */
@@ -1951,9 +1971,169 @@ select {
 }
 
 
+/* LIABILITIES */
+.liabilities {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
 
+.liabilities-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
 
+/* laibilities visual */
+.liabilities-visual {
+    display: flex;
+    gap: clamp(32px, 5vw, 64px);
+    border: var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+}
 
+.liabilities-visual-balance-con {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.liabilities-visual-balance-con-head {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--secondary);
+}
+
+.liabilities-visual-balance-con-subhead {
+    font-size: var(--text-md);
+    font-weight: var(--font-semi-bold);
+    color: var(--secondary-muted);
+}
+
+.liabilities-visual-graph-con {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.liabilities-visual-graph-con-header {
+    display: flex;
+    align-items: end;
+    gap: var(--space-1);
+}
+
+.liabilities-visual-graph-head {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--secondary);
+}
+
+.liabilities-visual-graph-subhead {
+    font-size: var(--text-md);
+    font-weight: var(--font-semi-bold);
+    color: var(--secondary-muted);
+}
+
+.liabilities-visual-graph {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.liabilities-visual-graph-horizontal {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.liabilities-visual-graph-horizontal-item {
+    content: "";
+    border-radius: var(--radius-md);
+}
+
+.loan { /* REMOVE THIS */
+    height: 6px;
+    width: 160px;
+    background: var(--primary);
+}
+
+.tax { /* REMOVE THIS */
+    height: 6px;
+    width: 40px;
+    background: var(--secondary);
+}
+
+.wages { /* REMOVE THIS */
+    height: 6px;
+    width: 90px;
+    background: var(--accent);
+}
+
+.liabilities-visual-graph-legend {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.horizontal-graph-legend-con {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.horizontal-graph-legend-key {
+    height: 100%;
+    width: 5px;
+    background: var(--primary);
+    border-radius: var(--radius-md);
+}
+
+.horizontal-graph-legend-data-key {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--secondary-muted);
+}
+
+.liabilities-visual-dashboard-con {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(32px, 5vw, 64px);
+}
+
+.liabilities-visual-dashboard-con-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.liabilities-visual-dashboard-con-item-head {
+    font-weight: var(--font-bold);
+    font-size: var(--text-xl);
+    color: var(--secondary);
+}
+
+.liabilities-visual-dashboard-con-item-subhead {
+    font-weight: var(--font-semi-bold);
+    font-size: var(--text-md);
+    color: var(--secondary-muted);
+}
+
+.liabilities-visual-graph-dashboard-active {
+    color: var(--primary);
+} 
+
+.liabilities-visual-graph-dashboard-paid {
+    color: var(--increase);
+} 
+
+.liabilities-visual-graph-dashboard-due {
+    color: var(--danger);
+} 
+
+/* TABLE liabilities */
+.due-liability {
+    background: var(--danger-muted-bg);
+}
 
 
 
@@ -2235,7 +2415,12 @@ select {
         width: 100%;
     }
 
-    .add-primary-btn {
+    .accent-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .primary-btn {
         width: 100%;
         justify-content: center;
     }
