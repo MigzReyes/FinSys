@@ -49,6 +49,15 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult FinancialStatements()
+    {
+        return View();
+    }
+
+    public IActionResult AssetsAndLiabilities()
+    {
+        return View();
+    }
     
     public IActionResult Settings()
     {

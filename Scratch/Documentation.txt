@@ -564,3 +564,8 @@ TO-DO
     fix amountInputToHundreds format do not remove `-`
 
     validate `-` values for red and positive for blue
+
+4/16/2026
+
+    Focus on front-end first, napapa refactor bigla pag nag back-end eh tang ina HAHA 
+    
