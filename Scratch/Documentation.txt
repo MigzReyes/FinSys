@@ -571,4 +571,8 @@ TO-DO
 
 4/17/2026 
 
-    Remove `show` in classlist for forms inside modals 
+    Remove `show` in classlist for forms inside modals -- DONE
+
+    Make add assets functional and display it. same with liabilities
+
+    

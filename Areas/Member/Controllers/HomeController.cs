@@ -153,6 +153,39 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> AssetRegistration([FromBody] AssetRegistrationDto assetDto) 
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+
+        // ASSET ID
+        var random = new Random();
+        string prefix = "";
+        for (int i = 0; i < 3; i++)
+        {
+            char letter = (char)random.Next('A', 'Z' + 1);
+            prefix += letter;
+        }
+
+        string threeDigitNumber = random.Next(100, 999).ToString();
+        string assetId = prefix + threeDigitNumber;
+
+
+        var asset = new Assets
+        {
+            CompanyId = companyId,
+            AssetId = assetId,
+            Item = assetDto.Item,
+            Category = assetDto.Category,
+            Amount = assetDto.Amount
+        };
+
+        _context.Assets.Add(asset);
+        await _context.SaveChangesAsync();
+
+        return Ok(asset);
+    }
+    
+    [HttpPost]
     public async Task<IActionResult> InvestorRegistration([FromBody] InvestorRegistration investorDto) 
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
@@ -169,15 +202,10 @@ public class HomeController : Controller
         string threeDigitNumber = random.Next(100, 999).ToString();
         string stakeholderId = prefix + threeDigitNumber;
 
-        Console.WriteLine("Company Id " + Convert.ToInt32(User.FindFirst("CompanyId")?.Value));
-        Console.WriteLine("Stakeholder Id " + stakeholderId);
-        Console.WriteLine("address" + investorDto.FirstName);
-        
-        // INCOME
-
-        // ROI
-
-
+        //Console.WriteLine("Company Id " + Convert.ToInt32(User.FindFirst("CompanyId")?.Value));
+        //Console.WriteLine("Stakeholder Id " + stakeholderId);
+        //Console.WriteLine("address" + investorDto.FirstName);
+    
         var investor = new Investors
         {
             CompanyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value),

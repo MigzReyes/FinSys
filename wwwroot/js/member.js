@@ -692,6 +692,42 @@ const PageScripts = {
         payLiabilityBtn.addEventListener("click", function () {
             showModalEntity("Pay Liability", "payLiability", "payLiability");
         });
+
+
+        // ADD ASSET
+        const assetForm = document.getElementById("assetsRegistration");
+        assetForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            if (modalEntityBtnAction === "addAsset") {
+                if (utils.inputEmptyValidation(assetForm)) {
+                    utils.validateInputFieldsValue(assetForm);
+
+                    const formData = utils.getFormData(assetForm);
+
+                    utils.debug("Investment", formData);
+
+                    await fetch("/Member/Home/AssetRegistration", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(formData)
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Asset data", data);
+                        utils.validateInputFieldsValue(assetForm);
+                        utils.clearForm(assetForm);
+                        utils.clearAllErrorInputFields(utils.selectAllInputFields(assetForm));
+                        utils.closeModal(modal);
+                    })
+                    .catch(err => utils.debug("Error", err));
+
+                } else {
+                    utils.validateInputFieldsValue(assetForm);
+                }
+            }
+        });
     },
 
     settings: function() {

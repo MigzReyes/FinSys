@@ -268,7 +268,11 @@ function normalizeFormData(data) {
 
         tin: data.tin
             ? Number(data.tin.replace(/-/g, ""))
-            : null
+            : null,
+
+        amount: data.amount
+            ? Number(data.amount.replace(/,/g, ""))
+            : null,
         };
 }
 

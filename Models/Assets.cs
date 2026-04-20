@@ -6,7 +6,7 @@ namespace FinSys.Models
 
         public required int CompanyId { get; set; }
 
-        public required int AssetId { get; set; }
+        public required string AssetId { get; set; }
 
         public required string Item { get; set; }
 
