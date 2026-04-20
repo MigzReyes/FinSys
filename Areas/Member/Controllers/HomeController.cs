@@ -519,6 +519,15 @@ public class HomeController : Controller
         return Ok(investors);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAssets()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var assets = await _context.Assets.Where(i => i.CompanyId == companyId).ToListAsync();
+
+        return Ok(assets);
+    }
+
     [HttpPost]
     public async Task<IActionResult> GetEmployee([FromBody] EmployeeDto employeeDto)
     {
