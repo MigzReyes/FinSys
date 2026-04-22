@@ -77,6 +77,10 @@ alertBtn.addEventListener("click", function () {
             utils.closeModal(modal);
             utils.logout();
             break;
+        case "removeAsset": 
+            utils.closeModal(modal);
+            break;
+
         default:
             utils.debug("Action", "No action data attribute received");
             break;
@@ -697,25 +701,40 @@ const PageScripts = {
         // DISPLAY DATA
         loadAsset();
 
-        // EDIT
+        // EVENT DEL
+        let selectedEntityId;
         document.addEventListener("click", function (e) {
-            const btn = e.target.closest(".editAssetBtn, .editLiabilityBtn");
+            const btn = e.target.closest(".editAssetBtn, .editLiabilityBtn, .deleteAssetBtn");
             if (!btn) return;
 
-            let entityId = btn.dataset.id;
+            selectedEntityId = btn.dataset.id;
 
+            // EDIT
             if (btn.classList.contains("editAssetBtn")) {
                 utils.debug("Edit asset", "clicked");
-                displayEntityOnModal("Edit Asset", "editAsset", "assets", entityId);
+                displayEntityOnModal("Edit Asset", "editAsset", "assets", selectedEntityId);
             }
 
             if (btn.classList.contains("editLiabilityBtn")) {
                 utils.debug("Edit liability", "clicked");
             }
 
+            // DELETE
+            if (btn.classList.contains("deleteAssetBtn")) {
+                showModalAlert("Do you want to remove this asset?", "Remove Asset", "removeAsset");
+            }
         });
 
-        // DELETE
+        document.addEventListener("click", function (e) {
+            const actionBtn = e.target.closest("[data-action]");
+            if (!actionBtn) return;
+
+            if (actionBtn?.dataset.action === "removeAsset") {
+                utils.debug("Delete asset", "Deleted asset");
+                deleteEntity(selectedEntityId, "Asset");
+            }
+        });
+
 
         // ADD and EDIT ASSET
         const assetForm = document.getElementById("assetsRegistration");
@@ -854,6 +873,20 @@ async function getAsset(id, form) {
 }
 
 // ASSETS
+
+async function deleteEntity(id, entity) {
+    const res = await fetch(`/Member/Home/Delete${entity}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Id: id })
+    });
+
+    const data = await res.json();
+
+    await loadAsset(); // REFACTOR
+}
 
 async function displayAssets(data, listCon) {
     const table = listCon;

@@ -320,6 +320,19 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> DeleteAsset([FromBody] AssetDto assetDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var asset = await _context.Assets.Where(a => a.Id == assetDto.Id && a.CompanyId == companyId).FirstOrDefaultAsync();
+
+        _context.Assets.Remove(asset);
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Deleted employee"});
+    }
+
+    [HttpPost]
     public async Task<IActionResult> EditFinancialTransaction([FromBody] FinancialTransactionsDto transactionsDto)
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
