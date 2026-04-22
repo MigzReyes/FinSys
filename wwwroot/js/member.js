@@ -92,6 +92,9 @@ utils.initInputListener();
 utils.initCloseModalListener(); 
 
 
+let totalAssetPage; // PAGINATION
+
+
 // PAGE BASED INITIALIZATION PATTERN **Para confined yung js code for each page
 const PageScripts = {
     dashboard: function() {
@@ -682,6 +685,10 @@ const PageScripts = {
     assetsAndLiabilities: function() {
         utils.debug("Page", "Assets and Liabilities");
 
+        // CURRENT PAGE
+        let currentAssetPage = 1;
+        let currentLiabilityPage = 1;
+
         const addAssetBtn = document.getElementById("addAssetBtn");
         addAssetBtn.addEventListener("click", function () {
             showModalEntity("Add Asset", "addAsset", "assets");
@@ -699,7 +706,7 @@ const PageScripts = {
 
         
         // DISPLAY DATA
-        loadAsset();
+        loadEntity(currentAssetPage, "Assets");
 
         // EVENT DEL
         let selectedEntityId;
@@ -725,13 +732,40 @@ const PageScripts = {
             }
         });
 
+        // DELETE CONFIRM
         document.addEventListener("click", function (e) {
             const actionBtn = e.target.closest("[data-action]");
             if (!actionBtn) return;
 
             if (actionBtn?.dataset.action === "removeAsset") {
                 utils.debug("Delete asset", "Deleted asset");
-                deleteEntity(selectedEntityId, "Asset");
+                deleteEntity(selectedEntityId, "Asset", currentAssetPage);
+            }
+        });
+
+        // PAGINATION
+        document.addEventListener("click", (e) => {
+            const pageBtn = e.target.closest(".page-number, .next, .prev");
+            if (!pageBtn) return;
+
+            if (pageBtn.classList.contains("page-number")) {
+                const page = parseInt(pageBtn.dataset.page);
+                currentAssetPage = page; // REFACTOR
+
+                utils.debug("Page num", page);
+                loadEntity(page, "Assets");
+            }
+
+
+            if (pageBtn.classList.contains("prev")) {
+                if (currentAssetPage > 1) loadEntity(--currentAssetPage, "Assets"); // REFACTOR
+            }
+
+            if (pageBtn.classList.contains("next")) {
+                if (currentAssetPage < totalAssetPage) {
+                    utils.debug("total asset page", totalAssetPage);
+                    loadEntity(++currentAssetPage, "Assets"); // REFACTOR
+                }
             }
         });
 
@@ -762,7 +796,7 @@ const PageScripts = {
                     })
                     .catch(err => utils.debug("Error", err));
 
-                    loadAsset();
+                    loadEntity(currentAssetPage, "Assets");
                 } else {
                     utils.validateInputFieldsValue(assetForm);
                 }
@@ -791,7 +825,7 @@ const PageScripts = {
                     })
                     .catch(err => utils.debug("Error", err));
 
-                    loadAsset();
+                    loadEntity(currentAssetPage, "Assets");
                 } else {
                     utils.validateInputFieldsValue(assetForm);
                 }
@@ -823,30 +857,84 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // FUNCTIONS
 
-function displayEntityOnModal(text, actions, entity, id) {
-    showModalEntity(text, actions, entity);
-    const form = utils.getModalForm(modal);
-    modalEntityBtn.dataset.id = id;
+// PAGINATION
+async function loadEntity(page, entity) {
+    const res = await fetch(`/Member/Home/Get${entity}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            pageNumber: page,
+            pageSize: 5
+        })
+    });
 
-    switch (entity) {
-        case "employee":
-            // Create a function for getting the data from each entity
-            break;
+    const data = await res.json();
 
-        case "assets":
-            // Create a function for getting the data from each entity
-            getAsset(id, form);
-            break;
+    utils.debug("data", data.data);
 
-        case "liabilities":
-            // Create a function for getting the data from each entity
-            break;
+    totalAssetPage = data.totalPages;
 
-        default: 
-            utils.debug("Display Entity On Modal", "No Entity");
+    renderEntity(data.data);
+    renderPagination(page, data.totalPages);
+}
+
+function renderEntity(items) {
+    const tbody = document.getElementById("assetsTable");
+    tbody.innerHTML = "";
+
+    items.forEach(t => {
+        tbody.innerHTML += `
+            <tr data-id="${t.id}">
+                <td>${dateFormat(t.createdAt)}</td>
+                <td class="data-text-limit">${t.item}</td>
+                <td>${t.category}</td>
+                <td>${t.assetId}</td>
+                <td>${utils.amountInputFormatToHundreds(t.amount)}</td>
+                <td>
+                    <div class="action-con editAssetBtn" data-id="${t.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
+                    </div>
+
+                    <div class="action-con deleteAssetBtn" data-id="${t.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderPagination(page, totalPages) {
+    const container = document.querySelector(".pagination-item-con");
+    container.innerHTML = "";
+
+    const { start, end } = getPageRange(page, totalPages, 5);
+
+    for (let i = start; i <= end; i++) {
+        container.innerHTML += `
+            <li class="pagination-item page-number ${i === page ? "active-page" : ""}" data-page="${i}">
+                <p>${i}</p>
+            </li>
+        `;
     }
 }
 
+function getPageRange(currentPage, totalPages, maxVisible = 5) {
+    let start = Math.max(currentPage - Math.floor(maxVisible / 2), 1);
+    let end = start + maxVisible - 1;
+
+    if (end > totalPages) {
+        end = totalPages;
+        start = Math.max(end - maxVisible + 1, 1);
+    }
+
+    return { start, end}
+}
+
+
+// ASSETS
 async function getAsset(id, form) {
     try {
         await fetch("/Member/Home/GetAsset", {
@@ -872,64 +960,6 @@ async function getAsset(id, form) {
     }
 }
 
-// ASSETS
-
-async function deleteEntity(id, entity) {
-    const res = await fetch(`/Member/Home/Delete${entity}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ Id: id })
-    });
-
-    const data = await res.json();
-
-    await loadAsset(); // REFACTOR
-}
-
-async function displayAssets(data, listCon) {
-    const table = listCon;
-    table.innerHTML = "";
-
-    data.forEach(t => {
-        const row = document.createElement("tr");
-        row.dataset.id = t.id;
-
-        row.innerHTML = `
-            <tr data-id="${t.id}">
-                <td>${dateFormat(t.createdAt)}</td>
-                <td>${t.item}</td>
-                <td>${t.category}</td>
-                <td>${t.assetId}</td>
-                <td>${utils.amountInputFormatToHundreds(t.amount)}</td>
-                <td>
-                    <div class="action-con editAssetBtn" data-id="${t.id}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
-                    </div>
-
-                    <div class="action-con deleteAssetBtn" data-id="${t.id}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
-                    </div>
-                </td>
-            </tr>
-        `
-
-        table.appendChild(row);
-    });
-}
-
-async function loadAsset() {
-    try {
-        const res = await fetch("/Member/Home/GetAssets");
-        const assets = await res.json();
-
-        const assetsCardCon = document.getElementById("assetsTable");
-        displayAssets(assets, assetsCardCon);
-    } catch (err) {
-        utils.debug("Assets Display Error", err);
-    }
-}
 
 // INVESTORS
 async function getCapitalInvestment(tag) {
@@ -1446,6 +1476,14 @@ async function pickerTransaction(selected) {
     }
 }
 
+function showModalEditTransaction() {
+    // REFACTOR centralise this
+
+    utils.showParentModal(modal);
+
+    editTransactionModal.classList.add("show");
+}
+
 async function deleteTransaction(id, type) {
     const res = await fetch("/Member/Home/DeleteTransaction", {
         method: "POST",
@@ -1852,13 +1890,49 @@ function navOverlayChange(event) {
 }
 
 // MODAL
+async function deleteEntity(id, entity, currentAssetPage) {
+    const res = await fetch(`/Member/Home/Delete${entity}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Id: id })
+    });
 
-function showModalEditTransaction() {
-    // REFACTOR centralise this
+    const data = await res.json();
 
-    utils.showParentModal(modal);
+    switch (entity) {
+        case "Asset":
+            entity = "Assets";
+            break;
+        
+    }
 
-    editTransactionModal.classList.add("show");
+    await loadEntity(currentAssetPage, entity); // REFACTOR
+}
+
+function displayEntityOnModal(text, actions, entity, id) {
+    showModalEntity(text, actions, entity);
+    const form = utils.getModalForm(modal);
+    modalEntityBtn.dataset.id = id;
+
+    switch (entity) {
+        case "employee":
+            // Create a function for getting the data from each entity
+            break;
+
+        case "assets":
+            // Create a function for getting the data from each entity
+            getAsset(id, form);
+            break;
+
+        case "liabilities":
+            // Create a function for getting the data from each entity
+            break;
+
+        default: 
+            utils.debug("Display Entity On Modal", "No Entity");
+    }
 }
 
 function showModalEntity(text, actions, entity) {

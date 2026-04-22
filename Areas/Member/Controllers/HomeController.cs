@@ -557,13 +557,17 @@ public class HomeController : Controller
         return Ok(investors);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAssets()
+    [HttpPost]
+    public async Task<IActionResult> GetAssets([FromBody] PagingDto pagingDto)
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
-        var assets = await _context.Assets.Where(i => i.CompanyId == companyId).ToListAsync();
+        var assets = _context.Assets.Where(a => a.CompanyId == companyId).OrderByDescending(a => a.Id);
 
-        return Ok(assets);
+        var totalRecords = await assets.CountAsync();
+
+        var data = await assets.Skip((pagingDto.PageNumber - 1) * pagingDto.PageSize).Take(pagingDto.PageSize).ToListAsync();
+
+        return Ok( new { data = data, totalRecords, pagingDto.PageNumber, pagingDto.PageSize, totalPages = (int)Math.Ceiling(totalRecords / (double)pagingDto.PageSize)});
     }
 
     [HttpPost]

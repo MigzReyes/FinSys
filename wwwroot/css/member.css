@@ -297,6 +297,23 @@ input[type="radio"] {
     display: none !important;
 }
 
+/* PAGINATION */
+.active-page {
+    border-color: var(--primary) !important;
+
+    & p, .icon path {
+        color: var(--primary) !important;
+        fill: var(--primary) !important;
+    }
+}
+
+.data-text-limit {
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* COLOR IDENTIFIER */
 .danger, .deductions {
     color: var(--danger) !important;
@@ -1852,6 +1869,7 @@ select {
 
 .pagination-item:hover {
     border-color: var(--primary);
+    cursor: pointer;
 
     & p, .icon path {
         color: var(--primary);
