@@ -243,7 +243,24 @@ export function showError(message) { // REFACTOR remove this
 
 
 function hideModalForms(forms) {
-    forms.forEach(f => f.classList.remove("show"));
+    forms.forEach(f => f.classList.remove("show", "active"));
+}
+
+export function populateForm(form, data, fields) {
+    fields.forEach(key => {
+        const input = form.elements.namedItem(key);
+        if (!input) utils.debug("Get Input", "No input");
+
+        if (key === "amount" && data[key] != null) {
+            input.value = Number(data[key]).toLocaleString();
+        }
+
+        input.value = data[key] ?? "No data";
+    });
+}
+
+export function getModalForm(modal) {
+    return modal.querySelector(".active");
 }
 
 export function getFormData(form = null) {
