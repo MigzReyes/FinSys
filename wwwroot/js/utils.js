@@ -246,13 +246,20 @@ function hideModalForms(forms) {
     forms.forEach(f => f.classList.remove("show", "active"));
 }
 
+export function clearAndCloseModal(form, modal) {
+    validateInputFieldsValue(form);
+    clearForm(form);
+    clearAllErrorInputFields(selectAllInputFields(form));
+    closeModal(modal);
+}
+
 export function populateForm(form, data, fields) {
     fields.forEach(key => {
         const input = form.elements.namedItem(key);
         if (!input) utils.debug("Get Input", "No input");
 
         if (key === "amount" && data[key] != null) {
-            input.value = Number(data[key]).toLocaleString();
+            input.value = amountInputFormatToHundreds(Number(data[key]).toLocaleString());
         }
 
         input.value = data[key] ?? "No data";

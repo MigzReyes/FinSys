@@ -338,6 +338,22 @@ public class HomeController : Controller
         return Ok( new { message = "Transaction updated successfully" });
     }
 
+    [HttpPost]
+    public async Task<IActionResult> EditAsset([FromBody] AssetDto assetDto) 
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var asset = await _context.Assets.Where(a => a.Id == assetDto.Id && a.CompanyId == companyId).FirstOrDefaultAsync();
+
+        if (asset == null) return Ok (asset);
+
+        asset.Item = assetDto.Item;
+        asset.Category = assetDto.Category; 
+        asset.Amount = assetDto.Amount;
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Asset edited successfully"});
+    }
 
     [HttpPost] 
     public async Task<IActionResult> EditEmployee([FromBody] EmployeeDto employeeDto)

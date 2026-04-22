@@ -711,14 +711,13 @@ const PageScripts = {
 
             if (btn.classList.contains("editLiabilityBtn")) {
                 utils.debug("Edit liability", "clicked");
-
             }
 
         });
 
         // DELETE
 
-        // ADD ASSET
+        // ADD and EDIT ASSET
         const assetForm = document.getElementById("assetsRegistration");
         assetForm.addEventListener("submit", async function (e) {
             e.preventDefault();
@@ -740,10 +739,36 @@ const PageScripts = {
                     }).then(res => res.json())
                     .then(data => {
                         utils.debug("Asset data", data);
-                        utils.validateInputFieldsValue(assetForm);
-                        utils.clearForm(assetForm);
-                        utils.clearAllErrorInputFields(utils.selectAllInputFields(assetForm));
-                        utils.closeModal(modal);
+                        utils.clearAndCloseModal(assetForm, modal);
+                    })
+                    .catch(err => utils.debug("Error", err));
+
+                    loadAsset();
+                } else {
+                    utils.validateInputFieldsValue(assetForm);
+                }
+            } else {
+                if (utils.inputEmptyValidation(assetForm)) {
+                    utils.validateInputFieldsValue(assetForm);
+
+                    const assetId = modalEntityBtn.dataset.id;
+                    const formData = utils.getFormData(assetForm);
+
+                    utils.debug("Investment", formData);
+
+                    await fetch("/Member/Home/EditAsset", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            Id: assetId,
+                            ...formData
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Asset data", data);
+                        utils.clearAndCloseModal(assetForm, modal);
                     })
                     .catch(err => utils.debug("Error", err));
 
@@ -782,7 +807,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function displayEntityOnModal(text, actions, entity, id) {
     showModalEntity(text, actions, entity);
     const form = utils.getModalForm(modal);
-
+    modalEntityBtn.dataset.id = id;
 
     switch (entity) {
         case "employee":
