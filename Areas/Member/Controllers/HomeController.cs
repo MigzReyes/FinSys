@@ -572,6 +572,31 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> GetSelectedLiabilities([FromBody] LiabilityPickerDto liabilityPickerDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var today = DateTime.UtcNow.Date; // FIX does not detect due yesterday
+
+        var liabilities = _context.Liabilities
+            .Where(l => l.CompanyId == companyId);
+
+        if (liabilityPickerDto.Selected == "Due")
+        {
+            liabilities = liabilities.Where(l => l.Due <= today && l.Status != "Paid");
+        }
+        else
+        {
+            liabilities = liabilities.Where(l => l.Status == liabilityPickerDto.Selected);
+        }
+
+        var totalRecords = await liabilities.CountAsync();
+
+        var data = await liabilities.Skip((liabilityPickerDto.PageNumber - 1) * liabilityPickerDto.PageSize).Take(liabilityPickerDto.PageSize).ToListAsync();
+
+        return Ok( new { data = data, totalRecords, liabilityPickerDto.PageNumber, liabilityPickerDto.PageSize, totalPages = (int)Math.Ceiling(totalRecords / (double)liabilityPickerDto.PageSize)});
+    }
+
+    [HttpPost]
     public async Task<IActionResult> GetFinancialTransaction([FromBody] FinancialTransactionsDto transactionDto)
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
@@ -656,7 +681,7 @@ public class HomeController : Controller
     public async Task<IActionResult> GetLiabilitiesDashboardData()
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
-        var today = DateTime.UtcNow.Date;
+        var today = DateTime.UtcNow.Date; // FIX does not detect due yesterday
 
         var query = _context.Liabilities
             .Where(x => x.CompanyId == companyId);
@@ -670,7 +695,7 @@ public class HomeController : Controller
             paid = await query.CountAsync(x => x.Status == "Paid"),
 
             due = await query.CountAsync(x =>
-                x.Due < today && x.Status != "Paid")
+                x.Due <= today && x.Status != "Paid")
         };
 
         return Ok(result);

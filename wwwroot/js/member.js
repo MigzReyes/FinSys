@@ -836,6 +836,36 @@ const PageScripts = {
 
         });
 
+        // LIABILITY PICKER
+        document.querySelector(".picker-con").addEventListener("click", function (e) {
+            let selectedType;
+
+            const all = e.target.closest(".pickerAll")?.dataset.item;
+            const active = e.target.closest(".pickerActive")?.dataset.item;
+            const paid = e.target.closest(".pickerPaid")?.dataset.item;
+            const due = e.target.closest(".pickerDue")?.dataset.item;
+
+            if (all) {
+                utils.debug("Picker", all);
+                selectedType = all;
+                loadLiabilityPicker(paginationState["Liabilities"].current, all);
+            } else if (active) {
+                utils.debug("Picker", active);
+                selectedType = active;
+                loadLiabilityPicker(paginationState["Liabilities"].current, active);
+            } else if (paid) {  
+                utils.debug("Picker", paid);
+                selectedType = paid;
+                loadLiabilityPicker(paginationState["Liabilities"].current, paid);
+            } else if (due) {  
+                utils.debug("Picker", due);
+                selectedType = due;
+                loadLiabilityPicker(paginationState["Liabilities"].current, due);
+            } else {
+                utils.debug("Picker error", "Nothing picked");
+            }
+        });
+
         // ADD and EDIT ASSET
         const assetForm = document.getElementById("assetsRegistration");
         assetForm.addEventListener("submit", async function (e) {
@@ -1019,8 +1049,6 @@ async function loadEntity(page, entity) {
             loadEntity(p, "Liabilities");
         });
     }
-
-    //renderPagination(entity, page, data.totalPages);
 }
 
 function renderEntity(items, entity) {
@@ -1147,6 +1175,47 @@ async function getLiability(id, form) {
     } catch (err) {
         utils.debug("Error", err);
     }
+}
+
+async function loadLiabilityPicker(page, selected) {
+
+    if (selected === "Active" || selected === "Paid" || selected === "Due") {   
+        try {
+            const res = await fetch(`/Member/Home/GetSelectedLiabilities`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    pageNumber: page,
+                    pageSize: 5,
+                    Selected: selected
+                })
+            });
+
+            const data = await res.json();
+
+            utils.debug("data", data.data);
+
+            renderEntity(data.data, "Liabilities");
+
+            paginationState["Liabilities"].current = page;
+            paginationState["Liabilities"].total = data.totalPages;
+
+            const container = document.querySelector("#liabilitiesPagination");
+            renderPagination(container, page, data.totalPages, (p) => {
+                paginationState["Liabilities"].current = p;
+                loadLiabilityPicker(p, selected);
+            });
+
+            utils.debug("Liabilities picker", liabilities);
+
+        } catch (err) {
+            utils.debug("Error", err);    
+        }
+    } else {
+        loadEntity(paginationState["Liabilities"].current, "Liabilities");
+    }    
 }
 
 async function displayLiabilitesDashboard() {

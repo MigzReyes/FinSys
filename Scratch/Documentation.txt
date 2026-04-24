@@ -584,5 +584,11 @@ TO-DO
 
     Should we reset paid, balance, and progress if liabilities are edited????
 
+    fix due on backend -- fixed
+
+    fix next and prev for liability when something is picked in picker && when edited or deleted...
+
+    pay liability
+
 
     
