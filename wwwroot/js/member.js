@@ -898,7 +898,7 @@ const PageScripts = {
                     utils.validateInputFieldsValue(liabilitiesForm);
                 }
             } else {
-                
+
             }
         });
 
@@ -960,7 +960,7 @@ function renderEntity(items, entity) {
             items.forEach(t => {
                 tbody.innerHTML += `
                     <tr data-id="${t.id}">
-                        <td>${dateFormat(t.createdAt)}</td>
+                        <td>${utils.dateFormat(t.createdAt)}</td>
                         <td class="data-text-limit">${t.item}</td>
                         <td>${t.category}</td>
                         <td>${t.assetId}</td>
@@ -988,7 +988,7 @@ function renderEntity(items, entity) {
 
                 tbody.innerHTML += `
                     <tr class="${isDue ?  "" : "due-liability"}" data-id="${t.id}">
-                        <td>${t.due}</td>
+                        <td>${utils.dateFormat(t.due)}</td>
                         <td>${t.name}</td>
                         <td>${t.type}</td>
                         <td>₱${t.debt}</td>
@@ -1154,7 +1154,7 @@ async function displayInvestors(data, listCon) {
                 <div class="table-card-border"></div>
 
                 <div class="table-card-created-at">
-                    <p>Date of Investment: ${dateFormat(e.createdAt)}</p>
+                    <p>Date of Investment: ${utils.dateFormat(e.createdAt)}</p>
                 </div>
             </div>
             `;
@@ -1667,7 +1667,7 @@ async function displayTransactions(data, tableId) {
                 <div class="financial-transaction-card-header">
                     <div class="financial-transaction-card-head">
                         <p class="card-head">${c.category}</p>
-                        <p class="card-date">${dateFormat(c.dateOfTransaction)}</p>
+                        <p class="card-date">${utils.dateFormat(c.dateOfTransaction)}</p>
                     </div>
 
                     <div class="financial-transaction-card-action-con">
@@ -1725,7 +1725,7 @@ async function displayTransactions(data, tableId) {
 
             row.innerHTML = `
                 <tr data-id="${t.id}">
-                    <td>${dateFormat(t.dateOfTransaction)}</td>
+                    <td>${utils.dateFormat(t.dateOfTransaction)}</td>
                     <td id="type" class="${type}">${t.type}</td>
                     <td>${t.category}</td>
                     <td class="description">${t.description}</td> <!-- Re design this shit set a maximum words then gawa ka ng parang button na "see more" -->
@@ -1909,7 +1909,7 @@ async function displayEmployees(data, listCon) {
                 <div class="table-card-border"></div>
 
                 <div class="table-card-created-at">
-                    <p>Added: ${dateFormat(e.createdAt)}</p>
+                    <p>Added: ${utils.dateFormat(e.createdAt)}</p>
                 </div>
             </div>
             `;
@@ -1932,16 +1932,6 @@ async function loadEmployees() {
 
 
 // VALIDATION
-function dateFormat(date) {
-    const format = new Date(date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric"
-    });
-
-    return format;
-}
-
 function displayCompanyInfo() {
     fetch("/Member/Home/GetCompanyInfo")
         .then(res => res.json())

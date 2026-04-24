@@ -358,8 +358,8 @@ export function setDateToday(dateInput) {
     dateInput.value = today;
 }
 
-export function isDueLiability(dateString) {
-    const [y, m, d] = dateString.split("T")[0].split("-").map(Number);
+export function isDueLiability(date) {
+    const [y, m, d] = date.split("T")[0].split("-").map(Number);
 
     const input = new Date(y, m - 1, d);
     const today = new Date();
@@ -369,6 +369,15 @@ export function isDueLiability(dateString) {
     return input >= today;
 }
 
+export function dateFormat(date) {
+    const format = new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric"
+    });
+
+    return format;
+}
 
 export function formatEmail(email) {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
