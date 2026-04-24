@@ -652,6 +652,30 @@ public class HomeController : Controller
         return Ok( new { data = data, totalRecords, pagingDto.PageNumber, pagingDto.PageSize, totalPages = (int)Math.Ceiling(totalRecords / (double)pagingDto.PageSize)});
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetLiabilitiesDashboardData()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var today = DateTime.UtcNow.Date;
+
+        var query = _context.Liabilities
+            .Where(x => x.CompanyId == companyId);
+
+        var result = new
+        {
+            totalLiabilities = await query.CountAsync(),
+            remainingBalance = await query.SumAsync(x => x.Balance),
+
+            active = await query.CountAsync(x => x.Status == "Active"),
+            paid = await query.CountAsync(x => x.Status == "Paid"),
+
+            due = await query.CountAsync(x =>
+                x.Due < today && x.Status != "Paid")
+        };
+
+        return Ok(result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> GetEmployee([FromBody] EmployeeDto employeeDto)
     {

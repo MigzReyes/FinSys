@@ -718,6 +718,15 @@ const PageScripts = {
         // DISPLAY DATA
         loadEntity(paginationState["Assets"].current, "Assets");
         loadEntity(paginationState["Liabilities"].current, "Liabilities");
+        
+        // LIABILITIES DASHBOARD
+        const liabilitiesRemainingBalance = document.getElementById("liabilitiesRemainingBalance");
+        const totalLiabilities = document.getElementById("totalLiabilities");
+        const activeLiabilities = document.getElementById("activeLiabilities");
+        const paidLiabilities = document.getElementById("paidLiabilities");
+        const  dueLiabilities = document.getElementById("dueLiabilities");
+
+        displayLiabilitesDashboard();
 
         // PICKER
         const pickerAll = document.getElementById("pickerAll");
@@ -795,11 +804,11 @@ const PageScripts = {
             if (actionBtn?.dataset.action === "removeLiability") {
                 utils.debug("Delete liabilityt", "Deleted liability");
                 deleteEntity(selectedEntityId, "Liability");
+                displayLiabilitesDashboard();
             }
         });
 
         
-
         // PAGINATION
         document.addEventListener("click", (e) => {
             const btn = e.target.closest(".next, .prev");
@@ -826,7 +835,6 @@ const PageScripts = {
             }
 
         });
-
 
         // ADD and EDIT ASSET
         const assetForm = document.getElementById("assetsRegistration");
@@ -916,6 +924,7 @@ const PageScripts = {
                     .catch(err => utils.debug("Error", err));
 
                     loadEntity(paginationState["Liabilities"].current, "Liabilities");
+                    displayLiabilitesDashboard();
                 } else {
                     utils.validateInputFieldsValue(liabilitiesForm);
                 }
@@ -943,6 +952,7 @@ const PageScripts = {
                     .catch(err => utils.debug("Error", err));
 
                     loadEntity(paginationState["Liabilities"].current, "Liabilities");
+                    displayLiabilitesDashboard();
                 } else {
                     utils.validateInputFieldsValue(liabilitiesForm);
                 }
@@ -973,7 +983,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // FUNCTIONS
 
-// PAGINATION
 async function loadEntity(page, entity) {
     const res = await fetch(`/Member/Home/Get${entity}`, {
         method: "POST",
@@ -1056,9 +1065,9 @@ function renderEntity(items, entity) {
                         <td>${utils.dateFormat(t.due)}</td>
                         <td>${t.name}</td>
                         <td>${t.type}</td>
-                        <td>₱${t.debt}</td>
-                        <td>₱${t.paid}</td>
-                        <td>₱${t.balance}</td>
+                        <td>₱${utils.amountInputFormatToHundreds(t.debt)}</td>
+                        <td>₱${utils.amountInputFormatToHundreds(t.paid)}</td>
+                        <td>₱${utils.amountInputFormatToHundreds(t.balance)}</td>
                         <td>${t.progress}%</td>
                         <td class="${t.status === "Paid" ? "liabilities-visual-graph-dashboard-paid" : "liabilities-visual-graph-dashboard-active"}">${t.status}</td>
                         <td>
@@ -1080,6 +1089,8 @@ function renderEntity(items, entity) {
     }
 }
 
+
+// PAGINATION
 function renderPagination(container, page, totalPages, onPageChange) {
     container.innerHTML = "";
 
@@ -1136,6 +1147,25 @@ async function getLiability(id, form) {
     } catch (err) {
         utils.debug("Error", err);
     }
+}
+
+async function displayLiabilitesDashboard() {
+    const data = await getLiabilitiesDashboardData();
+
+    utils.debug("Liabilities Dashboard Data", data);
+    liabilitiesRemainingBalance.textContent = utils.amountInputFormatToHundreds(data.remainingBalance);
+    totalLiabilities.textContent = data.totalLiabilities;
+    activeLiabilities.textContent =  data.active;
+    paidLiabilities.textContent = data.paid;
+    dueLiabilities.textContent = data.due;
+}
+
+
+async function getLiabilitiesDashboardData() {
+    const res = await fetch("/Member/Home/GetLiabilitiesDashboardData");
+
+    const data = await res.json();
+    return data;
 }
 
 
