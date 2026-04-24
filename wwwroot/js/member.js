@@ -31,6 +31,7 @@ const alertBtnText = document.getElementById("alertBtnText");
 const modalEntityText = document.querySelectorAll(".modal-entity-text"); // REFACTOR
 
 // BUTTONS
+const modalBodyButtonConAlert = document.querySelector(".modal-body-button-con-alert");
 const modalEntityBtn = document.querySelector(".modal-entity-btn"); // REFACTOR
 
 const alertBtn = document.getElementById("alertBtn");
@@ -844,7 +845,7 @@ const PageScripts = {
 
                     const formData = utils.getFormData(liabilitiesForm);
 
-                    
+
 
                 } else {
                     utils.validateInputFieldsValue(liabilitiesForm);
@@ -2045,6 +2046,7 @@ function showModalAlert(subhead, buttonText, actions) {
     alertModal.classList.remove("modal-sm");
     alertModal.classList.add("modal-md");
     alertModal.classList.add("show");
+    modalBodyButtonConAlert.classList.remove("hide");
 
     if (actions === "logout") {
         logOutIconModal.classList.remove("hidden");
@@ -2065,6 +2067,8 @@ function showModal(head, subhead) {
     utils.showParentModal(modal);
     alertModal.classList.remove("modal-md");
     alertModal.classList.add("show", "modal-sm");
+
+    modalBodyButtonConAlert.classList.add("hide");
 
     alertHead.textContent = head;
     alertSubhead.textContent = subhead;

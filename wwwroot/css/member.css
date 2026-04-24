@@ -401,6 +401,10 @@ input[type="radio"] {
     display: flex !important;
 }
 
+.hide {
+    display: none !important;
+}
+
 .flex-header {
     display: flex;
 }
@@ -596,6 +600,7 @@ input[type="radio"] {
 .accent-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-1);
     background: var(--accent);
     border: none;
@@ -1448,10 +1453,6 @@ select {
     display: flex;
     flex-wrap: wrap-reverse;
     gap: var(--space-5);
-}
-
-.reports-amount-payee-con .input-con {
-    flex: 0 1 80px;
 }
 
 .reports-button-con {
