@@ -598,6 +598,19 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> GetLiabilities([FromBody] PagingDto pagingDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var liabilities = _context.Liabilities.Where(a => a.CompanyId == companyId).OrderByDescending(a => a.Id);
+
+        var totalRecords = await liabilities.CountAsync();
+
+        var data = await liabilities.Skip((pagingDto.PageNumber - 1) * pagingDto.PageSize).Take(pagingDto.PageSize).ToListAsync();
+
+        return Ok( new { data = data, totalRecords, pagingDto.PageNumber, pagingDto.PageSize, totalPages = (int)Math.Ceiling(totalRecords / (double)pagingDto.PageSize)});
+    }
+
+    [HttpPost]
     public async Task<IActionResult> GetEmployee([FromBody] EmployeeDto employeeDto)
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 

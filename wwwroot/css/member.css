@@ -189,6 +189,14 @@ input[type=date] {
 
 /* COMPONENTS */
 
+.min-content {
+    width: min-content;
+}
+
+.max-content {
+    width: max-content;
+}
+
 /* SEARCH */
 .search {
     position: relative;
@@ -1092,7 +1100,7 @@ main {
     display: flex;
 }
 
-.financial-transaction-picker {
+.picker-con {
     display: flex;
     align-items: center;
     gap: var(--space-4);

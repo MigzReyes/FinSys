@@ -358,6 +358,16 @@ export function setDateToday(dateInput) {
     dateInput.value = today;
 }
 
+export function isDueLiability(dateString) {
+    const [y, m, d] = dateString.split("T")[0].split("-").map(Number);
+
+    const input = new Date(y, m - 1, d);
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    return input >= today;
+}
 
 
 export function formatEmail(email) {
