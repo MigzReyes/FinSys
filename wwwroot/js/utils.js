@@ -340,8 +340,13 @@ export function closeCloseableModal(modal) {
 
 export function closeModal(modal) {
     modal.classList.remove("show");
+    
     modal.querySelectorAll(".modal-content").forEach(m => {
         m.classList.remove("show");
+    });
+
+    modal.querySelectorAll(".modal-entity-form").forEach(f => {
+        f.classList.remove("show", "active");
     });
 }
 
