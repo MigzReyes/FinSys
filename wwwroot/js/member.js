@@ -912,7 +912,32 @@ const PageScripts = {
                     utils.validateInputFieldsValue(liabilitiesForm);
                 }
             } else {
+                if (utils.inputEmptyValidation(liabilitiesForm)) {
+                    utils.validateInputFieldsValue(liabilitiesForm);
 
+                    const liabilityId = modalEntityBtn.dataset.id;
+                    const formData = utils.getFormData(liabilitiesForm);
+
+                    await fetch("/Member/Home/EditLiability", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            Id: liabilityId,
+                            ...formData
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Liability Data", data);
+                        utils.clearAndCloseModal(liabilitiesForm, modal);
+                    })
+                    .catch(err => utils.debug("Error", err));
+
+                    loadEntity(currentLiabilityPage, "Liabilities");
+                } else {
+                    utils.validateInputFieldsValue(liabilitiesForm);
+                }
             }
         });
 
@@ -1054,6 +1079,32 @@ function getPageRange(currentPage, totalPages, maxVisible = 5) {
     }
 
     return { start, end}
+}
+
+// LIABILITY
+async function getLiability(id, form) {
+    try {
+        await fetch("/Member/Home/GetLiability", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                Id: id
+            })
+        }).then(res => res.json())
+        .then(data => {
+            utils.debug("Liability data", data);
+
+            // Display Data
+            const inputFields = ["name", "type", "debt", "due", "status"];
+            utils.populateForm(form, data, inputFields);
+        })
+        .catch(err => utils.debug("Error", err));
+
+    } catch (err) {
+        utils.debug("Error", err);
+    }
 }
 
 
@@ -2045,6 +2096,7 @@ function displayEntityOnModal(text, actions, entity, id) {
 
         case "liabilities":
             // Create a function for getting the data from each entity
+            getLiability(id, form);
             break;
 
         default: 

@@ -408,6 +408,25 @@ public class HomeController : Controller
         return Ok( new { message = "Asset edited successfully"});
     }
 
+    [HttpPost]
+    public async Task<IActionResult> EditLiability([FromBody] LiabilityDto liabilityDto) 
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var liability = await _context.Liabilities.Where(a => a.Id == liabilityDto.Id && a.CompanyId == companyId).FirstOrDefaultAsync();
+
+        if (liability == null) return Ok (liability);
+
+        liability.Name = liabilityDto.Name;
+        liability.Due = liabilityDto.Due; 
+        liability.Debt = liabilityDto.Debt;
+        liability.Type = liabilityDto.Type;
+        liability.Status = liabilityDto.Status;
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Liability edited successfully"});
+    }
+
     [HttpPost] 
     public async Task<IActionResult> EditEmployee([FromBody] EmployeeDto employeeDto)
     {
@@ -569,6 +588,16 @@ public class HomeController : Controller
         
         return Ok(asset);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> GetLiability([FromBody] LiabilityDto liabilityDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var liability = await _context.Liabilities.Where(t => t.Id == liabilityDto.Id && t.CompanyId == companyId).FirstOrDefaultAsync();
+        
+        return Ok(liability);
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> GetFinancialTransactions() 

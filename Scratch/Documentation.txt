@@ -582,7 +582,7 @@ TO-DO
 
     Fix financial transactions edit 
 
-    
+    Should we reset paid, balance, and progress if liabilities are edited????
 
 
     

@@ -255,15 +255,38 @@ export function clearAndCloseModal(form, modal) {
 
 export function populateForm(form, data, fields) {
     fields.forEach(key => {
+        const radios = form.querySelectorAll(`input[name="${key}"]`);
+        if (radios.length > 1 && radios[0].type === "radio") {
+            radios.forEach(radio => {
+                radio.checked = (radio.value === data[key]);
+            });
+            return;
+        }
+
         const input = form.elements.namedItem(key);
         if (!input) utils.debug("Get Input", "No input");
 
         if (key === "amount" && data[key] != null) {
             input.value = amountInputFormatToHundreds(Number(data[key]).toLocaleString());
         }
-
-        input.value = data[key] ?? "No data";
+        else if (key === "due" && data[key] != null) {
+            input.value = toYYYYMMDD(data[key]); 
+        }
+        else {
+            input.value = data[key] ?? "";
+        }
     });
+}
+
+function toYYYYMMDD(dateInput = new Date()) {
+    const date = new Date(dateInput);
+    if (isNaN(date)) return null;
+
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+
+    return `${y}-${m}-${d}`;
 }
 
 export function getModalForm(modal) {
