@@ -152,6 +152,23 @@ public class HomeController : Controller
         await _context.SaveChangesAsync();
     }
 
+
+    [HttpPost]
+    public async Task<IActionResult> LiabilityRegistration([FromBody] LiabilityRegistrationDto liabilityDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+
+
+
+        /*var liability = new Liabilities
+        {
+            CompanyId = companyId
+
+        };*/
+
+        return Ok();
+    }
+
     [HttpPost]
     public async Task<IActionResult> AssetRegistration([FromBody] AssetRegistrationDto assetDto) 
     {

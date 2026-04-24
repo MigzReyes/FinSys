@@ -833,6 +833,25 @@ const PageScripts = {
         });
 
 
+        // ADD and EDIT LIABILITIES
+        const liabilitiesForm = document.getElementById("liabilitiesRegistration");
+        liabilitiesForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            
+            if (modalEntityBtnAction === "addLiability") {
+                if (utils.inputEmptyValidation(liabilitiesForm)) {
+                    utils.validateInputFieldsValue(liabilitiesForm);
+
+                    const formData = utils.getFormData(liabilitiesForm);
+
+                    
+
+                } else {
+                    utils.validateInputFieldsValue(liabilitiesForm);
+                }
+            }
+        });
+
     },
 
     settings: function() {

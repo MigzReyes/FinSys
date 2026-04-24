@@ -582,5 +582,7 @@ TO-DO
 
     Fix financial transactions edit 
 
+    
+
 
     

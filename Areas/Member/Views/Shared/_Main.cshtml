@@ -572,23 +572,51 @@
                         </div>
                     </div>
 
-                    <div class="modal-body-row">
-                        <p class="modal-input-label">Type</p>
-                        <div class="modal-input select-input full-width">
-                            <select class="type full-width" name="type" id="type">
-                                <option value="" disabled selected hidden>Choose a Type</option>
-                                <option value="Loan">Loan</option>
-                                <option value="Tax">Tax</option>
-                                <option value="Wages">Wages</option>
-                            </select>
+                    <div class="modal-body-row-wrap">
+                        <div class="modal-body-row full-width">
+                            <p class="modal-input-label">Name</p>
+                            <div class="modal-input">
+                                <input class="name" type="text" name="name" placeholder="Enter name">
+                            </div>
+                        </div>
+
+                        <div class="modal-body-row full-width">
+                            <p class="modal-input-label">Type</p>
+                            <div class="modal-input select-input full-width">
+                                <select class="type full-width" name="type" id="type">
+                                    <option value="" disabled selected hidden>Choose a Type</option>
+                                    <option value="Loan">Loan</option>
+                                    <option value="Tax">Tax</option>
+                                    <option value="Wages">Wages</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="modal-body-row">
-                        <p class="modal-input-label">Investment</p>
+
+                    <div class="modal-body-row-wrap">
+                        <div class="modal-body-row full-width">
+                            <p class="modal-input-label">Debt</p>
+                            <div class="modal-input amount-input">
+                                <p class="currency-prefix">₱</p>
+                                <input class="debt" type="text" data-input="amount" name="debt" placeholder="e.g. 1,000,000">
+                            </div>
+                        </div>
+
+                        <div class="modal-body-row">
+                            <p class="modal-input-label">Due</p>
+                            <div class="modal-input date-input">
+                                <input id="date" name="date" type="date">
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="modal-body-row full-width">
+                        <p class="modal-input-label">Balance</p>
                         <div class="modal-input amount-input">
                             <p class="currency-prefix">₱</p>
-                            <input class="investment" type="text" data-input="amount" name="investment" placeholder="e.g. 1,000,000">
+                            <input class="balance" type="text" data-input="amount" name="balance" placeholder="e.g. 5,000">
                         </div>
                     </div>
 

@@ -1379,10 +1379,6 @@ main {
     position: relative;
 }
 
-.date-input input {
-    padding-right: var(--space-1);
-}
-
 .date-input input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute;
     top: 0;
