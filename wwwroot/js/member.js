@@ -845,7 +845,18 @@ const PageScripts = {
 
                     const formData = utils.getFormData(liabilitiesForm);
 
-
+                    await fetch("/Member/Home/LiabilityRegistration", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(formData)
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Liability Data", data);
+                        utils.clearAndCloseModal(liabilitiesForm, modal);
+                    })
+                    .catch(err => utils.debug("Error", err));
 
                 } else {
                     utils.validateInputFieldsValue(liabilitiesForm);

@@ -158,15 +158,25 @@ public class HomeController : Controller
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
 
+        Console.WriteLine("Company Id " + companyId);
 
-
-        /*var liability = new Liabilities
+        var liability = new Liabilities
         {
-            CompanyId = companyId
+            CompanyId = companyId,
+            Name = liabilityDto.Name,
+            Due = liabilityDto.Due,
+            Type = liabilityDto.Type,
+            Debt = liabilityDto.Debt,
+            Paid = 0,
+            Balance = liabilityDto.Debt,
+            Progress = 0M,
+            Status = liabilityDto.Status
+        };
 
-        };*/
+        _context.Liabilities.Add(liability);
+        await _context.SaveChangesAsync();
 
-        return Ok();
+        return Ok(liability);
     }
 
     [HttpPost]

@@ -297,6 +297,14 @@ function normalizeFormData(data) {
         amount: data.amount
             ? Number(data.amount.replace(/,/g, ""))
             : null,
+
+        debt: data.debt
+            ? Number(data.debt.replace(/,/g, ""))
+            : null,
+
+        due: data.due
+            ? new Date(data.due).toISOString()
+            : null
         };
 }
 
