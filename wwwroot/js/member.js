@@ -96,9 +96,18 @@ let modalEntityBtnAction; // REFACTOR this variable is used to determine the fun
 utils.initInputListener();
 utils.initCloseModalListener(); 
 
+// PAGINATION
+const paginationState = {
+    Assets: {
+        current: 1,
+        total: 1
+    },
 
-let totalAssetPage; // PAGINATION
-
+    Liabilities: {
+        current: 1,
+        total: 1
+    }
+};
 
 // PAGE BASED INITIALIZATION PATTERN **Para confined yung js code for each page
 const PageScripts = {
@@ -690,10 +699,6 @@ const PageScripts = {
     assetsAndLiabilities: function() {
         utils.debug("Page", "Assets and Liabilities");
 
-        // CURRENT PAGE
-        let currentAssetPage = 1;
-        let currentLiabilityPage = 1;
-
         const addAssetBtn = document.getElementById("addAssetBtn");
         addAssetBtn.addEventListener("click", function () {
             showModalEntity("Add Asset", "addAsset", "assets");
@@ -711,8 +716,8 @@ const PageScripts = {
 
         
         // DISPLAY DATA
-        loadEntity(currentAssetPage, "Assets");
-        loadEntity(currentLiabilityPage, "Liabilities");
+        loadEntity(paginationState["Assets"].current, "Assets");
+        loadEntity(paginationState["Liabilities"].current, "Liabilities");
 
         // PICKER
         const pickerAll = document.getElementById("pickerAll");
@@ -784,39 +789,42 @@ const PageScripts = {
 
             if (actionBtn?.dataset.action === "removeAsset") {
                 utils.debug("Delete asset", "Deleted asset");
-                deleteEntity(selectedEntityId, "Asset", currentAssetPage);
+                deleteEntity(selectedEntityId, "Asset");
             }
 
             if (actionBtn?.dataset.action === "removeLiability") {
                 utils.debug("Delete liabilityt", "Deleted liability");
-                deleteEntity(selectedEntityId, "Liability", currentLiabilityPage);
+                deleteEntity(selectedEntityId, "Liability");
             }
         });
 
+        
+
         // PAGINATION
         document.addEventListener("click", (e) => {
-            const pageBtn = e.target.closest(".page-number, .next, .prev");
-            if (!pageBtn) return;
+            const btn = e.target.closest(".next, .prev");
+            if (!btn) return;
 
-            if (pageBtn.classList.contains("page-number")) {
-                const page = parseInt(pageBtn.dataset.page);
-                currentAssetPage = page; // REFACTOR
+            const entity = btn.dataset.entity;
+            if (!entity) return;
 
-                utils.debug("Page num", page);
-                loadEntity(page, "Assets");
-            }
+            const state = paginationState[entity];
+            if (!state) return;
 
-
-            if (pageBtn.classList.contains("prev")) {
-                if (currentAssetPage > 1) loadEntity(--currentAssetPage, "Assets"); // REFACTOR
-            }
-
-            if (pageBtn.classList.contains("next")) {
-                if (currentAssetPage < totalAssetPage) {
-                    utils.debug("total asset page", totalAssetPage);
-                    loadEntity(++currentAssetPage, "Assets"); // REFACTOR
+            if (btn.classList.contains("prev")) {
+                if (state.current > 1) {
+                    state.current--;
+                    loadEntity(state.current, entity);
                 }
             }
+
+            if (btn.classList.contains("next")) {
+                if (state.current < state.total) {
+                    state.current++;
+                    loadEntity(state.current, entity);
+                }
+            }
+
         });
 
 
@@ -846,7 +854,7 @@ const PageScripts = {
                     })
                     .catch(err => utils.debug("Error", err));
 
-                    loadEntity(currentAssetPage, "Assets");
+                    loadEntity(paginationState["Assets"].current, "Assets");
                 } else {
                     utils.validateInputFieldsValue(assetForm);
                 }
@@ -875,7 +883,7 @@ const PageScripts = {
                     })
                     .catch(err => utils.debug("Error", err));
 
-                    loadEntity(currentAssetPage, "Assets");
+                    loadEntity(paginationState["Assets"].current, "Assets");
                 } else {
                     utils.validateInputFieldsValue(assetForm);
                 }
@@ -907,7 +915,7 @@ const PageScripts = {
                     })
                     .catch(err => utils.debug("Error", err));
 
-                    loadEntity(currentLiabilityPage, "Liabilities");
+                    loadEntity(paginationState["Liabilities"].current, "Liabilities");
                 } else {
                     utils.validateInputFieldsValue(liabilitiesForm);
                 }
@@ -934,7 +942,7 @@ const PageScripts = {
                     })
                     .catch(err => utils.debug("Error", err));
 
-                    loadEntity(currentLiabilityPage, "Liabilities");
+                    loadEntity(paginationState["Liabilities"].current, "Liabilities");
                 } else {
                     utils.validateInputFieldsValue(liabilitiesForm);
                 }
@@ -982,10 +990,28 @@ async function loadEntity(page, entity) {
 
     utils.debug("data", data.data);
 
-    totalAssetPage = data.totalPages;
-
     renderEntity(data.data, entity);
-    renderPagination(page, data.totalPages);
+
+    paginationState[entity].current = page;
+    paginationState[entity].total = data.totalPages;
+
+    if (entity === "Assets") {
+        const container = document.querySelector("#assetsPagination");
+        renderPagination(container, page, data.totalPages, (p) => {
+            paginationState[entity].current = p;
+            loadEntity(p, "Assets");
+        });
+    }
+
+    if (entity === "Liabilities") {
+        const container = document.querySelector("#liabilitiesPagination");
+        renderPagination(container, page, data.totalPages, (p) => {
+            paginationState[entity].current = p;
+            loadEntity(p, "Liabilities");
+        });
+    }
+
+    //renderPagination(entity, page, data.totalPages);
 }
 
 function renderEntity(items, entity) {
@@ -1054,8 +1080,7 @@ function renderEntity(items, entity) {
     }
 }
 
-function renderPagination(page, totalPages) {
-    const container = document.querySelector(".pagination-item-con");
+function renderPagination(container, page, totalPages, onPageChange) {
     container.innerHTML = "";
 
     const { start, end } = getPageRange(page, totalPages, 5);
@@ -1067,6 +1092,12 @@ function renderPagination(page, totalPages) {
             </li>
         `;
     }
+
+    container.querySelectorAll(".page-number").forEach(btn => {
+        btn.addEventListener("click", () => {
+            onPageChange(parseInt(btn.dataset.page));
+        });
+    });
 }
 
 function getPageRange(currentPage, totalPages, maxVisible = 5) {
@@ -2054,7 +2085,7 @@ function navOverlayChange(event) {
 }
 
 // MODAL
-async function deleteEntity(id, entity, currentAssetPage) {
+async function deleteEntity(id, entity) {
     const res = await fetch(`/Member/Home/Delete${entity}`, {
         method: "POST",
         headers: {
@@ -2076,7 +2107,7 @@ async function deleteEntity(id, entity, currentAssetPage) {
         
     }
 
-    await loadEntity(currentAssetPage, entity); // REFACTOR
+    await loadEntity(paginationState[entity].current, entity); // REFACTOR
 }
 
 function displayEntityOnModal(text, actions, entity, id) {
