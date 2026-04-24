@@ -411,6 +411,11 @@ namespace FinSys.Migrations
                         .HasColumnType("datetime(6)")
                         .HasColumnName("due");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
                     b.Property<int>("Paid")
                         .HasColumnType("int")
                         .HasColumnName("paid");
