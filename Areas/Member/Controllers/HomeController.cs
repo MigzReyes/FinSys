@@ -356,7 +356,20 @@ public class HomeController : Controller
 
         await _context.SaveChangesAsync();
 
-        return Ok( new { message = "Deleted employee"});
+        return Ok( new { message = "Deleted Asset"});
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteLiability([FromBody] LiabilityDto liabilityDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var liability = await _context.Liabilities.Where(a => a.Id == liabilityDto.Id && a.CompanyId == companyId).FirstOrDefaultAsync();
+
+        _context.Liabilities.Remove(liability);
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Deleted Liability"});
     }
 
     [HttpPost]
