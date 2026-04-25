@@ -762,7 +762,64 @@ const PageScripts = {
             pickerPaid.classList.remove("picked");
         });
 
+        // LIABILITY PICKER
+        document.querySelector(".picker-con").addEventListener("click", function (e) {
+            let selectedType;
+
+            const all = e.target.closest(".pickerAll")?.dataset.item;
+            const active = e.target.closest(".pickerActive")?.dataset.item;
+            const paid = e.target.closest(".pickerPaid")?.dataset.item;
+            const due = e.target.closest(".pickerDue")?.dataset.item;
+
+            if (all) {
+                utils.debug("Picker", all);
+                selectedType = all;
+                loadLiabilityPicker(paginationState["Liabilities"].current, all);
+            } else if (active) {
+                utils.debug("Picker", active);
+                selectedType = active;
+                loadLiabilityPicker(paginationState["Liabilities"].current, active);
+            } else if (paid) {  
+                utils.debug("Picker", paid);
+                selectedType = paid;
+                loadLiabilityPicker(paginationState["Liabilities"].current, paid);
+            } else if (due) {  
+                utils.debug("Picker", due);
+                selectedType = due;
+                loadLiabilityPicker(paginationState["Liabilities"].current, due);
+            } else {
+                utils.debug("Picker error", "Nothing picked");
+            }
+        });
+
+        // SEARCH LIABILITY
+        const payLiabilityForm = document.getElementById("payALiability");
+        const searchInputLiabilities = document.getElementById("searchLiabilities");
+        const dropdownLiabilities = document.getElementById("searchLiabilityResults");
+
+        let debounceTimer;
+        searchInputLiabilities.addEventListener("input", function (e) {
+            clearTimeout(debounceTimer);
+
+            const query = this.value.trim();
+
+            utils.debug("Search", query);
+
+            if (!query) dropdownLiabilities.classList.remove("show");
+
+            debounceTimer = setTimeout(() => {
+                utils.searchLiabilities(query, dropdownLiabilities, searchInputLiabilities, payLiabilityForm);
+            }, 300); 
+        });
+
         // EVENT DEL
+
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".search-dropdown")) {
+                dropdownLiabilities.classList.remove("show");
+            }
+        });
+
         let selectedEntityId;
         document.addEventListener("click", function (e) {
             const btn = e.target.closest(".editAssetBtn, .editLiabilityBtn, .deleteAssetBtn, .deleteLiabilityBtn");
@@ -834,36 +891,6 @@ const PageScripts = {
                 }
             }
 
-        });
-
-        // LIABILITY PICKER
-        document.querySelector(".picker-con").addEventListener("click", function (e) {
-            let selectedType;
-
-            const all = e.target.closest(".pickerAll")?.dataset.item;
-            const active = e.target.closest(".pickerActive")?.dataset.item;
-            const paid = e.target.closest(".pickerPaid")?.dataset.item;
-            const due = e.target.closest(".pickerDue")?.dataset.item;
-
-            if (all) {
-                utils.debug("Picker", all);
-                selectedType = all;
-                loadLiabilityPicker(paginationState["Liabilities"].current, all);
-            } else if (active) {
-                utils.debug("Picker", active);
-                selectedType = active;
-                loadLiabilityPicker(paginationState["Liabilities"].current, active);
-            } else if (paid) {  
-                utils.debug("Picker", paid);
-                selectedType = paid;
-                loadLiabilityPicker(paginationState["Liabilities"].current, paid);
-            } else if (due) {  
-                utils.debug("Picker", due);
-                selectedType = due;
-                loadLiabilityPicker(paginationState["Liabilities"].current, due);
-            } else {
-                utils.debug("Picker error", "Nothing picked");
-            }
         });
 
         // ADD and EDIT ASSET

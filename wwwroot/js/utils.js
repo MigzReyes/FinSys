@@ -289,6 +289,50 @@ function toYYYYMMDD(dateInput = new Date()) {
     return `${y}-${m}-${d}`;
 }
 
+export async function searchLiabilities(query, dropdown, input, form) {
+    try {
+        const res = await fetch("/Member/Home/SearchLiabilities", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ query })
+        });
+
+        const data = await res.json();
+
+        debug("Search Liabilities data", data);
+        renderDropdown(dropdown, data, input, form);
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export function renderDropdown(dropdown, data, input, form) {
+    dropdown.innerHTML = "";
+    dropdown.classList.add("show");
+
+    if (!data.length) return;
+
+    const inputFields = ["due", "name", "debt", "balance", "type"];
+    data.forEach(l => {
+        const li = document.createElement("li");
+        li.textContent = l.name;
+        li.dataset.id = l.id;
+
+        li.addEventListener("click", function () {
+            input.value = l.name;
+
+            populateForm(form, l, inputFields);
+
+            dropdown.classList.remove("show");
+        });
+
+        dropdown.appendChild(li);
+    })
+}
+
 export function getModalForm(modal) {
     return modal.querySelector(".active");
 }

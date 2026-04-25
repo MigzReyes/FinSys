@@ -572,6 +572,29 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> SearchLiabilities([FromBody] SearchDto searchDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+
+         var results = await _context.Liabilities
+            .Where(x => x.CompanyId == companyId &&
+                        x.Name.Contains(searchDto.Query))
+            .OrderBy(x => x.Name)
+            .Take(5)
+            .Select(x => new {
+                x.Id,
+                x.Name,
+                x.Due,
+                x.Type,
+                x.Debt,
+                x.Balance
+            })
+            .ToListAsync();
+
+        return Ok(results);
+    }
+
+    [HttpPost]
     public async Task<IActionResult> GetSelectedLiabilities([FromBody] LiabilityPickerDto liabilityPickerDto)
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);

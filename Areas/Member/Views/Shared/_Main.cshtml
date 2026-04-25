@@ -618,11 +618,13 @@
                 </form>
 
                 <!-- PAY A LIABILITY -->
-                 <form class="modal-entity-form pay-a-liability-form" id="payALiabilityRegistration" data-form="payALiabilityForm">
+                 <form class="modal-entity-form pay-a-liability-form" id="payALiability" data-form="payALiabilityForm">
                     <div class="modal-body-row">
                         <p class="modal-input-label">Search</p>
-                        <div class="modal-input">        
-                            <input id="liabilities" type="search" name="liabilities" placeholder="Search a liability...">
+                        <div class="modal-input search-dropdown">        
+                            <input id="searchLiabilities" type="text" name="liabilities" placeholder="Search a liability...">
+                            <ul id="searchLiabilityResults" class="search-dropdown-list">
+                            </ul>
                         </div>
                     </div>
 

@@ -592,6 +592,40 @@ input[type="radio"] {
     width: 100%;
 }
 
+.search-dropdown {
+    position: relative;
+}
+
+.search-dropdown-list {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    gap: var(--space-1);
+    position: absolute;
+    z-index: 999;
+    top: 33px;
+    background: var(--white);
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+    border: var(--border);
+}
+
+.search-dropdown-list li {
+    cursor: pointer;
+    padding: var(--space-2) var(--space-1);
+}
+
+.search-dropdown-list li:hover {
+    background: var(--primary-muted-bg);
+    color: var(--secondary);
+    font-weight: var(--font-semi-bold);
+}
+
+.search-dropdown-list li:last-child {
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+}
+
 .modal-body-row-wrap {
     display: flex;
     flex-wrap: nowrap;
