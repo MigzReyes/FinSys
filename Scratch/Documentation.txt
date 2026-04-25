@@ -590,5 +590,12 @@ TO-DO
 
     pay liability
 
+4/25/2026
+
+    Progress Calculation for liability 
+
+        progress & = (balance / debt) 100;
+
+
 
     

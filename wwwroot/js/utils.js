@@ -323,6 +323,7 @@ export function renderDropdown(dropdown, data, input, form) {
 
         li.addEventListener("click", function () {
             input.value = l.name;
+            input.dataset.id = l.id;
 
             populateForm(form, l, inputFields);
 
@@ -353,6 +354,10 @@ function normalizeFormData(data) {
     return {
         ...data, // keep data
 
+        id: data.id
+            ? Number(data.id)
+            : null,
+
         investment: data.investment
             ? Number(data.investment.replace(/,/g, ""))
             : null,
@@ -371,6 +376,10 @@ function normalizeFormData(data) {
 
         due: data.due
             ? new Date(data.due).toISOString()
+            : null,
+
+        paid: data.paid
+            ? Number(data.paid.replace(/,/g, ""))
             : null
         };
 }

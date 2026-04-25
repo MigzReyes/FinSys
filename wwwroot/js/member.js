@@ -791,12 +791,10 @@ const PageScripts = {
                 utils.debug("Picker error", "Nothing picked");
             }
         });
-
+        
         // SEARCH LIABILITY
-        const payLiabilityForm = document.getElementById("payALiability");
         const searchInputLiabilities = document.getElementById("searchLiabilities");
         const dropdownLiabilities = document.getElementById("searchLiabilityResults");
-
         let debounceTimer;
         searchInputLiabilities.addEventListener("input", function (e) {
             clearTimeout(debounceTimer);
@@ -812,8 +810,52 @@ const PageScripts = {
             }, 300); 
         });
 
-        // EVENT DEL
+        // PAY A LIABILITY
+        const payLiabilityForm = document.getElementById("payALiability");
+        payLiabilityForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
 
+            if (utils.inputEmptyValidation(payLiabilityForm)) {
+                utils.validateInputFieldsValue(payLiabilityForm);
+
+                const formData = utils.getFormData(payLiabilityForm);
+                const balance = payLiabilityForm.querySelector(".balance").value;
+
+                utils.debug("liability data", balance);
+
+                if (formData.paid > Number(balance)) {
+                    const paidInput = payLiabilityForm.querySelector(".paid-con");
+                    utils.displayErrorInputTag(paidInput, "Amount exceeded!");
+                } else {    
+                    const liabilityId = searchInputLiabilities.dataset.id;
+
+                    await fetch("/Member/Home/PayALiability", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ...formData,
+                            id: liabilityId
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Paid a liability??", data.message);
+                        utils.clearAndCloseModal(payLiabilityForm, modal);
+
+                        loadEntity(paginationState["Liabilities"].current, "Liabilities");
+                        displayLiabilitesDashboard();
+                    })
+                    .catch(err => utils.debug("Error", err));
+                }
+            } else {
+                utils.validateInputFieldsValue(payLiabilityForm);
+            }
+
+        });
+
+        // EVENT DEL
+        // Dropdown outside click
         document.addEventListener("click", (e) => {
             if (!e.target.closest(".search-dropdown")) {
                 dropdownLiabilities.classList.remove("show");

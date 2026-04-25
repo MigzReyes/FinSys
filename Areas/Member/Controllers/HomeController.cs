@@ -409,6 +409,37 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public async Task<IActionResult> PayALiability([FromBody] PayLiabilityDto liabilityDto)
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
+        var liability = await _context.Liabilities.Where(a => a.Id == liabilityDto.Id && a.CompanyId == companyId).FirstOrDefaultAsync();
+
+        if (liability == null) return Ok (liability);
+
+        if (liabilityDto.Paid > liability.Balance) return BadRequest( new { message = "Exceeded amount!"});
+
+        var balance = liability.Balance - liabilityDto.Paid;
+        decimal progress = (liability.Balance / (decimal)liability.Debt) * 100;
+
+        liability.Paid += liabilityDto.Paid;
+        if (liability.Paid > liability.Debt)
+            liability.Paid = liability.Debt;
+
+        liability.Balance = liability.Debt - liability.Paid;
+
+        liability.Progress = liability.Debt == 0
+            ? 0
+            : (liability.Paid / (decimal)liability.Debt) * 100;
+
+        
+        liability.Status = liability.Balance <= 0 ? "Paid" : "Active";
+
+        await _context.SaveChangesAsync();
+
+        return Ok( new { message = "Successfully paid a liability" });
+    }
+
+    [HttpPost]
     public async Task<IActionResult> EditLiability([FromBody] LiabilityDto liabilityDto) 
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
