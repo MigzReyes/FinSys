@@ -597,5 +597,7 @@ TO-DO
         progress & = (balance / debt) 100;
 
 
+4/26/2026
 
+    Assets and liabilities graph
     

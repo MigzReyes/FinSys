@@ -109,6 +109,11 @@ const paginationState = {
     }
 };
 
+// ASSET CHART
+const chartDataColorMap = d3.scaleOrdinal()
+    .range(["#0077CC", "#F58120", "#53AC7F", "#FADA38"]);
+
+
 // PAGE BASED INITIALIZATION PATTERN **Para confined yung js code for each page
 const PageScripts = {
     dashboard: function() {
@@ -718,6 +723,10 @@ const PageScripts = {
         // DISPLAY DATA
         loadEntity(paginationState["Assets"].current, "Assets");
         loadEntity(paginationState["Liabilities"].current, "Liabilities");
+
+        // ASSET DASHBOARD
+        const totalAssetValueTag = document.getElementById("totalAssetValueTag");
+        displayAssetsDashboard();
         
         // LIABILITIES DASHBOARD
         const liabilitiesRemainingBalance = document.getElementById("liabilitiesRemainingBalance");
@@ -898,6 +907,7 @@ const PageScripts = {
             if (actionBtn?.dataset.action === "removeAsset") {
                 utils.debug("Delete asset", "Deleted asset");
                 deleteEntity(selectedEntityId, "Asset");
+                displayAssetsDashboard();
             }
 
             if (actionBtn?.dataset.action === "removeLiability") {
@@ -958,10 +968,11 @@ const PageScripts = {
                     .then(data => {
                         utils.debug("Asset data", data);
                         utils.clearAndCloseModal(assetForm, modal);
+
+                        loadEntity(paginationState["Assets"].current, "Assets");
+                        displayAssetsDashboard();
                     })
                     .catch(err => utils.debug("Error", err));
-
-                    loadEntity(paginationState["Assets"].current, "Assets");
                 } else {
                     utils.validateInputFieldsValue(assetForm);
                 }
@@ -987,10 +998,11 @@ const PageScripts = {
                     .then(data => {
                         utils.debug("Asset data", data);
                         utils.clearAndCloseModal(assetForm, modal);
+
+                        loadEntity(paginationState["Assets"].current, "Assets");
+                        displayAssetsDashboard();
                     })
                     .catch(err => utils.debug("Error", err));
-
-                    loadEntity(paginationState["Assets"].current, "Assets");
                 } else {
                     utils.validateInputFieldsValue(assetForm);
                 }
@@ -1308,6 +1320,25 @@ async function getLiabilitiesDashboardData() {
 
 
 // ASSETS
+async function displayAssetsDashboard() {
+    const data = await getAssetsDashboardData();
+
+    utils.debug("Assets Data", data);
+    totalAssetValueTag.textContent = utils.amountInputFormatToHundreds(data.totalAssetValue);
+
+    setAssetColorDomain(data.chartData);
+    drawDonutChart(data.chartData);
+    renderAssetLegend(data.chartData);
+}
+
+async function getAssetsDashboardData() {
+    const res = await fetch("/Member/Home/GetAssetsData");
+
+    const data = await res.json();
+
+    return data;
+}
+
 async function getAsset(id, form) {
     try {
         await fetch("/Member/Home/GetAsset", {
@@ -1332,6 +1363,63 @@ async function getAsset(id, form) {
         utils.debug("Error", err);
     }
 }
+
+function drawDonutChart(data) {
+    const width = 220;
+    const height = 220;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select("#donutChart")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+    const pie = d3.pie()
+        .value(d => d.value)
+        .sort(null);
+
+    const arc = d3.arc()
+        .innerRadius(radius * 0.6) 
+        .outerRadius(radius);
+
+    const arcs = svg.selectAll("arc")
+        .data(pie(data))
+        .enter()
+        .append("g");
+
+    arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", d => chartDataColorMap(d.data.category))
+        .attr("stroke", "#fff")
+        .style("stroke-width", "2px");
+}
+
+function renderAssetLegend(data) {
+    const container = document.querySelector(".pie-graph-legend");
+    container.innerHTML = "";
+
+    data.forEach(d => {
+        container.innerHTML += `
+            <div class="pie-graph-legend-con">
+                <div class="pie-graph-legend-key" style="background:${getColor(d.category)}"></div>
+                <div class="pie-graph-legend-data">
+                    <p class="pie-graph-legend-data-key">${d.category}</p>
+                    <p class="pie-graph-legend-data-value">${d.percentage.toFixed(2)}%</p>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function setAssetColorDomain(data) {
+    chartDataColorMap.domain(data.map(d => d.category));
+}
+
+function getColor(category) {
+    return chartDataColorMap(category);
+}
+
 
 
 // INVESTORS

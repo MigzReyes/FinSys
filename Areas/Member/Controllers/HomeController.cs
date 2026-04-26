@@ -584,6 +584,39 @@ public class HomeController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> GetAssetsData()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var asset = _context.Assets.Where(a => a.CompanyId == companyId);
+
+        var category = await asset
+            .GroupBy(a => a.Category)
+            .Select(g => new
+            {
+                category = g.Key,
+                value = g.Sum(x => x.Amount)
+            })
+            .ToListAsync();
+
+        var totalAssetValue = category.Sum(x => x.value);
+
+        var result = new
+        {
+            totalAssetValue = totalAssetValue,
+            chartData = category.Select(x => new
+            {
+                category = x.category,
+                value = x.value,
+                percentage = totalAssetValue == 0 
+                    ? 0 
+                    : Math.Round(((decimal)x.value / totalAssetValue) * 100, 2)
+            })
+        };
+
+        return Ok(result);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> GetIncome()
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
@@ -629,7 +662,7 @@ public class HomeController : Controller
     public async Task<IActionResult> GetSelectedLiabilities([FromBody] LiabilityPickerDto liabilityPickerDto)
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
-        var today = DateTime.UtcNow.Date; // FIX does not detect due yesterday
+        var today = DateTime.UtcNow.Date; 
 
         var liabilities = _context.Liabilities
             .Where(l => l.CompanyId == companyId);
@@ -735,7 +768,7 @@ public class HomeController : Controller
     public async Task<IActionResult> GetLiabilitiesDashboardData()
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
-        var today = DateTime.UtcNow.Date; // FIX does not detect due yesterday
+        var today = DateTime.UtcNow.Date; 
 
         var query = _context.Liabilities
             .Where(x => x.CompanyId == companyId);
