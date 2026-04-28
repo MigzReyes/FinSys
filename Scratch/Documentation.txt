@@ -588,7 +588,7 @@ TO-DO
 
     fix next and prev for liability when something is picked in picker && when edited or deleted...
 
-    pay liability
+    pay liability -- DONE
 
 4/25/2026
 
@@ -599,5 +599,7 @@ TO-DO
 
 4/26/2026
 
-    liabilities graph
+    liabilities graph -- DONE
+
+    broken update functionality sa lahat
     

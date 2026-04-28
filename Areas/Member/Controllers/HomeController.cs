@@ -584,6 +584,26 @@ public class HomeController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> GetLiabilitiesData()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var liability = _context.Liabilities.Where(a => a.CompanyId == companyId);
+
+        var totalLiabilities = await liability.CountAsync();
+
+        var data = await liability.GroupBy(t => t.Type)
+            .Select(l => new
+            {
+                Type = l.Key,
+                total = l.Count(),
+                percentage = totalLiabilities == 0 ? 0 : (l.Count() * 100.0 /totalLiabilities)
+            })
+            .ToListAsync();
+
+        return Ok(data);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> GetAssetsData()
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
@@ -773,10 +793,21 @@ public class HomeController : Controller
         var query = _context.Liabilities
             .Where(x => x.CompanyId == companyId);
 
+        var totalLiabilities = await query.CountAsync();
+
         var result = new
         {
-            totalLiabilities = await query.CountAsync(),
+            totalLiabilities = totalLiabilities,
             remainingBalance = await query.SumAsync(x => x.Balance),
+
+            graphData = await query.GroupBy(t => t.Type)
+                .Select(l => new
+                {
+                    Type = l.Key,
+                    total = l.Count(),
+                    percentage = totalLiabilities == 0 ? 0 : (l.Count() * 100.0 /totalLiabilities)
+                })
+                .ToListAsync(),
 
             active = await query.CountAsync(x => x.Status == "Active"),
             paid = await query.CountAsync(x => x.Status == "Paid"),

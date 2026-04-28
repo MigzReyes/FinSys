@@ -2110,28 +2110,28 @@ select {
 .liabilities-visual-graph-horizontal {
     display: flex;
     gap: var(--space-1);
+    width: clamp(230px, 8vw, 100px);
 }
 
 .liabilities-visual-graph-horizontal-item {
     content: "";
     border-radius: var(--radius-md);
+    height: 6px;
+    background-color: var(--primary);
 }
 
-.loan { /* REMOVE THIS */
-    height: 6px;
-    width: 160px;
+.Loan { /* REMOVE THIS */
+    width: 10%;
     background: var(--primary);
 }
 
-.tax { /* REMOVE THIS */
-    height: 6px;
-    width: 40px;
+.Tax { /* REMOVE THIS */
+    width: 20%;
     background: var(--secondary);
 }
 
-.wages { /* REMOVE THIS */
-    height: 6px;
-    width: 90px;
+.Wages { /* REMOVE THIS */
+    width: 70%;
     background: var(--accent);
 }
 
@@ -2148,7 +2148,6 @@ select {
 .horizontal-graph-legend-key {
     height: 100%;
     width: 5px;
-    background: var(--primary);
     border-radius: var(--radius-md);
 }
 

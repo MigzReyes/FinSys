@@ -1308,6 +1308,8 @@ async function displayLiabilitesDashboard() {
     activeLiabilities.textContent =  data.active;
     paidLiabilities.textContent = data.paid;
     dueLiabilities.textContent = data.due;
+
+    renderLiabilitiesGraph(data.graphData);
 }
 
 
@@ -1318,6 +1320,39 @@ async function getLiabilitiesDashboardData() {
     return data;
 }
 
+function renderLiabilitiesGraph(data) {
+    const visualGraphCon = document.querySelector(".liabilities-visual-graph-horizontal");
+    visualGraphCon.innerHTML = "";
+
+    data.forEach(t => {
+        const div = document.createElement("div");
+       div.classList.add("liabilities-visual-graph-horizontal-item", `${t.type}`);
+
+        div.style.width = `${t.percentage}%`;
+
+        visualGraphCon.appendChild(div);
+    });
+
+    renderLiabilitiesLegend(data);
+}
+
+function renderLiabilitiesLegend(data) {
+    const legendCon = document.querySelector(".liabilities-visual-graph-legend");
+    legendCon.innerHTML = "";
+
+    data.forEach(l => {
+        const div = document.createElement("div");
+        div.classList.add("horizontal-graph-legend-con");
+        
+        div.innerHTML = `
+            <div class="horizontal-graph-legend-key ${l.type}"></div>
+
+            <p class="horizontal-graph-legend-data-key">${l.type}</p>
+        `;
+
+        legendCon.appendChild(div);
+    });
+}
 
 // ASSETS
 async function displayAssetsDashboard() {
