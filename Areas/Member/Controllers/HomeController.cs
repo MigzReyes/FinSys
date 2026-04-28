@@ -442,6 +442,8 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> EditLiability([FromBody] LiabilityDto liabilityDto) 
     {
+        Console.WriteLine("Liability id" + liabilityDto.Id);
+
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
         var liability = await _context.Liabilities.Where(a => a.Id == liabilityDto.Id && a.CompanyId == companyId).FirstOrDefaultAsync();
 

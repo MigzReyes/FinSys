@@ -354,10 +354,6 @@ function normalizeFormData(data) {
     return {
         ...data, // keep data
 
-        id: data.id
-            ? Number(data.id)
-            : null,
-
         investment: data.investment
             ? Number(data.investment.replace(/,/g, ""))
             : null,

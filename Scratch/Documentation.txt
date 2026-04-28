@@ -601,5 +601,5 @@ TO-DO
 
     liabilities graph -- DONE
 
-    broken update functionality sa lahat
+    broken update functionality sa liabilities and financial transactions
     

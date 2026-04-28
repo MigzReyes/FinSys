@@ -983,7 +983,7 @@ const PageScripts = {
                     const assetId = modalEntityBtn.dataset.id;
                     const formData = utils.getFormData(assetForm);
 
-                    utils.debug("Investment", formData);
+                    utils.debug("Asset Id", assetId);
 
                     await fetch("/Member/Home/EditAsset", {
                         method: "POST",
@@ -991,7 +991,7 @@ const PageScripts = {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            Id: assetId,
+                            id: assetId,
                             ...formData
                         })
                     }).then(res => res.json())
@@ -1046,13 +1046,15 @@ const PageScripts = {
                     const liabilityId = modalEntityBtn.dataset.id;
                     const formData = utils.getFormData(liabilitiesForm);
 
+                    utils.debug("Liability Id", liabilityId);
+
                     await fetch("/Member/Home/EditLiability", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            Id: liabilityId,
+                            id: liabilityId,
                             ...formData
                         })
                     }).then(res => res.json())
