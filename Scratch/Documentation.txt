@@ -599,5 +599,5 @@ TO-DO
 
 4/26/2026
 
-    Assets and liabilities graph
+    liabilities graph
     
