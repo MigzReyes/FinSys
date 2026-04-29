@@ -607,4 +607,11 @@ TO-DO
 
     Add year selection on financial Statement
         Only show the available year based on the financial transaction date
+
+    Create a javascript code that auto select the current month and year on financial statement.
+        if year or month is change always, put them together in the json body
+
+    Create a financial statement dto that accepts months and year
+
+    Then validate months and year on the query at the back end
     
