@@ -697,8 +697,15 @@ const PageScripts = {
 
     },
 
-    financialStatement: function() {
+    financialStatements: function() {
         utils.debug("Page", "Financial Statement");
+
+        // INCOME STATEMENT
+        const feesEarned = document.getElementById("feesEarned");
+        const totalExpenses = document.getElementById("totalExpenses");
+        const netIncome = document.getElementById("netIncome");
+
+        displayFinancialStatementData();
     },
 
     assetsAndLiabilities: function() {
@@ -1196,6 +1203,48 @@ function renderEntity(items, entity) {
         default: 
             utils.debug("Render Entity", "No Entity");
     }
+}
+
+// FINANCIAL STATEMENT
+async function displayFinancialStatementData() {
+    const data = await getFinancialStatementsData();
+
+    utils.debug("Financial Statement Data", data);
+
+    // INCOME STATEMENT
+    displayIncomeStatement(data);
+}
+
+async function getFinancialStatementsData() {
+    const res = await fetch("/Member/Home/GetFinancialStatementsData");
+
+    const data = await res.json();
+
+    return data;
+}
+
+function displayIncomeStatement(data) {
+    feesEarned.textContent = utils.amountInputFormatToHundreds(data.totalIncome);
+    totalExpenses.textContent = utils.amountInputFormatToHundreds(data.totalExpense);
+    netIncome.textContent = utils.amountInputFormatToHundreds(data.netIncome);
+
+    const expensesCon = document.querySelector(".income-statement-expenses");
+    expensesCon.innerHTML = "";
+
+    data.expenses.forEach(e => {
+        const p = document.createElement("p");
+        p.textContent = e.name;
+        expensesCon.appendChild(p);
+    });
+
+    const expensesAmountCon = document.querySelector(".income-statement-expenses-amount-con");
+    expensesAmountCon.innerHTML = "";
+
+    data.expenses.forEach(e => {
+        const p = document.createElement("p");
+        p.textContent = "₱" + utils.amountInputFormatToHundreds(e.amount);
+        expensesAmountCon.appendChild(p);
+    });
 }
 
 

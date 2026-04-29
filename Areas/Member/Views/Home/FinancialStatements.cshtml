@@ -51,33 +51,37 @@
 
                     
                     <div class="accounts-form-body-col accounts-form-body-data flex-row-center">
-                        <p>₱7,500</p>
+                        <p>₱<span id="feesEarned"></span></p>
                     </div>
                 </div>
 
                 <div class="accounts-form-body-row">
                     <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
                         <p class="padding-bottom-1">Expenses:</p>
-                        <p class="padding-left-1">Wages expense</p>
-                        <p class="padding-left-1">Rent expense</p>
-                        <p class="padding-left-1">Supplies expense</p>
-                        <p class="padding-left-1">Utilities expense</p>
-                        <p class="padding-left-1">Miscellaneous expense</p>
+                            <div class="income-statement-expenses padding-left-2">        
+                                <p>Wages expense</p>
+                                <p>Rent expense</p>
+                                <p>Supplies expense</p>
+                                <p>Utilities expense</p>
+                                <p>Miscellaneous expense</p>
+                            </div>
                         <p class="text-semi-bold deductions padding-left-2 padding-top-1">Total expenses</p>
                     </div>
 
                     <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
                         <p>&nbsp;</p>
-                        <p>₱2,125</p>
-                        <p>₱800</p>
-                        <p>₱800</p>
-                        <p>₱450</p>
-                        <p>₱275</p>
+                        <div class="income-statement-expenses-amount-con">
+                            <p>₱2,125</p>
+                            <p>₱800</p>
+                            <p>₱800</p>
+                            <p>₱450</p>
+                            <p>₱275</p>
+                        </div>
                         <p>&nbsp;</p>
                     </div>
                     
                     <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-right flex-col-bottom-end flex-row-center">
-                        <p class="deductions">₱4,450</p>
+                        <p class="deductions">₱<span class="deductions" id="totalExpenses"></span></p>
                     </div>
                 </div>
 
@@ -91,7 +95,7 @@
 
                     
                     <div class="accounts-form-body-col accounts-form-body-data flex-row-center">
-                        <p class="text-bold earnings">₱3,050</p>
+                        <p class="text-bold earnings">₱<span class="text-bold earnings" id="netIncome"></span></p>
                     </div>
                 </div>
             </div>

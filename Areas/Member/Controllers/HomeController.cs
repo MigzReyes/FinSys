@@ -657,6 +657,44 @@ public class HomeController : Controller
         return Ok(transaction);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetFinancialStatementsData()
+    {
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+
+        // Income Statement
+        var financialTransactions =  await _context.FinancialTransactions.Where(i => i.CompanyId == companyId).ToListAsync();
+        var totalIncome = financialTransactions
+            .Where(t => t.Type == "Income")
+            .Sum(t => (decimal?)t.Amount) ?? 0;
+
+        var expenses = financialTransactions
+            .Where(t => t.Type == "Expense")
+            .Select(t => new
+            {
+                name = t.Category,
+                amount = t.Amount
+            })
+            .ToList();
+
+        var totalExpense = expenses.Sum(e => e.amount);
+
+        var netIncome = totalIncome - totalExpense;
+
+        // Statement of Owners Equity
+
+
+        var data = new
+        {
+            totalIncome,
+            totalExpense,
+            expenses,
+            netIncome
+        };
+        
+        return Ok(data);
+    }
+
     [HttpPost]
     public async Task<IActionResult> SearchLiabilities([FromBody] SearchDto searchDto)
     {

@@ -1861,6 +1861,11 @@ select {
     border-bottom: var(--border);
 }
 
+.income-statement-expenses {
+    display: flex;
+    flex-direction: column;
+}
+
 
 /* ASSETS AND LIABILITIES */
 .assets-and-liabilities {
