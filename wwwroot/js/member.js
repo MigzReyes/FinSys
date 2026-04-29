@@ -989,7 +989,7 @@ const PageScripts = {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            id: assetId,
+                            id: Number(assetId),
                             ...formData
                         })
                     }).then(res => res.json())
@@ -1052,7 +1052,7 @@ const PageScripts = {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            id: liabilityId,
+                            id: Number(liabilityId),
                             ...formData
                         })
                     }).then(res => res.json())

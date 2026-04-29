@@ -447,7 +447,7 @@ public class HomeController : Controller
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value); 
         var liability = await _context.Liabilities.Where(a => a.Id == liabilityDto.Id && a.CompanyId == companyId).FirstOrDefaultAsync();
 
-        if (liability == null) return Ok (liability);
+        if (liability == null) return NotFound(new { message = "Liability not found" });
 
         liability.Name = liabilityDto.Name;
         liability.Due = liabilityDto.Due; 
