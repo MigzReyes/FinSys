@@ -660,6 +660,10 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> GetFinancialStatementsData()
     {
+        // REFACTOR accepts years and months
+        //var startDate = new DateTime(year, month, 1);
+        //var endDate = startDate.AddMonths(1);
+
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
 
         // Income Statement
@@ -682,7 +686,11 @@ public class HomeController : Controller
         var netIncome = totalIncome - totalExpense;
 
         // Statement of Owners Equity
+        var investors = _context.Investors.Where(i => i.CompanyId == companyId);
 
+
+        var dividends = await investors.SumAsync(x => (decimal?)x.Income) ?? 0;
+        var ratainedEarnings = netIncome - dividends;
 
         var data = new
         {

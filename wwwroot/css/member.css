@@ -1704,15 +1704,25 @@ select {
     gap: var(--space-2);
 }
 
+.financial-statements-select-con {
+    display: flex;
+    gap: var(--space-2);
+    justify-content: center;
+    align-items: center;
+}
+
 .financial-statements-months-select-con {
     width: fit-content;
     justify-content: center;
 }
 
 .financial-statements-months-select-con select {
+    padding-right: var(--space-3);
+}
+
+.financial-statements-select-con select {
     font-weight: var(--font-semi-bold);
     font-size: var(--text-sm);
-    padding-right: var(--space-3);
 }
 
 .financial-statements-body {

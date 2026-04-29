@@ -602,4 +602,9 @@ TO-DO
     liabilities graph -- DONE
 
     broken update functionality sa liabilities and financial transactions
+
+4/29/30
+
+    Add year selection on financial Statement
+        Only show the available year based on the financial transaction date
     
