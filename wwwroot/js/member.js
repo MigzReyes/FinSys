@@ -907,13 +907,11 @@ const PageScripts = {
             if (actionBtn?.dataset.action === "removeAsset") {
                 utils.debug("Delete asset", "Deleted asset");
                 deleteEntity(selectedEntityId, "Asset");
-                displayAssetsDashboard();
             }
 
             if (actionBtn?.dataset.action === "removeLiability") {
                 utils.debug("Delete liabilityt", "Deleted liability");
                 deleteEntity(selectedEntityId, "Liability");
-                displayLiabilitesDashboard();
             }
         });
 
@@ -2392,10 +2390,12 @@ async function deleteEntity(id, entity) {
     switch (entity) {
         case "Asset":
             entity = "Assets";
+            displayAssetsDashboard();
             break;
 
         case "Liability":
             entity = "Liabilities";
+            displayLiabilitesDashboard();
             break;
         
     }
