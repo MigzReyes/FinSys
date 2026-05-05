@@ -1347,6 +1347,39 @@ function displayCashFlow(data) {
         a.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingNetIncome);
     });
     operatingTotalExpense.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingTotalExpense);
+
+    displayAsset(data);
+}
+
+function displayAsset(data) {
+    const assetNameCon = document.querySelectorAll(".asset-name-con");
+    assetNameCon.forEach(a => {
+        a.innerHTML = "";
+    });
+
+    const assetPriceCon = document.querySelectorAll(".asset-price-con");
+    assetPriceCon.forEach(a => {
+        a.innerHTML = "";
+    });
+
+    data.assets.assets.forEach(a => {
+        const category = document.createElement("p");
+        category.textContent = a.category;
+        assetNameCon.forEach(a => {
+            a.appendChild(category);
+        })
+        
+        const amount = document.createElement("p");
+        amount.textContent = "₱" + utils.amountInputFormatToHundreds(a.amount);
+        assetPriceCon.forEach(a => {
+            a.appendChild(amount);
+        });
+    });
+
+    const totalAssetValue = document.querySelectorAll(".totalAssetValue");
+    totalAssetValue.forEach(a => {
+        a.textContent = utils.amountInputFormatToHundreds(data.assets.totalAssetValue);
+    });
 }
 
 

@@ -706,6 +706,16 @@ public class HomeController : Controller
         var operatingTotalExpense = totalExpense + dividends;
         var operatingNetIncome = totalIncome - operatingTotalExpense;
 
+        var assets = await _context.Assets
+            .Where(a => a.CompanyId == companyId)
+            .Select(a => new
+            {
+                category = a.Category,
+                amount = a.Amount
+            })
+            .ToListAsync();
+        
+        var totalAssetValue = assets.Sum(a => a.amount);
 
         var data = new
         {
@@ -732,6 +742,11 @@ public class HomeController : Controller
                     operatingTotalExpense,
                     operatingNetIncome
                 }
+            },
+            assets = new
+            {
+                assets,
+                totalAssetValue
             }
         };
         
