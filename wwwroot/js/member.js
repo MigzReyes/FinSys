@@ -713,14 +713,44 @@ const PageScripts = {
         monthsSelect.value = setDateData.month;
 
         // REFACTOR get the date based on the value of the select input
-        fsHeaderMonth.textContent = setDateData.month;
-        fsHeaderDay.textContent = setDateData.lastDay;
-        fsHeaderYear.textContent = setDateData.year;
+        const fsDateData = getSelectedDate(setDateData.month, setDateData.numericalMonth, setDateData.year);
+        fsHeaderMonth.forEach(m => {
+            m.textContent = fsDateData.month;
+        });
+
+        fsHeaderDay.forEach(d => {
+            d.textContent = fsDateData.lastDay;
+        });
+
+        fsHeaderYear.forEach(y => {
+            y.textContent = fsDateData.year;
+        });
 
         // INCOME STATEMENT
         const feesEarned = document.getElementById("feesEarned");
         const totalExpenses = document.getElementById("totalExpenses");
         const netIncome = document.getElementById("netIncome");
+
+
+        // STATEMENT OF OWNERS EQUITY
+        const ownersEquityMonth = document.getElementById("fsOwnersEquityMonth");
+        const ownersEquityDay = document.getElementById("fsOwnersEquityDay");
+        const ownersEquityYear = document.getElementById("fsOwnersEquityYear");
+        utils.debug("Date", setDateData.date);
+
+        function setOwnersEquityDate() {
+            const lastMonthData = utils.getLastMonth(setDateData.date);
+
+            ownersEquityMonth.textContent = lastMonthData.month;
+            ownersEquityDay.textContent = lastMonthData.lastDay;
+            ownersEquityYear.textContent = lastMonthData.year;
+        }
+        setOwnersEquityDate();
+
+        const ownersEquityNetIncomeMonth = document.getElementById("fsOwnersEquityNetIncomeMonth");
+        ownersEquityNetIncomeMonth.textContent = setDateData.month;
+
+
 
         async function initFinancialStatementsData() {
             const fsData = await getFinancialStatementsData(setDateData.numericalMonth, setDateData.year, setDateData.lastDay);
@@ -1227,11 +1257,24 @@ function renderEntity(items, entity) {
 }
 
 // FINANCIAL STATEMENT
+function getSelectedDate(month, numericalMonth, year) {
+    const lastDay = new Date(year, numericalMonth, 0).getDate();
+
+    return {
+        month: month,
+        numericalMonth: numericalMonth,
+        lastDay: lastDay,
+        year: year
+    }
+}
+
 async function displayFinancialStatementData(data) {
     utils.debug("Financial Statement Data", data);
 
     // INCOME STATEMENT
     displayIncomeStatement(data);
+
+    // STATEMENT OF OWNERS EQUITY
 }
 
 async function getFinancialStatementsData(month, year, lastDay) {

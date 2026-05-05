@@ -435,6 +435,23 @@ export function setDateToday(dateInput) {
     dateInput.value = today;
 }
 
+export function getLastMonth(date) {
+    date.setMonth(date.getMonth() - 1);
+
+    const month = date.toLocaleString("en-US", { month: "long" });
+    const numericalMonth = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const lastDay = new Date(year, date.getMonth() + 1, 0).getDate();
+
+    return {
+        date,
+        month,
+        numericalMonth,
+        year,
+        lastDay
+    };
+}
+
 export function getLastMonthData() {
     const date = new Date();
     date.setMonth(date.getMonth() - 1);
@@ -447,6 +464,7 @@ export function getLastMonthData() {
     debug("month", numericalMonth);
 
     return { 
+        date,
         month,
         numericalMonth,
         year,
