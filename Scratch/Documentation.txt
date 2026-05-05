@@ -611,6 +611,6 @@ TO-DO
     Create a javascript code that auto select the current month and year on financial statement.
         if year or month is change always, put them together in the json body
 
-    Create a financial statement dto that accepts months and year
+    Create a financial statement dto that accepts months and year -- DONE
 
-    Then validate months and year on the query at the back end
+    Then validate months and year on the query at the back end -- DONE

@@ -726,31 +726,6 @@ const PageScripts = {
             y.textContent = fsDateData.year;
         });
 
-        // INCOME STATEMENT
-        const feesEarned = document.getElementById("feesEarned");
-        const totalExpenses = document.getElementById("totalExpenses");
-        const netIncome = document.getElementById("netIncome");
-
-
-        // STATEMENT OF OWNERS EQUITY
-        const ownersEquityMonth = document.getElementById("fsOwnersEquityMonth");
-        const ownersEquityDay = document.getElementById("fsOwnersEquityDay");
-        const ownersEquityYear = document.getElementById("fsOwnersEquityYear");
-        utils.debug("Date", setDateData.date);
-
-        function setOwnersEquityDate() {
-            const lastMonthData = utils.getLastMonth(setDateData.date);
-
-            ownersEquityMonth.textContent = lastMonthData.month;
-            ownersEquityDay.textContent = lastMonthData.lastDay;
-            ownersEquityYear.textContent = lastMonthData.year;
-        }
-        setOwnersEquityDate();
-
-        const ownersEquityNetIncomeMonth = document.getElementById("fsOwnersEquityNetIncomeMonth");
-        ownersEquityNetIncomeMonth.textContent = setDateData.month;
-
-
 
         async function initFinancialStatementsData() {
             const fsData = await getFinancialStatementsData(setDateData.numericalMonth, setDateData.year, setDateData.lastDay);
@@ -1275,6 +1250,7 @@ async function displayFinancialStatementData(data) {
     displayIncomeStatement(data);
 
     // STATEMENT OF OWNERS EQUITY
+    displayOwnersEquity(data);
 }
 
 async function getFinancialStatementsData(month, year, lastDay) {
@@ -1301,14 +1277,20 @@ async function getFinancialStatementsData(month, year, lastDay) {
 }
 
 function displayIncomeStatement(data) {
-    feesEarned.textContent = utils.amountInputFormatToHundreds(data.totalIncome);
-    totalExpenses.textContent = utils.amountInputFormatToHundreds(data.totalExpense);
-    netIncome.textContent = utils.amountInputFormatToHundreds(data.netIncome);
+    const feesEarned = document.getElementById("feesEarned");
+    const totalExpenses = document.getElementById("totalExpenses");
+    const netIncome = document.querySelectorAll(".netIncome");
+
+    feesEarned.textContent = utils.amountInputFormatToHundreds(data.incomeStatement.totalIncome);
+    totalExpenses.textContent = utils.amountInputFormatToHundreds(data.incomeStatement.totalExpense);
+    netIncome.forEach(i => {
+        i.textContent = utils.amountInputFormatToHundreds(data.incomeStatement.netIncome);
+    });
 
     const expensesCon = document.querySelector(".income-statement-expenses");
     expensesCon.innerHTML = "";
 
-    data.expenses.forEach(e => {
+    data.incomeStatement.expenses.forEach(e => {
         const p = document.createElement("p");
         p.textContent = e.name;
         expensesCon.appendChild(p);
@@ -1317,11 +1299,38 @@ function displayIncomeStatement(data) {
     const expensesAmountCon = document.querySelector(".income-statement-expenses-amount-con");
     expensesAmountCon.innerHTML = "";
 
-    data.expenses.forEach(e => {
+    data.incomeStatement.expenses.forEach(e => {
         const p = document.createElement("p");
         p.textContent = "₱" + utils.amountInputFormatToHundreds(e.amount);
         expensesAmountCon.appendChild(p);
     });
+}
+
+function displayOwnersEquity(data) {
+    const setDateData = utils.getLastMonthData(); 
+
+    const ownersEquityMonth = document.getElementById("fsOwnersEquityMonth");
+    const ownersEquityDay = document.getElementById("fsOwnersEquityDay");
+    const ownersEquityYear = document.getElementById("fsOwnersEquityYear");
+
+    function setOwnersEquityDate() {
+        const lastMonthData = utils.getLastMonth(setDateData.date);
+
+        ownersEquityMonth.textContent = lastMonthData.month;
+        ownersEquityDay.textContent = lastMonthData.lastDay;
+        ownersEquityYear.textContent = lastMonthData.year;
+    }
+    setOwnersEquityDate();
+
+    const ownersEquityNetIncomeMonth = document.getElementById("fsOwnersEquityNetIncomeMonth");
+    ownersEquityNetIncomeMonth.textContent = setDateData.month;
+
+    const retainedEarningsLastmonth = document.getElementById("retainedEarningsLastmonth");
+    const dividends = document.getElementById("dividends");
+    const retainedEarnings = document.getElementById("retainedEarnings");
+
+    dividends.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.dividends);
+    retainedEarnings.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarnings);
 }
 
 

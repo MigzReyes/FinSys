@@ -689,19 +689,27 @@ public class HomeController : Controller
         // Statement of Owners Equity
         var investors = _context.Investors.Where(i => i.CompanyId == companyId);
 
-
         var dividends = await investors.SumAsync(x => (decimal?)x.Income) ?? 0;
-        var ratainedEarnings = netIncome - dividends;
+        var retainedEarnings = netIncome - dividends;
 
 
 
 
         var data = new
         {
-            totalIncome,
-            totalExpense,
-            expenses,
-            netIncome
+            incomeStatement = new
+            {
+                totalIncome,
+                totalExpense,
+                expenses,
+                netIncome   
+            },
+
+            ownersEquity = new
+            {
+                dividends,
+                retainedEarnings
+            }
         };
         
         return Ok(data);
