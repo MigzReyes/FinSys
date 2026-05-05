@@ -435,6 +435,21 @@ export function setDateToday(dateInput) {
     dateInput.value = today;
 }
 
+export function getLastMonthData() {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 1);
+
+    const month = date.toLocaleString("en-US", { month: "long" });
+    const year = date.getFullYear();
+    const lastDay = new Date(year, date.getMonth() + 1, 0).getDate();
+
+    return { 
+        month,
+        year,
+        lastDay
+    };
+}
+
 export function isDueLiability(date) {
     const [y, m, d] = date.split("T")[0].split("-").map(Number);
 

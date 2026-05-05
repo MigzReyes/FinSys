@@ -700,6 +700,21 @@ const PageScripts = {
     financialStatements: function() {
         utils.debug("Page", "Financial Statement");
 
+        // HEADERS (Month/Years)
+        const fsHeaderMonth = document.getElementById("fsHeaderMonth");
+        const fsHeaderDay = document.getElementById("fsHeaderDay");
+        const fsHeaderYear = document.getElementById("fsHeaderYear");
+        const yearsSelect = document.getElementById("financialStatementsYearsSelect");
+        const monthsSelect = document.getElementById("financialStatementsMonthsSelect"); 
+
+        const setDateData = utils.getLastMonthData(); 
+        fsHeaderMonth.textContent = setDateData.month;
+        fsHeaderDay.textContent = setDateData.lastDay;
+        fsHeaderYear.textContent = setDateData.year;
+
+        yearsSelect.value = setDateData.year;
+        monthsSelect.value = setDateData.month;
+
         // INCOME STATEMENT
         const feesEarned = document.getElementById("feesEarned");
         const totalExpenses = document.getElementById("totalExpenses");
@@ -1246,6 +1261,7 @@ function displayIncomeStatement(data) {
         expensesAmountCon.appendChild(p);
     });
 }
+
 
 
 // PAGINATION
