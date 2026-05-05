@@ -614,3 +614,7 @@ TO-DO
     Create a financial statement dto that accepts months and year -- DONE
 
     Then validate months and year on the query at the back end -- DONE
+
+5/5/2026
+
+    Get the last last month for the retained earnings of statement of owners equity.

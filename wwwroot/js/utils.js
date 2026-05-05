@@ -95,8 +95,17 @@ export function tinInputFormat(value) {
 
 export function amountInputFormatToHundreds(value) {
     value = textInputFormatToNumber(value);
+    
+    if (!value) return value;
 
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    debug("Value", value);
+    const isNegative = value.startsWith("-");
+
+    let number = isNegative ? value.slice(1) : value;
+
+    number = number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    return isNegative ? "-" + number : number;
 }
 
 function phoneNumberInputFormat(value) {
@@ -113,7 +122,13 @@ function phoneNumberInputFormat(value) {
 }
 
 function textInputFormatToNumber(value) {
-   return String(value).replace(/\D/g, '');
+    value = String(value);
+
+    value = value.replace(/[^\d-]/g, '');
+
+    value = value.replace(/(?!^)-/g, '');
+
+    return value;
 }
 
 export function limitInputLength(input, length) {

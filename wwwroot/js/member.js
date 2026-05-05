@@ -1331,6 +1331,7 @@ function displayOwnersEquity(data) {
 
     dividends.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.dividends);
     retainedEarnings.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarnings);
+    retainedEarningsLastmonth.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarningsLastMonth);
 }
 
 

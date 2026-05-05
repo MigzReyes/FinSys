@@ -668,12 +668,13 @@ public class HomeController : Controller
         Console.WriteLine("Start Date " + startDate + " End Date " + endDate); // REMOVE
 
         // Income Statement
-        var financialTransactions =  await _context.FinancialTransactions.Where(i => i.CompanyId == companyId && i.DateOfTransaction >= startDate && i.DateOfTransaction < endDate).ToListAsync();
-        var totalIncome = financialTransactions
+        var financialTransactions =  _context.FinancialTransactions.Where(i => i.CompanyId == companyId);
+        var fsLastMonth = await financialTransactions.Where(i => i.DateOfTransaction >= startDate && i.DateOfTransaction < endDate).ToListAsync();
+        var totalIncome = fsLastMonth
             .Where(t => t.Type == "Income")
             .Sum(t => (decimal?)t.Amount) ?? 0;
 
-        var expenses = financialTransactions
+        var expenses = fsLastMonth
             .Where(t => t.Type == "Expense")
             .Select(t => new
             {
@@ -689,9 +690,15 @@ public class HomeController : Controller
         // Statement of Owners Equity
         var investors = _context.Investors.Where(i => i.CompanyId == companyId);
 
+        var oeStartDate = startDate.AddMonths(-1);
+        var oeEndDate = startDate;
+        var oeLastMonth = await financialTransactions.Where(i => i.DateOfTransaction >= oeStartDate && i.DateOfTransaction < oeEndDate).ToListAsync();
+        var oeTotalIncome = oeLastMonth.Where(t => t.Type == "Income").Sum(t => (decimal?)t.Amount) ?? 0;
+        var oeTotalExpense = oeLastMonth.Where(t => t.Type == "Expenses").Sum(t => (decimal?)t.Amount) ?? 0;
+        var retainedEarningsLastMonth = oeTotalIncome - oeTotalExpense;
+  
         var dividends = await investors.SumAsync(x => (decimal?)x.Income) ?? 0;
-        var retainedEarnings = netIncome - dividends;
-
+        var retainedEarnings = retainedEarningsLastMonth + netIncome - dividends;
 
 
 
@@ -708,7 +715,8 @@ public class HomeController : Controller
             ownersEquity = new
             {
                 dividends,
-                retainedEarnings
+                retainedEarnings,
+                retainedEarningsLastMonth
             }
         };
         
