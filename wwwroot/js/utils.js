@@ -440,11 +440,15 @@ export function getLastMonthData() {
     date.setMonth(date.getMonth() - 1);
 
     const month = date.toLocaleString("en-US", { month: "long" });
+    const numericalMonth = date.getMonth() + 1;
     const year = date.getFullYear();
     const lastDay = new Date(year, date.getMonth() + 1, 0).getDate();
 
+    debug("month", numericalMonth);
+
     return { 
         month,
+        numericalMonth,
         year,
         lastDay
     };

@@ -701,26 +701,32 @@ const PageScripts = {
         utils.debug("Page", "Financial Statement");
 
         // HEADERS (Month/Years)
-        const fsHeaderMonth = document.getElementById("fsHeaderMonth");
-        const fsHeaderDay = document.getElementById("fsHeaderDay");
-        const fsHeaderYear = document.getElementById("fsHeaderYear");
+        const fsHeaderMonth = document.querySelectorAll(".fsHeaderMonth");
+        const fsHeaderDay = document.querySelectorAll(".fsHeaderDay");
+        const fsHeaderYear = document.querySelectorAll(".fsHeaderYear");
         const yearsSelect = document.getElementById("financialStatementsYearsSelect");
         const monthsSelect = document.getElementById("financialStatementsMonthsSelect"); 
 
         const setDateData = utils.getLastMonthData(); 
-        fsHeaderMonth.textContent = setDateData.month;
-        fsHeaderDay.textContent = setDateData.lastDay;
-        fsHeaderYear.textContent = setDateData.year;
 
         yearsSelect.value = setDateData.year;
         monthsSelect.value = setDateData.month;
+
+        // REFACTOR get the date based on the value of the select input
+        fsHeaderMonth.textContent = setDateData.month;
+        fsHeaderDay.textContent = setDateData.lastDay;
+        fsHeaderYear.textContent = setDateData.year;
 
         // INCOME STATEMENT
         const feesEarned = document.getElementById("feesEarned");
         const totalExpenses = document.getElementById("totalExpenses");
         const netIncome = document.getElementById("netIncome");
 
-        displayFinancialStatementData();
+        async function initFinancialStatementsData() {
+            const fsData = await getFinancialStatementsData(setDateData.numericalMonth, setDateData.year, setDateData.lastDay);
+            displayFinancialStatementData(fsData);
+        }
+        initFinancialStatementsData();
     },
 
     assetsAndLiabilities: function() {
@@ -1221,21 +1227,34 @@ function renderEntity(items, entity) {
 }
 
 // FINANCIAL STATEMENT
-async function displayFinancialStatementData() {
-    const data = await getFinancialStatementsData();
-
+async function displayFinancialStatementData(data) {
     utils.debug("Financial Statement Data", data);
 
     // INCOME STATEMENT
     displayIncomeStatement(data);
 }
 
-async function getFinancialStatementsData() {
-    const res = await fetch("/Member/Home/GetFinancialStatementsData");
+async function getFinancialStatementsData(month, year, lastDay) {
+    try {
+        const res = await fetch("/Member/Home/GetFinancialStatementsData", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                month: month,
+                year: year,
+                lastDay: lastDay
+            })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
+        return data;
 
-    return data;
+    } catch (err) {
+        utils.debug("Error", err);
+        return null;
+    }
 }
 
 function displayIncomeStatement(data) {

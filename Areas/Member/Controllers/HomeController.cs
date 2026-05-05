@@ -657,17 +657,18 @@ public class HomeController : Controller
         return Ok(transaction);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetFinancialStatementsData()
+    [HttpPost]
+    public async Task<IActionResult> GetFinancialStatementsData([FromBody] GetFinancialStatementsDto fsDto)
     {
-        // REFACTOR accepts years and months
-        //var startDate = new DateTime(year, month, 1);
-        //var endDate = startDate.AddMonths(1);
-
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
 
+        var startDate = new DateTime(fsDto.Year, fsDto.Month, 1);
+        var endDate = startDate.AddMonths(1);
+
+        Console.WriteLine("Start Date " + startDate + " End Date " + endDate); // REMOVE
+
         // Income Statement
-        var financialTransactions =  await _context.FinancialTransactions.Where(i => i.CompanyId == companyId).ToListAsync();
+        var financialTransactions =  await _context.FinancialTransactions.Where(i => i.CompanyId == companyId && i.DateOfTransaction >= startDate && i.DateOfTransaction < endDate).ToListAsync();
         var totalIncome = financialTransactions
             .Where(t => t.Type == "Income")
             .Sum(t => (decimal?)t.Amount) ?? 0;
@@ -691,6 +692,9 @@ public class HomeController : Controller
 
         var dividends = await investors.SumAsync(x => (decimal?)x.Income) ?? 0;
         var ratainedEarnings = netIncome - dividends;
+
+
+
 
         var data = new
         {
