@@ -1251,6 +1251,9 @@ async function displayFinancialStatementData(data) {
 
     // STATEMENT OF OWNERS EQUITY
     displayOwnersEquity(data);
+
+    // CASHFLOW
+    displayCashFlow(data);
 }
 
 async function getFinancialStatementsData(month, year, lastDay) {
@@ -1332,6 +1335,18 @@ function displayOwnersEquity(data) {
     dividends.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.dividends);
     retainedEarnings.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarnings);
     retainedEarningsLastmonth.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarningsLastMonth);
+}
+
+function displayCashFlow(data) {
+    const operatingTotalIncome = document.getElementById("operatingTotalIncome");
+    const netAsset = document.querySelectorAll(".netAsset");
+    const operatingTotalExpense = document.getElementById("operatingTotalExpense");
+
+    operatingTotalIncome.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingTotalIncome);
+    netAsset.forEach(a => {
+        a.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingNetIncome);
+    });
+    operatingTotalExpense.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingTotalExpense);
 }
 
 

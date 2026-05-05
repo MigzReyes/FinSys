@@ -701,6 +701,11 @@ public class HomeController : Controller
         var retainedEarnings = retainedEarningsLastMonth + netIncome - dividends;
 
 
+        // CASH FLOW
+        var operatingTotalIncome = totalIncome;
+        var operatingTotalExpense = totalExpense + dividends;
+        var operatingNetIncome = totalIncome - operatingTotalExpense;
+
 
         var data = new
         {
@@ -717,6 +722,16 @@ public class HomeController : Controller
                 dividends,
                 retainedEarnings,
                 retainedEarningsLastMonth
+            },
+            
+            cashFlow = new
+            {
+                operatingAct = new
+                {
+                    operatingTotalIncome,
+                    operatingTotalExpense,
+                    operatingNetIncome
+                }
             }
         };
         
