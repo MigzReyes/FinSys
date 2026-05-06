@@ -121,6 +121,15 @@ function phoneNumberInputFormat(value) {
     return value;
 }
 
+export function getMonthNumber(monthName) {
+    const months = [
+        "January","February","March","April","May","June",
+        "July","August","September","October","November","December"
+    ];
+
+    return months.indexOf(monthName);
+}
+
 function textInputFormatToNumber(value) {
     value = String(value);
 
@@ -450,9 +459,12 @@ export function setDateToday(dateInput) {
     dateInput.value = today;
 }
 
-export function getLastMonth(date) {
-    date.setMonth(date.getMonth() - 1);
+export function getLastMonth(monthName) {
+    const numMonth = getMonthNumber(monthName);
+    const date = new Date();
+    date.setMonth(numMonth - 1);
 
+    const currentMonth = monthName;
     const month = date.toLocaleString("en-US", { month: "long" });
     const numericalMonth = date.getMonth() + 1;
     const year = date.getFullYear();
@@ -460,6 +472,7 @@ export function getLastMonth(date) {
 
     return {
         date,
+        currentMonth,
         month,
         numericalMonth,
         year,
@@ -476,7 +489,7 @@ export function getLastMonthData() {
     const year = date.getFullYear();
     const lastDay = new Date(year, date.getMonth() + 1, 0).getDate();
 
-    debug("month", numericalMonth);
+    debug("month", date);
 
     return { 
         date,

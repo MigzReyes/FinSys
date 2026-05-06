@@ -732,6 +732,20 @@ const PageScripts = {
             displayFinancialStatementData(fsData);
         }
         initFinancialStatementsData();
+
+        let year = yearsSelect.value;
+        let month = monthsSelect.value;
+        yearsSelect.addEventListener("change", function (e) {
+            const value = e.target.value;
+            year = value
+            selectDate(month, year);
+        });
+
+        monthsSelect.addEventListener("change", function (e) {
+            const value = e.target.value;
+            month = value;
+            selectDate(month, year);
+        });
     },
 
     assetsAndLiabilities: function() {
@@ -1232,9 +1246,20 @@ function renderEntity(items, entity) {
 }
 
 // FINANCIAL STATEMENT
-function getSelectedDate(month, numericalMonth, year) {
+async function selectDate(month, year) {
+    const numericalMonth = utils.getMonthNumber(month);
     const lastDay = new Date(year, numericalMonth, 0).getDate();
 
+    utils.debug("Last day", numericalMonth);
+
+    const fsData = await getFinancialStatementsData(numericalMonth, year, lastDay);
+    setOwnersEquityDate(month);
+    displayFinancialStatementData(fsData);
+}   
+
+function getSelectedDate(month, numericalMonth, year) {
+    const lastDay = new Date(year, numericalMonth, 0).getDate();
+    setOwnersEquityDate(month);
     return {
         month: month,
         numericalMonth: numericalMonth,
@@ -1313,24 +1338,6 @@ function displayIncomeStatement(data) {
 }
 
 function displayOwnersEquity(data) {
-    const setDateData = utils.getLastMonthData(); 
-
-    const ownersEquityMonth = document.getElementById("fsOwnersEquityMonth");
-    const ownersEquityDay = document.getElementById("fsOwnersEquityDay");
-    const ownersEquityYear = document.getElementById("fsOwnersEquityYear");
-
-    function setOwnersEquityDate() {
-        const lastMonthData = utils.getLastMonth(setDateData.date);
-
-        ownersEquityMonth.textContent = lastMonthData.month;
-        ownersEquityDay.textContent = lastMonthData.lastDay;
-        ownersEquityYear.textContent = lastMonthData.year;
-    }
-    setOwnersEquityDate();
-
-    const ownersEquityNetIncomeMonth = document.getElementById("fsOwnersEquityNetIncomeMonth");
-    ownersEquityNetIncomeMonth.textContent = setDateData.month;
-
     const retainedEarningsLastmonth = document.getElementById("retainedEarningsLastmonth");
     const dividends = document.getElementById("dividends");
     const retainedEarnings = document.querySelectorAll(".retainedEarnings");
@@ -1340,6 +1347,22 @@ function displayOwnersEquity(data) {
         e.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarnings);
     });
     retainedEarningsLastmonth.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarningsLastMonth);
+}
+
+function setOwnersEquityDate(month) {
+    const lastMonthData = utils.getLastMonth(month);
+
+    const ownersEquityMonth = document.getElementById("fsOwnersEquityMonth");
+    const ownersEquityDay = document.getElementById("fsOwnersEquityDay");
+    const ownersEquityYear = document.getElementById("fsOwnersEquityYear");
+
+    ownersEquityMonth.textContent = lastMonthData.month;
+    ownersEquityDay.textContent = lastMonthData.lastDay;
+    ownersEquityYear.textContent = lastMonthData.year;
+
+    
+    const ownersEquityNetIncomeMonth = document.getElementById("fsOwnersEquityNetIncomeMonth");
+    ownersEquityNetIncomeMonth.textContent = lastMonthData.currentMonth; // +1
 }
 
 function displayCashFlow(data) {
