@@ -712,23 +712,10 @@ const PageScripts = {
         yearsSelect.value = setDateData.year;
         monthsSelect.value = setDateData.month;
 
-        // REFACTOR get the date based on the value of the select input
-        const fsDateData = getSelectedDate(setDateData.month, setDateData.numericalMonth, setDateData.year);
-        fsHeaderMonth.forEach(m => {
-            m.textContent = fsDateData.month;
-        });
-
-        fsHeaderDay.forEach(d => {
-            d.textContent = fsDateData.lastDay;
-        });
-
-        fsHeaderYear.forEach(y => {
-            y.textContent = fsDateData.year;
-        });
-
-
         async function initFinancialStatementsData() {
             const fsData = await getFinancialStatementsData(setDateData.numericalMonth, setDateData.year, setDateData.lastDay);
+            setOwnersEquityDate(setDateData.month);
+            setHeaderFsDate(setDateData.month, setDateData.numericalMonth, setDateData.year);
             displayFinancialStatementData(fsData);
         }
         initFinancialStatementsData();
@@ -1247,13 +1234,14 @@ function renderEntity(items, entity) {
 
 // FINANCIAL STATEMENT
 async function selectDate(month, year) {
-    const numericalMonth = utils.getMonthNumber(month);
+    const numericalMonth = utils.getMonthNumber(month) + 1;
     const lastDay = new Date(year, numericalMonth, 0).getDate();
 
     utils.debug("Last day", numericalMonth);
 
     const fsData = await getFinancialStatementsData(numericalMonth, year, lastDay);
     setOwnersEquityDate(month);
+    setHeaderFsDate(month, numericalMonth, year);
     displayFinancialStatementData(fsData);
 }   
 
@@ -1268,6 +1256,26 @@ function getSelectedDate(month, numericalMonth, year) {
     }
 }
 
+function setHeaderFsDate(month, numericalMonth, year) {
+    const fsHeaderMonth = document.querySelectorAll(".fsHeaderMonth");
+    const fsHeaderDay = document.querySelectorAll(".fsHeaderDay");
+    const fsHeaderYear = document.querySelectorAll(".fsHeaderYear");
+
+    const fsDateData = getSelectedDate(month, numericalMonth, year);
+    utils.debug("Last day", fsDateData.lastDay);
+    fsHeaderMonth.forEach(m => {
+        m.textContent = fsDateData.month;
+    });
+
+    fsHeaderDay.forEach(d => {
+        d.textContent = fsDateData.lastDay;
+    });
+
+    fsHeaderYear.forEach(y => {
+        y.textContent = fsDateData.year;
+    });
+}
+
 async function displayFinancialStatementData(data) {
     utils.debug("Financial Statement Data", data);
 
@@ -1279,6 +1287,9 @@ async function displayFinancialStatementData(data) {
 
     // CASHFLOW
     displayCashFlow(data);
+
+    // ASSETS
+    displayAsset(data);
 
     // LIABILITITES
     displayLiabilites(data);
@@ -1376,10 +1387,6 @@ function displayCashFlow(data) {
     });
     operatingTotalExpense.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingTotalExpense);
 
-    displayAsset(data);
-
-
-
     const capital = document.querySelectorAll(".capital");
     const dividends = document.querySelector(".dividends");
     const netFinancingAct = document.querySelector(".netFinancingAct");
@@ -1406,16 +1413,16 @@ function displayAsset(data) {
         a.innerHTML = "";
     });
 
-    data.assets.assets.forEach(a => {
-        const category = document.createElement("p");
-        category.textContent = a.category;
+    data.assets.assets.forEach(i => {
         assetNameCon.forEach(a => {
+            const category = document.createElement("p");
+            category.textContent = i.category;
             a.appendChild(category);
         })
         
-        const amount = document.createElement("p");
-        amount.textContent = "₱" + utils.amountInputFormatToHundreds(a.amount);
         assetPriceCon.forEach(a => {
+            const amount = document.createElement("p");
+            amount.textContent = "₱" + utils.amountInputFormatToHundreds(i.amount);
             a.appendChild(amount);
         });
     });

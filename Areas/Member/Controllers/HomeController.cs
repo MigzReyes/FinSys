@@ -8,6 +8,7 @@ using FinSys.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Text.Json;
 
 namespace FinSys.Areas.Member.Controllers;
 
@@ -682,6 +683,8 @@ public class HomeController : Controller
                 amount = t.Amount
             })
             .ToList();
+
+        Console.WriteLine(JsonSerializer.Serialize(expenses));
 
         var totalExpense = expenses.Sum(e => e.amount);
 

@@ -489,7 +489,7 @@ export function getLastMonthData() {
     const year = date.getFullYear();
     const lastDay = new Date(year, date.getMonth() + 1, 0).getDate();
 
-    debug("month", date);
+    debug("month", lastDay);
 
     return { 
         date,
