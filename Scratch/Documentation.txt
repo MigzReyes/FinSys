@@ -618,3 +618,9 @@ TO-DO
 5/5/2026
 
     Get the last last month for the retained earnings of statement of owners equity. -- DONE
+
+5/7/2026
+
+    Fix financial transaction edit 
+
+    Fix input valdiation 
