@@ -717,6 +717,12 @@ public class HomeController : Controller
         
         var totalAssetValue = assets.Sum(a => a.amount);
 
+
+        var capital = investors.Sum(c => c.Investment);
+        var netFinancingAct = capital - dividends;
+
+        var netCashFlow = operatingNetIncome - totalAssetValue + netFinancingAct;
+
         var data = new
         {
             incomeStatement = new
@@ -741,7 +747,15 @@ public class HomeController : Controller
                     operatingTotalIncome,
                     operatingTotalExpense,
                     operatingNetIncome
-                }
+                },
+
+                financingAct = new
+                {
+                    capital,
+                    netFinancingAct
+                },
+                
+                netCashFlow
             },
             assets = new
             {

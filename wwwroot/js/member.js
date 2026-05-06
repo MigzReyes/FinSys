@@ -1349,6 +1349,20 @@ function displayCashFlow(data) {
     operatingTotalExpense.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingTotalExpense);
 
     displayAsset(data);
+
+
+
+    const capital = document.querySelector(".capital");
+    const dividends = document.querySelector(".dividends");
+    const netFinancingAct = document.querySelector(".netFinancingAct");
+
+    capital.textContent = utils.amountInputFormatToHundreds(data.cashFlow.financingAct.capital);
+    dividends.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.dividends);
+    netFinancingAct.textContent = utils.amountInputFormatToHundreds(data.cashFlow.financingAct.netFinancingAct);
+
+
+    const netCashFlow = document.querySelector(".netCashFlow");
+    netCashFlow.textContent = utils.amountInputFormatToHundreds(data.cashFlow.netCashFlow);
 }
 
 function displayAsset(data) {
