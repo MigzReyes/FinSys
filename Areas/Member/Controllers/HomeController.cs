@@ -723,6 +723,14 @@ public class HomeController : Controller
 
         var netCashFlow = operatingNetIncome - totalAssetValue + netFinancingAct;
 
+
+        // LIABILITIES
+        var liabilities = _context.Liabilities.Where(l => l.CompanyId == companyId);
+        var totalLoans = await liabilities.SumAsync(l => (decimal?)l.Balance) ?? 0;
+
+        var stockholderEquity = capital + retainedEarnings;
+        var totalLiabAndEquity = stockholderEquity + totalLoans;
+
         var data = new
         {
             incomeStatement = new
@@ -754,13 +762,20 @@ public class HomeController : Controller
                     capital,
                     netFinancingAct
                 },
-                
+
                 netCashFlow
             },
             assets = new
             {
                 assets,
                 totalAssetValue
+            },
+
+            liabilities = new
+            {
+                totalLiabAndEquity,
+                stockholderEquity,
+                totalLoans
             }
         };
         

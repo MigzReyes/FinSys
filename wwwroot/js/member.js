@@ -1254,6 +1254,9 @@ async function displayFinancialStatementData(data) {
 
     // CASHFLOW
     displayCashFlow(data);
+
+    // LIABILITITES
+    displayLiabilites(data);
 }
 
 async function getFinancialStatementsData(month, year, lastDay) {
@@ -1330,10 +1333,12 @@ function displayOwnersEquity(data) {
 
     const retainedEarningsLastmonth = document.getElementById("retainedEarningsLastmonth");
     const dividends = document.getElementById("dividends");
-    const retainedEarnings = document.getElementById("retainedEarnings");
+    const retainedEarnings = document.querySelectorAll(".retainedEarnings");
 
     dividends.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.dividends);
-    retainedEarnings.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarnings);
+    retainedEarnings.forEach(e => {
+        e.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarnings);
+    });
     retainedEarningsLastmonth.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarningsLastMonth);
 }
 
@@ -1352,11 +1357,13 @@ function displayCashFlow(data) {
 
 
 
-    const capital = document.querySelector(".capital");
+    const capital = document.querySelectorAll(".capital");
     const dividends = document.querySelector(".dividends");
     const netFinancingAct = document.querySelector(".netFinancingAct");
 
-    capital.textContent = utils.amountInputFormatToHundreds(data.cashFlow.financingAct.capital);
+    capital.forEach(c => {
+        c.textContent = utils.amountInputFormatToHundreds(data.cashFlow.financingAct.capital);
+    });
     dividends.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.dividends);
     netFinancingAct.textContent = utils.amountInputFormatToHundreds(data.cashFlow.financingAct.netFinancingAct);
 
@@ -1394,6 +1401,17 @@ function displayAsset(data) {
     totalAssetValue.forEach(a => {
         a.textContent = utils.amountInputFormatToHundreds(data.assets.totalAssetValue);
     });
+}
+
+function displayLiabilites(data) {
+    const loansPayable = document.querySelector(".loansPayable");
+    const stockholderEquity = document.querySelector(".stockholderEquity");
+    const totalLiabAndEquity = document.querySelector(".totalLiabAndEquity");
+
+
+    loansPayable.textContent = utils.amountInputFormatToHundreds(data.liabilities.totalLoans);
+    stockholderEquity.textContent = utils.amountInputFormatToHundreds(data.liabilities.stockholderEquity);
+    totalLiabAndEquity.textContent = utils.amountInputFormatToHundreds(data.liabilities.totalLiabAndEquity);
 }
 
 
