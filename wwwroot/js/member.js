@@ -2241,7 +2241,7 @@ async function displayNetProfit(id) {
         const res = await fetch("/Member/Home/GetNetProfit");
         const data = await res.json();
 
-        id.textContent = data.totalProfit;
+        id.textContent = utils.amountInputFormatToHundreds(data.totalProfit);
         utils.debug("Net profit", data.totalProfit);
     } catch (err) {
         utils.debug("Error", err);
@@ -2253,7 +2253,7 @@ async function displayExpense(id) {
         const res = await fetch("/Member/Home/GetExpense");
         const data = await res.json();
 
-        id.textContent = data.totalExpense;
+        id.textContent = utils.amountInputFormatToHundreds(data.totalExpense);
         utils.debug("Total Expense", data.totalExpense);
     } catch (err) {
         utils.debug("Error", err);
@@ -2266,7 +2266,7 @@ async function displayIncome(id) {
         const res = await fetch("/Member/Home/GetIncome");
         const data = await res.json();
 
-        id.textContent = data.totalIncome;
+        id.textContent = utils.amountInputFormatToHundreds(data.totalIncome);
         utils.debug("Total Income", data.totalIncome);
     } catch (err) {
         utils.debug("Error", err);
