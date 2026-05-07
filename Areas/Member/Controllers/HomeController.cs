@@ -692,15 +692,18 @@ public class HomeController : Controller
 
         // Statement of Owners Equity
         var investors = _context.Investors.Where(i => i.CompanyId == companyId);
+        var dividends = await investors.SumAsync(x => (decimal?)x.Income) ?? 0;
 
         var oeStartDate = startDate.AddMonths(-1);
         var oeEndDate = startDate;
         var oeLastMonth = await financialTransactions.Where(i => i.DateOfTransaction >= oeStartDate && i.DateOfTransaction < oeEndDate).ToListAsync();
         var oeTotalIncome = oeLastMonth.Where(t => t.Type == "Income").Sum(t => (decimal?)t.Amount) ?? 0;
-        var oeTotalExpense = oeLastMonth.Where(t => t.Type == "Expenses").Sum(t => (decimal?)t.Amount) ?? 0;
-        var retainedEarningsLastMonth = oeTotalIncome - oeTotalExpense;
+        var oeTotalExpense = oeLastMonth.Where(t => t.Type == "Expense").Sum(t => (decimal?)t.Amount) ?? 0;
+        var oeNetIncomeLastMonth = oeTotalIncome - oeTotalExpense;
+        Console.WriteLine("Net Income Last Month " + oeNetIncomeLastMonth + " Income " + oeTotalIncome + " expense " + oeTotalExpense);
+        var retainedEarningsLastMonth = oeNetIncomeLastMonth - dividends; // Get the retained earnings of last month. Create a table for storing
+                                                                          // retained earnings per snapshot month and year
   
-        var dividends = await investors.SumAsync(x => (decimal?)x.Income) ?? 0;
         var retainedEarnings = retainedEarningsLastMonth + netIncome - dividends;
 
 

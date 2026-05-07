@@ -624,3 +624,9 @@ TO-DO
     Fix financial transaction edit 
 
     Fix input valdiation 
+
+    To get retained earning for last month, first you need to get the net income, 
+    add all expenses  and subtarcts it to gross income. Second, subtract net income to 
+    dividends
+
+    get the retained earnings of last month. Create a table for storing retained earnings per snapshot month and year
