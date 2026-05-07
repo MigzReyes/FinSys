@@ -883,6 +883,32 @@ public class HomeController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> GetInvestorsData()
+    {
+
+        int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);
+        var investor = _context.Investors.Where(a => a.CompanyId == companyId);
+
+        var data = await investor
+            .Select(g => new
+            {
+                investor = g.FirstName + " " + g.MiddleName + " " + g.LastName ?? null,
+                ownership = g.Ownership
+            })
+            .ToListAsync();
+
+        var capital = investor.Sum(x => x.Investment);
+
+        var result = new
+        {
+            capital = capital,
+            chartData = data
+        };
+
+        return Ok(result);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> GetInvestors()
     {
         int companyId = Convert.ToInt32(User.FindFirst("CompanyId")?.Value);

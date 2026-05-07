@@ -162,6 +162,10 @@ const PageScripts = {
         // ASSET DASHBOARD
         const totalAssetValueTag = document.getElementById("totalAssetValueTag");
         displayAssetsDashboard();
+
+        // INVESTORS DASHBOARD
+        const totalCapital = document.getElementById("totalCapital");
+        displayInvestorsDashboard();
         
         // LIABILITIES DASHBOARD
         const liabilitiesRemainingBalance = document.getElementById("liabilitiesRemainingBalance");
@@ -1718,6 +1722,78 @@ function getColor(category) {
 
 
 // INVESTORS
+async function displayInvestorsDashboard() {
+    const data = await getInvestorsDashboardData();
+    
+    utils.debug("Investors Data", data);
+    totalCapital.textContent = utils.amountInputFormatToHundreds(data.capital);
+
+    setInvestorColorDomain(data.chartData);
+    drawInvestorDonutChart(data.chartData);
+    renderInvestorLegend(data.chartData);
+}
+
+async function getInvestorsDashboardData(params) {
+    const res = await fetch("/Member/Home/GetInvestorsData");
+
+    const data = await res.json();
+
+    return data;
+}
+
+function drawInvestorDonutChart(data) {
+    const width = 220;
+    const height = 220;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select("#investorsDonutChart")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+    const pie = d3.pie()
+        .value(d => d.ownership)
+        .sort(null);
+
+    const arc = d3.arc()
+        .innerRadius(radius * 0.6) 
+        .outerRadius(radius);
+
+    const arcs = svg.selectAll("arc")
+        .data(pie(data))
+        .enter()
+        .append("g");
+
+    arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", d => chartDataColorMap(d.data.investor))
+        .attr("stroke", "#fff")
+        .style("stroke-width", "2px");
+}
+
+
+function renderInvestorLegend(data) {
+    const container = document.querySelector(".investors-graph-legend");
+    container.innerHTML = "";
+
+    data.forEach(d => {
+        container.innerHTML += `
+            <div class="pie-graph-legend-con">
+                <div class="pie-graph-legend-key" style="background:${getColor(d.investor)}"></div>
+                <div class="pie-graph-legend-data">
+                    <p class="pie-graph-legend-data-key">${d.investor}</p>
+                    <p class="pie-graph-legend-data-value">${d.ownership.toFixed(2)}%</p>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function setInvestorColorDomain(data) {
+    chartDataColorMap.domain(data.map(d => d.investor));
+}
+
 async function getCapitalInvestment(tag) {
     try {
         const res = await fetch("/Member/Home/GetCapitalInvestment");
