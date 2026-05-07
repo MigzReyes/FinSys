@@ -1717,7 +1717,7 @@ select {
 }
 
 .financial-statements-months-select-con select {
-    padding-right: var(--space-3);
+    padding-right: var(--space-7);
 }
 
 .financial-statements-select-con select {
