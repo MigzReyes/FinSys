@@ -159,6 +159,19 @@ const PageScripts = {
         displayNetProfit(netProfit);
         displayCommonSizeStatement(expenseStatement, netProfitStatement);
 
+        // ASSET DASHBOARD
+        const totalAssetValueTag = document.getElementById("totalAssetValueTag");
+        displayAssetsDashboard();
+        
+        // LIABILITIES DASHBOARD
+        const liabilitiesRemainingBalance = document.getElementById("liabilitiesRemainingBalance");
+        const totalLiabilities = document.getElementById("totalLiabilities");
+        const activeLiabilities = document.getElementById("activeLiabilities");
+        const paidLiabilities = document.getElementById("paidLiabilities");
+        const dueLiabilities = document.getElementById("dueLiabilities");
+
+        displayLiabilitesDashboard();
+
         if (window.matchMedia("(max-width: 760px)").matches) {
             // PIE CHART DISPLAY
             const pieGraph = document.getElementById("pieGraphIncExpComp");

@@ -71,6 +71,110 @@
         </div>
     </div>
 
+    <div class="dashboard-card-graph">
+
+        <div class="dashboard-card-graph-con">
+            <div class="dashboard-card-graph-con-header">
+                <p>Assets</p>
+            </div>
+
+            <div class="pie-graph-con">
+                <div class="pie-graph-con-header">
+                    <p class="pie-graph-con-header-title">Assets Chart</p>
+                    
+                    <div class="pie-graph-con-head-con">
+                        <p class="pie-graph-con-head">₱<span id="totalAssetValueTag"></span></p>
+                        <p class="pie-graph-con-subhead">Total Asset Value</p>
+                    </div>
+                </div>
+
+                <div class="pie-graph-body">
+                    <svg id="donutChart" width="220" height="220">
+                    </svg>
+                </div>
+
+                <div class="pie-graph-legend">
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card-graph-con">
+            <div class="dashboard-card-graph-con-header">
+                <p>Investors</p>
+            </div>
+
+            <div class="pie-graph-con">
+                <div class="pie-graph-con-header">
+                    <p class="pie-graph-con-header-title">Investors Chart</p>
+                    
+                    <div class="pie-graph-con-head-con">
+                        <p class="pie-graph-con-head">₱<span id="totalCapital"></span></p>
+                    </div>
+                </div>
+
+                <div class="pie-graph-body">
+                    <svg id="donutChart" width="220" height="220">
+                    </svg>
+                </div>
+
+                <div class="pie-graph-legend">
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card-graph-con">
+            <div class="dashboard-card-graph-con-header">
+                <p>Liabilities</p>
+            </div>
+
+            <div class="dashboard-card-graph-liabilities liabilities-visual">
+                <div class="liabilities-visual-balance-con">
+                    <p class="liabilities-visual-balance-con-subhead">Remaining Balance</p>
+                    <p class="liabilities-visual-balance-con-head">₱<span id="liabilitiesRemainingBalance"></span></p>
+                </div>
+
+                <div class="liabilities-visual-graph-con">
+                    <div class="liabilities-visual-graph-con-header">
+                        <p class="liabilities-visual-graph-head"><span id="totalLiabilities"></span></p>
+                        <p class="liabilities-visual-graph-subhead">Total Liabilities</p>
+                    </div>
+
+                    <div class="liabilities-visual-graph">
+                        <div class="liabilities-visual-graph-horizontal">
+                        </div>
+
+                        <div class="liabilities-visual-graph-legend">
+    
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="liabilities-visual-dashboard-con">
+                    <div class="liabilities-visual-dashboard-con-item">
+                        <p class="liabilities-visual-dashboard-con-item-subhead">Active</p>
+                        <p class="liabilities-visual-dashboard-con-item-head"><span class="liabilities-visual-graph-dashboard-active" id="activeLiabilities"></span></p>
+                    </div>
+
+                    
+                    <div class="liabilities-visual-dashboard-con-item">
+                        <p class="liabilities-visual-dashboard-con-item-subhead">Paid</p>
+                        <p class="liabilities-visual-dashboard-con-item-head"><span class="liabilities-visual-graph-dashboard-paid" id="paidLiabilities"></span></p>
+                    </div>
+
+                    
+                    <div class="liabilities-visual-dashboard-con-item">
+                        <p class="liabilities-visual-dashboard-con-item-subhead">Due</p>
+                        <p class="liabilities-visual-dashboard-con-item-head"><span class="liabilities-visual-graph-dashboard-due" id="dueLiabilities"></span></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="dashboard-fin-over-con">
         <!-- ON-GOING DESIGN PA TO  -->
         <div class="dashboard-fin-over-header">

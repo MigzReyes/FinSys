@@ -1122,6 +1122,27 @@ main {
     width: 100%;
 }
 
+.dashboard-card-graph {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+}
+
+.dashboard-card-graph-con {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.dashboard-card-graph-con-header p {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semi-bold);
+}
+
+.dashboard-card-graph-liabilities {
+    flex-wrap: wrap;
+}
 
 /* FINANCIAL TRANSACTION */
 .financial-transaction {
