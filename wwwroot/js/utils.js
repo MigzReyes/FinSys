@@ -239,7 +239,7 @@ export function selectAllInputFields(form) {
 
 
 export function clearErrorInputFields(form) { // REFACTOR remove this
-    const inputFields = form;
+    const inputFields = selectAllInputFields(form);
 
     inputFields.forEach(i => {
         if (!i.value.trim()) {

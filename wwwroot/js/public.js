@@ -109,9 +109,7 @@ const PageScripts = {
         });
 
         startAutoSlide();
-                    },
-
-            
+    },
 
     signUp: function() {
         debug("Page", "Sign up");
@@ -394,10 +392,9 @@ const PageScripts = {
 
         forgotPassSendEmail.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const form = selectAllInputFields(forgotPassSendEmail);
 
-            if (inputEmptyValidation(form)) {
-                clearErrorInputFields(form);
+            if (inputEmptyValidation(forgotPassSendEmail)) {
+                clearErrorInputFields(forgotPassSendEmail);
 
                 const checkEmail = await validateEmail(email.value);
 
@@ -429,7 +426,7 @@ const PageScripts = {
                 }
 
             } else {
-                clearErrorInputFields(form);
+                clearErrorInputFields(forgotPassSendEmail);
             }
         });
 
@@ -446,10 +443,8 @@ const PageScripts = {
 
         verifyOtp.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const form = selectAllInputFields(verifyOtp);
-
-            if (inputEmptyValidation(form)) {
-                clearErrorInputFields(form);
+            if (inputEmptyValidation(verifyOtp)) {
+                clearErrorInputFields(verifyOtp);
                 const con = code.closest(".otpCon");
                 con.querySelectorAll(".error-tag").forEach(e => e.remove());    
 
@@ -471,7 +466,7 @@ const PageScripts = {
                     // DISABLE BUTTON
                     sendBtn.disabled = true;
 
-                    clearErrorInputFields(form)
+                    clearErrorInputFields(verifyOtp)
                     window.location.href = data.redirect;   
                 } else {
                     const con = document.querySelector(".otpCon");
@@ -479,7 +474,7 @@ const PageScripts = {
                 }
 
             } else {    
-                clearErrorInputFields(form);
+                clearErrorInputFields(verifyOtp);
             }
 
         });
