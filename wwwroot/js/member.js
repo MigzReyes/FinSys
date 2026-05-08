@@ -276,7 +276,7 @@ const PageScripts = {
         // LOCAL VARIABLE
         const transactionTable = document.getElementById("transactionTable"); // just in case
         const form = document.getElementById("editTransaction");
-        const category = document.getElementById("category");
+        const category = document.getElementById("fsCategory");
         const amount = document.getElementById("amount");
         const payee = document.getElementById("payee");
         const description = document.getElementById("description");
@@ -393,6 +393,7 @@ const PageScripts = {
             if (editBtn) {
                 const id = editBtn.dataset.id;
                 utils.debug("Clicked", "Edit" + id);
+                utils.debug("cat2", category);
                 displayTransaction(id);
             } else if (deleteBtn) {
                 transactionId = deleteBtn.dataset.id;
@@ -2334,6 +2335,7 @@ async function deleteTransaction(id, type) {
 
 async function displayTransaction(id) {
     showModalEditTransaction();
+    const category = document.getElementById("fsCategory"); // TEMPORARY FIX
 
     try {
         await fetch("/Member/Home/GetFinancialTransaction", {
@@ -2353,6 +2355,8 @@ async function displayTransaction(id) {
             if (radio) {
                 radio.checked = true;
             }
+            utils.debug("cat", category);
+            
             category.value = data.category;
             amount.value = data.amount;
             payee.value = data.payee;
