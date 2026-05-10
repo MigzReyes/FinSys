@@ -345,3 +345,288 @@ TO-DO
     REFACTOR -- Change showError() function to also get the input con in the params.
 
     CHORE -- Fix send otp sending time, too slow -- FIXED
+
+
+3/28/2026 
+
+    revenue (benta) - magkano ang kinita sa pagbenta ni client sa product or service niya ng di pa
+                    kinakaltas ang gastos 
+
+    profit (kita) - kita ng business matapos ibawas ang expense
+
+    cost of production/service - magkano ang ginagastos sa pag create or provide ng product/sevice
+
+    dividends (ROI) - Kita ng mga investors mo
+
+    Creditors - Mga taong inutanangan mo
+
+    Owners capital (puhunan) - ang perang nilaan ng may-ari sa business niya
+
+    Owners withdrawal - Withdrawn na pera sa capital
+
+    Shares - Yung perang ambag niya
+
+    How would you record the 
+        - assets?
+            * liabilities (Utang)?
+
+        - stockholders' equity ?
+
+            * Create a page called `Investors`, where it will record all of the investors equity and shares
+            * Also put the owners equity, limited to 1 only 
+            * Make a button that lets your add `Partners equity`
+            * Records the investors information such as their client id, name, email, TIN, investment amount, date of investment,
+            % of ownership, ROI (YTD)
+
+
+3/31/2026 
+
+    In the balance sheet, should you just total the investors investment in `Capital Stock`?
+
+        - First of all, the capital stock is the total of all the investors invested money.
+        SO technically, yes, `Capital Stock` in the balance sheet would indicate the total money the 
+        business have.
+
+    At the same time, I am also planning to create an Investors page that indicates the total capital and
+    investors info (Andun naden si owner)
+
+    - What the fuck is a `Creditors` in cash flow? 
+
+    ***Statement of Owners equity
+        - Paano pag may withdrawal? 
+
+
+    Its ok to put graphs in the pages, it doesn't mean that even though you have a dashboard, its the
+    only place you can put graphs.
+
+
+
+4/7/2026 
+
+    Free trial?
+
+    What are the questions should we ask business owners for it to be useful for our study?
+
+    Assets type
+        Tangible Assets
+        - Equities
+        - Property (Real estate)
+        - Commodities
+        - Operating Asset
+
+4/8/2026
+
+    Update ERD 
+
+    Add assets and investors
+
+4/9/2026
+
+    Calculation for ROI 
+
+    ROI (%) - (income - investment) / investment
+
+    *** If its negative, the income is less than the invested amount (Red)
+    *** If its positive, the income amount is greater than the invested amount (Blue)
+
+    research on how an investment create income, by each product selled? by monthly profit?,
+    fixed or set price per monthly (contract)?
+
+    Add an additional input in business registration
+
+        - Capital investment
+
+    Add a Pay button in liabilities
+
+    let the user search for what liability they will pay and display which liability is that
+
+    Liabilities Types
+        - Loan
+        - Tax
+        - Wages
+        - Accounts Payable
+        - Dividends 
+
+
+4/10/2026
+
+    Create a customizable clients and orders (optional) for it to be usable by any website (homegroundcoffee bar or by vividpath).
+
+    Allow CORS in program.cs 
+
+        `builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowLocal",
+                policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });`
+
+        `app.UseCors("AllowLocal");`
+
+        `app.MapControllers();`
+
+    
+    Create an `Api` folder in the root project structure for maintenability and organization
+
+        `
+        [ApiController]
+        [Route("api/test")]
+        public class TestController : ControllerBase
+        {
+            [HttpPost]
+            public IActionResult Test([FromBody] TestDto dto)
+            {
+                Console.WriteLine("POST RECEIVED");
+                Console.WriteLine(dto?.Message);
+
+                // VALIDATE FOR DATA TYPES AND MISSING DATA 
+                // STORE IN DATABASE 
+
+                return Ok(new { message = dto.Message, cors = dto.Cors });
+            }
+        }`
+
+    The received json data from `/api/` will automatically get transferred to a database, then JavaScript will use async to detect if a new data has been stored
+        
+
+    Create a Client and Orders table/page
+
+    medyo complex pala pag customizable table 
+
+        Rather than customizable, dynamic display nalang, kung anong key value pairs iaadd nalang sa information
+
+    *** THIS IS NOT AN ERP
+    Yung clients and orders will only be use for data presentation
+
+    Gawa ka ng button sa navigation bar na `Add a Section` or something, then may choices dun either Clients or Order tas short description kung ano difference nila 
+
+
+        Clients 
+            - This can also mean a subscriber or a customer of a construction or any SaaS 
+
+        Ordering System (Order Page) ** If ever ordering system, automatically may Administrator and user page
+            - If completed orders lang ang ipapasa 
+            
+            Administrator
+                - User *** This records customer that has an account on a SaaS 
+
+
+4/12/2026
+
+    Centralise and modularize close functionality of modals and add buttons, by using either a data attribute to determine the functionality.
+
+    Refactor employeeModal and EditModal for it to be centralise.
+
+    CREATE A `showEditEntityModal` and `showAddEntityModal` for a centralise function
+
+    Think of a way you can make close modal funcitonality global, rather than copy and pasting it on each page 
+
+
+    REFACTOR modal, everytime you show a modal set the modal parent data attribute to true
+
+    create a function that formats amount-input with `,`
+
+
+4/13/2026
+
+    Create a function and a listener for formatting the amount input and phone number
+
+    Create a centralise search function 
+
+4/14/2026
+
+    Find a way you can make .querySelector for input tag to work. -- DONE 
+
+    Calculate ownership, income, and roi in the back end
+
+    use form data for transferring of data -- DONE 
+
+4/15/2026 
+
+    Display investors -- DONE 
+
+    displa Capital
+
+    How to get ROI and Income (Dividends)?
+
+    Income formula
+        income (dividends) = net profit * ownership %
+
+
+    Fix Calculation
+
+    Should ROI depends on income and investment? Or should ROI depends on net profit and invstment, then income will depends on net profit and ownership?
+
+    fix amountInputToHundreds format do not remove `-`
+
+    validate `-` values for red and positive for blue
+
+4/16/2026
+
+    Focus on front-end first, napapa refactor bigla pag nag back-end eh tang ina HAHA 
+
+4/17/2026 
+
+    Remove `show` in classlist for forms inside modals -- DONE
+
+    Make add assets functional and display it. same with liabilities
+
+4/21/2026
+
+
+4/23/2026 
+
+    Fix financial transactions edit 
+
+    Should we reset paid, balance, and progress if liabilities are edited????
+
+    fix due on backend -- fixed
+
+    fix next and prev for liability when something is picked in picker && when edited or deleted...
+
+    pay liability -- DONE
+
+4/25/2026
+
+    Progress Calculation for liability 
+
+        progress & = (balance / debt) 100;
+
+
+4/26/2026
+
+    liabilities graph -- DONE
+
+    broken update functionality sa liabilities and financial transactions
+
+4/29/30
+
+    Add year selection on financial Statement
+        Only show the available year based on the financial transaction date
+
+    Create a javascript code that auto select the current month and year on financial statement.
+        if year or month is change always, put them together in the json body
+
+    Create a financial statement dto that accepts months and year -- DONE
+
+    Then validate months and year on the query at the back end -- DONE
+
+5/5/2026
+
+    Get the last last month for the retained earnings of statement of owners equity. -- DONE
+
+5/7/2026
+
+    Fix financial transaction edit 
+
+    Fix input valdiation 
+
+    To get retained earning for last month, first you need to get the net income, 
+    add all expenses  and subtarcts it to gross income. Second, subtract net income to 
+    dividends
+
+    get the retained earnings of last month. Create a table for storing retained earnings per snapshot month and year

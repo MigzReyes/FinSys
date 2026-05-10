@@ -1,13 +1,15 @@
-﻿import { debug, errorInput, formatNumber, 
+﻿import { debug, errorInput, 
     isEmpty, showError, validateEmail, 
     togglePasswordVisibility, passwordStrength, clearForm, 
     formatEmail, clearErrorInputFields, inputEmptyValidation,
     selectAllInputFields, removeUserSession,
-    RemoveForgotPassSession
+    RemoveForgotPassSession, initInputListener,
+    limitInputLength
 
  } from "./utils.js";
 
-// GLOBAL VAR
+// INITIALLIZATION OF LISTENERS
+initInputListener();
 
 // PAGE BASE INITIALIZATION FOR DYNAMIC JS CODE
 const PageScripts = {
@@ -107,9 +109,7 @@ const PageScripts = {
         });
 
         startAutoSlide();
-                    },
-
-            
+    },
 
     signUp: function() {
         debug("Page", "Sign up");
@@ -163,10 +163,7 @@ const PageScripts = {
                 strength++;
             }
         });
-        // FORMAT PHONE NUMBER
-        phone.addEventListener("input", function (e) {
-            e.target.value = formatNumber(e.target.value);
-        }); // TO-DO not working fix this later
+
 
         visibilityToggle.forEach(i => {
             i.addEventListener("click", function () {
@@ -218,7 +215,7 @@ const PageScripts = {
                                 password.classList.remove("error-input");
                                 conPassword.classList.remove("error-input");
 
-                                if (phone.value.trim().length === 11) {       
+                                if (limitInputLength(phone, 11)) { 
                                     const phoneCon = document.querySelector(".phone-con");
                                     phoneCon.querySelectorAll(".error-tag").forEach(e => e.remove());
 
@@ -395,10 +392,9 @@ const PageScripts = {
 
         forgotPassSendEmail.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const form = selectAllInputFields(forgotPassSendEmail);
 
-            if (inputEmptyValidation(form)) {
-                clearErrorInputFields(form);
+            if (inputEmptyValidation(forgotPassSendEmail)) {
+                clearErrorInputFields(forgotPassSendEmail);
 
                 const checkEmail = await validateEmail(email.value);
 
@@ -430,7 +426,7 @@ const PageScripts = {
                 }
 
             } else {
-                clearErrorInputFields(form);
+                clearErrorInputFields(forgotPassSendEmail);
             }
         });
 
@@ -447,10 +443,8 @@ const PageScripts = {
 
         verifyOtp.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const form = selectAllInputFields(verifyOtp);
-
-            if (inputEmptyValidation(form)) {
-                clearErrorInputFields(form);
+            if (inputEmptyValidation(verifyOtp)) {
+                clearErrorInputFields(verifyOtp);
                 const con = code.closest(".otpCon");
                 con.querySelectorAll(".error-tag").forEach(e => e.remove());    
 
@@ -472,7 +466,7 @@ const PageScripts = {
                     // DISABLE BUTTON
                     sendBtn.disabled = true;
 
-                    clearErrorInputFields(form)
+                    clearErrorInputFields(verifyOtp)
                     window.location.href = data.redirect;   
                 } else {
                     const con = document.querySelector(".otpCon");
@@ -480,7 +474,7 @@ const PageScripts = {
                 }
 
             } else {    
-                clearErrorInputFields(form);
+                clearErrorInputFields(verifyOtp);
             }
 
         });

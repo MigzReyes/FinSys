@@ -1,3 +1,4 @@
+import * as utils from "./utils.js";
 
 // GLOBAL ID / VAR
 const companyNameNav = document.getElementById("companyNameNav");
@@ -6,8 +7,8 @@ const companyIndustryNav = document.getElementById("companyIndustryNav");
 const modal = document.getElementById("modal");
 const modalContent = document.querySelectorAll(".modal-content");
 const businessRegistrationModal = document.getElementById("businessRegistrationModal");
-const employeeModal  = document.getElementById("employeeModal");
-const editTransactionModal = document.getElementById("editTransactionModal");
+const modalEntity  = document.getElementById("modalEntity"); // REFACTOR
+const editTransactionModal = document.getElementById("editTransactionModal"); // REFACTOR
 const alertModal = document.getElementById("alertModal");
 let form = "";
 
@@ -26,14 +27,18 @@ const logOutIconModal = document.getElementById("logOutIconModal");
 const alertHead = document.getElementById("alertHead");
 const alertSubhead = document.getElementById("alertSubhead");
 const alertBtnText = document.getElementById("alertBtnText");
-const employeeModalHeadText = document.getElementById("employeeModalHeadText");
-const employeeModalBtnText = document.getElementById("employeeModalBtnText");
+
+const modalEntityText = document.querySelectorAll(".modal-entity-text"); // REFACTOR
 
 // BUTTONS
-const employeeModalBtn = document.getElementById("employeeModalBtn");
+const modalBodyButtonConAlert = document.querySelector(".modal-body-button-con-alert");
+const modalEntityBtn = document.querySelector(".modal-entity-btn"); // REFACTOR
+
 const alertBtn = document.getElementById("alertBtn");
 const cancel = document.querySelectorAll(".cancel");
-const cancelBusinessRegistration = document.getElementById("cancelBusinessRegistration");
+
+const cancelBusinessRegistration = document.getElementById("cancelBusinessRegistration"); // REFACTOR
+
 const closeIcon = document.querySelectorAll(".close-icon");
 
 // NAV OVERLAY
@@ -51,56 +56,68 @@ navOverlayQuery.addEventListener("change", navOverlayChange); // LISTENER WATCH 
 displayCompanyInfo();
 
 // ALERT MODAL BUTTON DATA ATTRIBUTE HANDLER
+// RENAME THIS FOR CLARITY
+// `alertBtn` is the primary button for the primary pop up  
 alertBtn.addEventListener("click", function () {
     const action = this.dataset.action;
-    debug("Button action check", action); // DEBUGGER
+    utils.debug("Button action check", action); // utils.debugGER
 
     switch (action) {
         case "clearForm": 
-            clearForm(form);
-            closeModal();
+            utils.clearForm(form);
+            utils.closeModal(modal);
             break;
         case "removeEmployee":
             // create a function that sends a req to the controller with js fetch 
-            closeModal();
+            utils.closeModal(modal);
             break;
         case "removeTransaction":
-            closeModal();
+            utils.closeModal(modal);
             break;
         case "logout": 
-            closeModal();
-            Logout();
+            utils.closeModal(modal);
+            utils.logout();
             break;
+        case "removeAsset": 
+            utils.closeModal(modal);
+            break;
+
+        case "removeLiability": 
+            utils.closeModal(modal);
+            break;
+
         default:
-            debug("Action", "No action data attribute received");
+            utils.debug("Action", "No action data attribute received");
             break;
     }
 });
 
-// EMPLOYEE MODAL BUTTON DATA ATTRIBUTE HANDLER
-let employeeBtnAction;
-employeeModalBtn.addEventListener("click", function () {
-    const action = this.dataset.action;
-    debug("Button action check", action);
-        
-    employeeBtnAction = action;
+let modalEntityBtnAction; // REFACTOR this variable is used to determine the functionality of the modal entity primary button 
+utils.initInputListener();
+utils.initCloseModalListener(); 
 
-    switch (action) {
-        case "addEmployee":
-            break;
-        case "editEmployee":
-            break;
-        default:
-            debug("Action", "No specified action to do");
-            break;
+// PAGINATION
+const paginationState = {
+    Assets: {
+        current: 1,
+        total: 1
+    },
+
+    Liabilities: {
+        current: 1,
+        total: 1
     }
-});
+};
+
+// ASSET CHART
+const chartDataColorMap = d3.scaleOrdinal()
+    .range(["#0077CC", "#F58120", "#53AC7F", "#FADA38"]);
 
 
 // PAGE BASED INITIALIZATION PATTERN **Para confined yung js code for each page
 const PageScripts = {
     dashboard: function() {
-        debug("Page", "Dashboard");
+        utils.debug("Page", "Dashboard");
 
         // LOCAL VARIABLE
         let companyRegistration = document.getElementById("companyRegistration");
@@ -119,7 +136,7 @@ const PageScripts = {
         fetch("/Member/Home/IsClientPayed")
             .then(res => res.json())
             .then(client => {
-                debug("Is payed", client.isPayed);
+                utils.debug("Is payed", client.isPayed);
 
                 if (client.isPayed) {
                     modal.classList.remove("show");
@@ -130,17 +147,34 @@ const PageScripts = {
 
                     // CANCEL
                     cancelBusinessRegistration.addEventListener("click", function () {
-                        Logout();
+                        utils.logout();
                     })
                 }
             })
-            .catch(err => debug("Error", err));
+            .catch(err => utils.debug("Error", err));
 
         // DISPLAY DASHBOARD
         displayIncome(income);
         displayExpense(expense);
         displayNetProfit(netProfit);
         displayCommonSizeStatement(expenseStatement, netProfitStatement);
+
+        // ASSET DASHBOARD
+        const totalAssetValueTag = document.getElementById("totalAssetValueTag");
+        displayAssetsDashboard();
+
+        // INVESTORS DASHBOARD
+        const totalCapital = document.getElementById("totalCapital");
+        displayInvestorsDashboard();
+        
+        // LIABILITIES DASHBOARD
+        const liabilitiesRemainingBalance = document.getElementById("liabilitiesRemainingBalance");
+        const totalLiabilities = document.getElementById("totalLiabilities");
+        const activeLiabilities = document.getElementById("activeLiabilities");
+        const paidLiabilities = document.getElementById("paidLiabilities");
+        const dueLiabilities = document.getElementById("dueLiabilities");
+
+        displayLiabilitesDashboard();
 
         if (window.matchMedia("(max-width: 760px)").matches) {
             // PIE CHART DISPLAY
@@ -149,11 +183,11 @@ const PageScripts = {
             fetch("GetIncomeExpenseComparisonPieGraph")
             .then(res => res.json())
             .then(data => {
-                debug("data compa", data);
+                utils.debug("data compa", data);
                 displayPieGraph(pieGraph, data);
             })
             .catch(err => {
-                debug("Error", err);
+                utils.debug("Error", err);
             });
         } else {
             // LINE GRAPH DISPLAY
@@ -162,11 +196,11 @@ const PageScripts = {
             fetch("/Member/Home/GetIncomeExpenseComparisonLineGraph")
             .then(res => res.json())
             .then(data => {
-                debug("Line Graph", data);
+                utils.debug("Line Graph", data);
                 displayLineGraphIncExpComp(lineGraph, data);
             })
             .catch(err => {
-                debug("Error", err);
+                utils.debug("Error", err);
             });
         }
 
@@ -175,11 +209,11 @@ const PageScripts = {
         fetch("/Member/Home/GetExpenseBreakdown")
         .then(res => res.json())
         .then(data => {
-            debug("Expense Breakdown Data", data);
+            utils.debug("Expense Breakdown Data", data);
             displayBarGraph(barGraph, data);
         })
         .catch(err => {
-            debug("Error", err)
+            utils.debug("Error", err)
         });
 
         // COMPANY REGISTRATION
@@ -211,14 +245,14 @@ const PageScripts = {
                     })
                 }).then(res => res.json())
                 .then(data => {
-                    debug("Company Data", data.message);
+                    utils.debug("Company Data", data.message);
 
                     if (data.isPayed) {
                         modal.classList.remove("show");
                         businessRegistrationModal.classList.remove("show");
                         displayCompanyInfo();
                     } else {
-                        debug("Company registration", "Company has not been registered" + company);
+                        utils.debug("Company registration", "Company has not been registered" + company);
                     }
                 });
             } else {
@@ -237,45 +271,24 @@ const PageScripts = {
     },
 
     financialTransactions: function() {
-        debug("Page", "Financial Transaction");
+        utils.debug("Page", "Financial Transaction");
 
         // LOCAL VARIABLE
         const transactionTable = document.getElementById("transactionTable"); // just in case
-        const editTransaction = document.getElementById("editTransaction");
-        const category = document.getElementById("category");
+        const form = document.getElementById("editTransaction");
+        const category = document.getElementById("fsCategory");
         const amount = document.getElementById("amount");
         const payee = document.getElementById("payee");
         const description = document.getElementById("description");
         const updateTransactionBtn = document.getElementById("updateTransactionBtn");
 
-
-        // CANCEL / CLOSE BTN
-        cancel.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        closeIcon.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        // OUTSIDE CLICK REMOVE THE MODAL
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                closeModal();
-            } 
-        });
-
         // PICKER
-        const pickerAllTransaction = document.getElementById("pickerAllTransaction");
+        const pickerAll = document.getElementById("pickerAll");
         const pickerIncome = document.getElementById("pickerIncome");
         const pickerExpense = document.getElementById("pickerExpense");
 
-        pickerAllTransaction.addEventListener("click", function () {
-            pickerAllTransaction.classList.add("picked");
+        pickerAll.addEventListener("click", function () {
+            pickerAll.classList.add("picked");
             pickerIncome.classList.remove("picked");
             pickerExpense.classList.remove("picked");
         });
@@ -283,12 +296,12 @@ const PageScripts = {
         pickerIncome.addEventListener("click", function () {
             pickerIncome.classList.add("picked");
             pickerExpense.classList.remove("picked");
-            pickerAllTransaction.classList.remove("picked");
+            pickerAll.classList.remove("picked");
         });
 
         pickerExpense.addEventListener("click", function () {
             pickerExpense.classList.add("picked");
-            pickerAllTransaction.classList.remove("picked");
+            pickerAll.classList.remove("picked");
             pickerIncome.classList.remove("picked");
         });
 
@@ -312,37 +325,36 @@ const PageScripts = {
         let selectedType;
         loadTransactions();
 
-        document.querySelector(".financial-transaction-picker").addEventListener("click", function (e) {
-            const allTransaction = e.target.closest(".pickerAllTransaction")?.dataset.item;
+        document.querySelector(".picker-con").addEventListener("click", function (e) {
+            const allTransaction = e.target.closest(".pickerAll")?.dataset.item;
             const income = e.target.closest(".pickerIncome")?.dataset.item;
             const expenses = e.target.closest(".pickerExpense")?.dataset.item;
 
             if (allTransaction) {
-                debug("Picker", "all transaction " + allTransaction);
+                utils.debug("Picker", "all transaction " + allTransaction);
                 selectedType = allTransaction;
                 pickerTransaction(allTransaction);
             } else if (income) {
-                debug("Picker", "Income " + income);
+                utils.debug("Picker", "Income " + income);
                 selectedType = income;
                 pickerTransaction(income);
             } else if (expenses) {  
-                debug("Picker", "Expenses " + expenses);
+                utils.debug("Picker", "Expenses " + expenses);
                 selectedType = expenses;
                 pickerTransaction(expenses);
             } else {
-                debug("Picker error", "Nothing picked");
+                utils.debug("Picker error", "Nothing picked");
             }
         });
 
         // EDIT TRANSACTION
-        editTransaction.addEventListener("submit", async function (e) {
+        form.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const form = selectAllInputFields(editTransaction);
             const id = updateTransactionBtn.dataset.id;
-            const type = editTransaction.elements["editTransactionType"].value;
+            const type = form.elements["editTransactionType"].value;
 
-            if (inputEmptyValidation(form)) {
-                clearErrorInputFields(form);
+            if (utils.inputEmptyValidation(form)) {
+                utils.validateInputFieldsValue(form);
 
                 await fetch("/Member/Home/EditFinancialTransaction", {
                     method: "POST",
@@ -359,15 +371,15 @@ const PageScripts = {
                     })
                 }).then(res => res.json())
                 .then(data => {
-                    debug("Message", data.message);
-                    clearForm(editTransaction);
-                    closeModal();
+                    utils.debug("Message", data.message);
+                    utils.clearForm(editTransaction);
+                    utils.closeModal(modal);
                 })
-                .catch(err => debug("Error", err));
+                .catch(err => utils.debug("Error", err));
 
                 await pickerTransaction(selectedType);
             } else {
-                clearErrorInputFields(form);
+                utils.validateInputFieldsValue(form);
             }
         });
 
@@ -380,11 +392,12 @@ const PageScripts = {
 
             if (editBtn) {
                 const id = editBtn.dataset.id;
-                debug("Clicked", "Edit" + id);
+                utils.debug("Clicked", "Edit" + id);
+                utils.debug("cat2", category);
                 displayTransaction(id);
             } else if (deleteBtn) {
                 transactionId = deleteBtn.dataset.id;
-                debug("Clicked", "Delete" + transactionId);
+                utils.debug("Clicked", "Delete" + transactionId);
 
                 showModalAlert("Do you want to remove this transaction?", "Remove Transaction", "removeEmployee");
             }
@@ -397,19 +410,9 @@ const PageScripts = {
     },
 
     employees: function() {
-        debug("Page", "Employees");
+        utils.debug("Page", "Employees");
 
         // LOCAL VARIABLE
-        const employeeRegistration = document.getElementById("employeeRegistration");
-        const firstName = document.getElementById("firstName");
-        const middleName = document.getElementById("middleName");
-        const lastName = document.getElementById("lastName");
-        const role = document.getElementById("role")
-        const position = document.getElementById("position");
-        const email = document.getElementById("email");
-        const phone = document.getElementById("phone");
-        const address = document.getElementById("address");
-
 
         // SEARCH EMPLOYEE
         const search = document.getElementById("searchEmployee");
@@ -422,44 +425,17 @@ const PageScripts = {
             }, 200);
         });
 
-        // PHONE FORMAT
-        phone.addEventListener("input", function (e) {
-            e.target.value = formatNumber(e.target.value);
-        });
-
-        // CANCEL / CLOSE BTN
-        cancel.forEach(c => {
-            c.addEventListener("click", function () {
-                clearForm(employeeRegistration);
-                closeModal();
-            });
-        });
-
-        closeIcon.forEach(c => {
-            c.addEventListener("click", function () {
-                clearForm(employeeRegistration);
-                closeModal();
-            });
-        });
-
-        // OUTSIDE CLICK REMOVE THE MODAL
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                closeModal();
-            } 
-        });
-
         // ADD EMPLOYEE
         const addEmployeeBtn = document.getElementById("addEmployeeBtn");
         addEmployeeBtn.addEventListener("click", function () {
-            showModalEmployee("Add", "Add", "addEmployee");
+            showModalEntity("Add Employee", "addEmployee", "employee");
         });
 
         // EDIT EMPLOYEE
         const editEmployeeBtn = document.querySelectorAll(".editEmployeeBtn");
         editEmployeeBtn.forEach(e => {
             e.addEventListener("click", function () {
-                showModalEmployee("Edit", "Edit", "editEmployee");
+                showModalEntity("Edit Employee", "editEmployee", "employee");
             });
         });
 
@@ -470,34 +446,80 @@ const PageScripts = {
                 showModalAlert("Do you want to remove this employee?", "Remove Employee", "removeEmployee");
             });
         });
+    
+        const form = document.getElementById("employeeRegistration");
 
-        employeeRegistration.addEventListener("submit", async function (e) {
+        // REFACTOR
+        const firstName = form.querySelector(".firstName");
+        const middleName = form.querySelector(".middleName");
+        const lastName = form.querySelector(".lastName");
+        const role = form.querySelector(".role")
+        const position = form.querySelector(".position");
+        const address = form.querySelector(".address");
+
+        const email = form.querySelector(".email");
+        const phone = form.querySelector(".phone");
+        form.addEventListener("submit", async function (e) {
             e.preventDefault();
-            const form = selectAllInputFields(employeeRegistration);
 
-            if (employeeBtnAction === "addEmployee") { 
+            if (modalEntityBtnAction === "addEmployee") { 
                 
-                debug("Action", "Add");
+                utils.debug("Action", "Add");
 
-                if (inputEmptyValidation(form)) {
+                if (utils.inputEmptyValidation(form)) {
 
                     // EMAIL AND PHONE AUTH, checks if it already exists
-                    /*if (isEmpty(email.value) && isEmpty(phone.value)) {
+                    /*if (utils.isEmpty(email.value) && utils.isEmpty(phone.value)) {
                         const con = document.querySelectorAll(".modal-body-row");
                         con.forEach(i => {
                             i.querySelectorAll("input").classList.add("error-input");
                         })
                     }*/
 
-                    if (phone.value.trim().length === 11) {
-                        debug("Error", "Employee Added");
+                    if (utils.limitInputLength(phone, 11)) {
+                        const formData = utils.getFormData(form);
+
+                        utils.debug("Error", "Employee Added"); // REMOVE
 
                         await fetch("/Member/Home/EmployeeRegistration", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
                             },
+                            body: JSON.stringify(formData)
+                        }).then(res => res.json())
+                        .then(data => {
+                            utils.debug("Employee Data", data); // REMOVE
+                            utils.validateInputFieldsValue(form);
+                            utils.clearForm(form);
+                            utils.closeModal(modal);
+                        })
+                        .catch(err => utils.debug("Error", err));
+
+                        await loadEmployees();
+                    } else {
+                        const phoneCon = document.querySelector(".phone-con");
+                        utils.displayErrorInputTag(phoneCon, "Phone invalid");
+                    }
+
+                } else {
+                    utils.validateInputFieldsValue(form);
+                }
+        
+            } else {
+                utils.debug("Action", "edit");
+                // EDIT
+                if (utils.inputEmptyValidation(form)) {
+                    if (utils.limitInputLength(phone, 11)) {     
+                        const employeeId = modalEntityBtn.dataset.id;
+
+                        await fetch("/Member/Home/EditEmployee", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
                             body: JSON.stringify({
+                                Id: employeeId, // REFACTOR
                                 FirstName: firstName.value,
                                 MiddleName: middleName.value,
                                 LastName: lastName.value,
@@ -505,63 +527,23 @@ const PageScripts = {
                                 Role: role.value,
                                 Email: email.value,
                                 Phone: phone.value,
-                                Address: address.value
+                                Address: address.value  
                             })
                         }).then(res => res.json())
                         .then(data => {
-                            debug("Employee Data", data);
-                            clearForm(employeeRegistration);
-                            clearErrorInputFields(form);
-                            clearError(form);
-                            closeModal();
+                            utils.debug("Employee", data.message);
+                            utils.validateInputFieldsValue(form);
+                            utils.closeModal(modal);
+                            loadEmployees();
                         })
-                        .catch(err => debug("Error", err));
-
-                        await loadEmployees();
+                        .catch(err => utils.debug("Error", err));
                     } else {
+                        utils.debug("phone input", "error");
                         const phoneCon = document.querySelector(".phone-con");
-                        phoneCon.querySelectorAll(".error-tag").forEach(e => e.remove());
-                        phoneCon.appendChild(showError("Phone invalid"));
+                        utils.displayErrorInputTag(phoneCon, "Phone invalid");
                     }
-
                 } else {
-                    clearErrorInputFields(form);
-                }
-        
-            } else {
-
-                debug("Action", "edit");
-                // EDIT
-                if (inputEmptyValidation(form)) {
-                    const employeeId = employeeModalBtn.dataset.id;
-
-                    await fetch("/Member/Home/EditEmployee", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            Id: employeeId,
-                            FirstName: firstName.value,
-                            MiddleName: middleName.value,
-                            LastName: lastName.value,
-                            Position: position.value,
-                            Role: role.value,
-                            Email: email.value,
-                            Phone: phone.value,
-                            Address: address.value  
-                        })
-                    }).then(res => res.json())
-                    .then(data => {
-                        debug("Employee", data.message);
-                        clearForm(employeeRegistration);
-                        closeModal();
-                        loadEmployees();
-                    })
-                    .catch(err => debug("Error", err));
-
-                } else {
-                    clearErrorInputFields(form);
+                    utils.validateInputFieldsValue(form);
                 }
             }
         });
@@ -571,18 +553,17 @@ const PageScripts = {
         loadEmployees();
         let employeeId;
         document.addEventListener("click", function (e) {
-            const employeeCardId = e.target.closest(".employees-card");
+            const employeeCardId = e.target.closest(".table-card");
             const editBtn = e.target.closest(".editEmployeeBtn");
             const deleteBtn = e.target.closest(".deleteEmployeeBtn");
-            const btn = e.target.closest(".alertBtn");
 
             if (editBtn) {
                 const employeeId = editBtn.dataset.id;
-                debug("Btn", "Clicked " + employeeId);
+                utils.debug("Btn", "Clicked " + employeeId);
                 displayEmployee(employeeId);
             } else if (deleteBtn) {
                 employeeId = employeeCardId.dataset.id;
-                debug("Action", "delete " + employeeId);
+                utils.debug("Action", "delete " + employeeId);
                 
                 showModalAlert("Do you want to remove this employee?", "Remove Employee", "removeEmployee");
 
@@ -596,7 +577,7 @@ const PageScripts = {
     },
 
     reports: function() {
-        debug("Page", "Reports");
+        utils.debug("Page", "Reports");
 
         // LOCAL VARIABLE
         form = document.getElementById("addTransaction");
@@ -605,28 +586,6 @@ const PageScripts = {
         const description = document.getElementById("description");
         const amount = document.getElementById("amount");
         const payee = document.getElementById("payee");
-
-        // CANCEL / CLOSE BTN
-        cancel.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        closeIcon.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-                resetModal();
-            });
-        });
-
-        // OUTSIDE CLICK REMOVE THE MODAL
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                closeModal();
-                resetModal();
-            } 
-        });
 
         // DATE INPUT FOCUSED OUTLINE DESIGN
         const dateBtn = document.getElementById("date");
@@ -638,7 +597,7 @@ const PageScripts = {
             dateBtn.classList.remove("active-input");
         });
 
-        setDateToday(dateBtn);
+        utils.setDateToday(dateBtn);
 
         // CLEAR FORM
         const clearForm = document.getElementById("clearForm");
@@ -651,10 +610,8 @@ const PageScripts = {
             e.preventDefault();
             const type = form.elements["transactionType"].value; // GET type value
 
-            const formTransaction = selectAllInputFields(form);
-
-            if (inputEmptyValidation(formTransaction)) {
-                clearErrorInputFields(formTransaction);
+            if (utils.inputEmptyValidation(form)) {
+                utils.validateInputFieldsValue(form);
                 
                 await fetch("/Member/Home/RecordFinancialTransaction", {
                     method: "POST",
@@ -671,41 +628,504 @@ const PageScripts = {
                     })
                 }).then(res => res.json())
                 .then(data => {
-                    debug("Transaction", data);
+                    utils.debug("Transaction", data);
                     showModal("Succes!", "Successfully added a new transaction.");
                 })
-                .catch(err => debug("Error", err));
+                .catch(err => utils.debug("Error", err));
 
             } else {
-                clearErrorInputFields(formTransaction);
+                utils.validateInputFieldsValue(form);
             }
 
 
         });
     },
 
+    investors: function() {
+        utils.debug("Page", "Investors");
+        
+        // DISPLAY CAPITAL INVETSMENT
+        const capitalInvestmentSpan = document.getElementById("capitalInvestmentSpan");
+        getCapitalInvestment(capitalInvestmentSpan);
+
+        // ADD INVESTOR
+        const addInvestorBtn = document.getElementById("addInvestorBtn");
+        addInvestorBtn.addEventListener("click", function () {
+            showModalEntity("Add Investor", "addInvestor", "investor");
+        });
+
+        // FIX THIS .querySelector
+        const form = document.getElementById("investorRegistration");
+        const email = form.querySelector(".email");
+        const phone = form.querySelector(".phone");
+        const tin = form.querySelector(".tin");
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            if (modalEntityBtnAction === "addInvestor") {
+                if (utils.inputEmptyValidation(form)) {
+                    utils.validateInputFieldsValue(form);
+
+                    if (utils.limitInputLength(phone, 11)) { 
+                        utils.clearErrorInputTag(form);      
+
+                        if (utils.limitInputLength(tin, 11)) {
+                            utils.clearErrorInputTag(form);      
+    
+                            const formData = utils.getFormData(form);
+
+                            await fetch("/Member/Home/InvestorRegistration", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(formData)
+                            }).then(res => res.json())
+                            .then(data => {
+                                utils.debug("Investor data", data);
+                                utils.validateInputFieldsValue(form);
+                                utils.clearForm(form);
+                                utils.clearAllErrorInputFields(utils.selectAllInputFields(form));
+                                utils.closeModal(modal);
+                            })
+                            .catch(err => utils.debug("Error", err));
+
+                            getCapitalInvestment(capitalInvestmentSpan);
+                            loadInvestors();
+                        } else {
+                            const tinCon = form.querySelector(".tin-con");
+                            utils.displayErrorInputTag(tinCon, "Tin invalid");
+                        }
+
+                    } else {
+                        const phoneCon = form.querySelector(".phone-con");
+                        utils.displayErrorInputTag(phoneCon, "Phone invalid");
+                    }
+                } else {
+                    utils.debug("input field", "does mot contain anyting");
+                    utils.validateInputFieldsValue(form);
+                }
+
+            }
+        });
+
+
+        // DISPLAY INVESTORS
+        loadInvestors();
+
+    },
+
+    financialStatements: function() {
+        utils.debug("Page", "Financial Statement");
+
+        // HEADERS (Month/Years)
+        const fsHeaderMonth = document.querySelectorAll(".fsHeaderMonth");
+        const fsHeaderDay = document.querySelectorAll(".fsHeaderDay");
+        const fsHeaderYear = document.querySelectorAll(".fsHeaderYear");
+        const yearsSelect = document.getElementById("financialStatementsYearsSelect");
+        const monthsSelect = document.getElementById("financialStatementsMonthsSelect"); 
+
+        const setDateData = utils.getLastMonthData(); 
+
+        yearsSelect.value = setDateData.year;
+        monthsSelect.value = setDateData.month;
+
+        async function initFinancialStatementsData() {
+            const fsData = await getFinancialStatementsData(setDateData.numericalMonth, setDateData.year, setDateData.lastDay);
+            setOwnersEquityDate(setDateData.month);
+            setHeaderFsDate(setDateData.month, setDateData.numericalMonth, setDateData.year);
+            displayFinancialStatementData(fsData);
+        }
+        initFinancialStatementsData();
+
+        let year = yearsSelect.value;
+        let month = monthsSelect.value;
+        yearsSelect.addEventListener("change", function (e) {
+            const value = e.target.value;
+            year = value
+            selectDate(month, year);
+        });
+
+        monthsSelect.addEventListener("change", function (e) {
+            const value = e.target.value;
+            month = value;
+            selectDate(month, year);
+        });
+    },
+
+    assetsAndLiabilities: function() {
+        utils.debug("Page", "Assets and Liabilities");
+
+        const addAssetBtn = document.getElementById("addAssetBtn");
+        addAssetBtn.addEventListener("click", function () {
+            showModalEntity("Add Asset", "addAsset", "assets");
+        });
+
+        const addLiabilityBtn = document.getElementById("addLiabilityBtn");
+        addLiabilityBtn.addEventListener("click", function () {
+            showModalEntity("Add Liability", "addLiability", "liabilities");
+        });
+
+        const payLiabilityBtn = document.getElementById("payLiabilityBtn");
+        payLiabilityBtn.addEventListener("click", function () {
+            showModalEntity("Pay Liability", "payLiability", "payLiability");
+        });
+
+        
+        // DISPLAY DATA
+        loadEntity(paginationState["Assets"].current, "Assets");
+        loadEntity(paginationState["Liabilities"].current, "Liabilities");
+
+        // ASSET DASHBOARD
+        const totalAssetValueTag = document.getElementById("totalAssetValueTag");
+        displayAssetsDashboard();
+        
+        // LIABILITIES DASHBOARD
+        const liabilitiesRemainingBalance = document.getElementById("liabilitiesRemainingBalance");
+        const totalLiabilities = document.getElementById("totalLiabilities");
+        const activeLiabilities = document.getElementById("activeLiabilities");
+        const paidLiabilities = document.getElementById("paidLiabilities");
+        const  dueLiabilities = document.getElementById("dueLiabilities");
+
+        displayLiabilitesDashboard();
+
+        // PICKER
+        const pickerAll = document.getElementById("pickerAll");
+        const pickerActive = document.getElementById("pickerActive");
+        const pickerPaid = document.getElementById("pickerPaid");
+        const pickerDue = document.getElementById("pickerDue");
+
+        pickerAll.addEventListener("click", function () {
+            pickerAll.classList.add("picked");
+            pickerActive.classList.remove("picked");
+            pickerPaid.classList.remove("picked");
+            pickerDue.classList.remove("picked");
+        });
+
+        pickerActive.addEventListener("click", function () {
+            pickerActive.classList.add("picked");
+            pickerPaid.classList.remove("picked");
+            pickerDue.classList.remove("picked");
+            pickerAll.classList.remove("picked");
+        });
+
+        pickerPaid.addEventListener("click", function () {
+            pickerPaid.classList.add("picked");
+            pickerDue.classList.remove("picked");
+            pickerAll.classList.remove("picked");
+            pickerActive.classList.remove("picked");
+        });
+
+        pickerDue.addEventListener("click", function () {
+            pickerDue.classList.add("picked");
+            pickerAll.classList.remove("picked");
+            pickerActive.classList.remove("picked");
+            pickerPaid.classList.remove("picked");
+        });
+
+        // LIABILITY PICKER
+        document.querySelector(".picker-con").addEventListener("click", function (e) {
+            let selectedType;
+
+            const all = e.target.closest(".pickerAll")?.dataset.item;
+            const active = e.target.closest(".pickerActive")?.dataset.item;
+            const paid = e.target.closest(".pickerPaid")?.dataset.item;
+            const due = e.target.closest(".pickerDue")?.dataset.item;
+
+            if (all) {
+                utils.debug("Picker", all);
+                selectedType = all;
+                loadLiabilityPicker(paginationState["Liabilities"].current, all);
+            } else if (active) {
+                utils.debug("Picker", active);
+                selectedType = active;
+                loadLiabilityPicker(paginationState["Liabilities"].current, active);
+            } else if (paid) {  
+                utils.debug("Picker", paid);
+                selectedType = paid;
+                loadLiabilityPicker(paginationState["Liabilities"].current, paid);
+            } else if (due) {  
+                utils.debug("Picker", due);
+                selectedType = due;
+                loadLiabilityPicker(paginationState["Liabilities"].current, due);
+            } else {
+                utils.debug("Picker error", "Nothing picked");
+            }
+        });
+        
+        // SEARCH LIABILITY
+        const searchInputLiabilities = document.getElementById("searchLiabilities");
+        const dropdownLiabilities = document.getElementById("searchLiabilityResults");
+        let debounceTimer;
+        searchInputLiabilities.addEventListener("input", function (e) {
+            clearTimeout(debounceTimer);
+
+            const query = this.value.trim();
+
+            utils.debug("Search", query);
+
+            if (!query) dropdownLiabilities.classList.remove("show");
+
+            debounceTimer = setTimeout(() => {
+                utils.searchLiabilities(query, dropdownLiabilities, searchInputLiabilities, payLiabilityForm);
+            }, 300); 
+        });
+
+        // PAY A LIABILITY
+        const payLiabilityForm = document.getElementById("payALiability");
+        payLiabilityForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            if (utils.inputEmptyValidation(payLiabilityForm)) {
+                utils.validateInputFieldsValue(payLiabilityForm);
+
+                const formData = utils.getFormData(payLiabilityForm);
+                const balance = payLiabilityForm.querySelector(".balance").value;
+
+                utils.debug("liability data", balance);
+
+                if (formData.paid > Number(balance)) {
+                    const paidInput = payLiabilityForm.querySelector(".paid-con");
+                    utils.displayErrorInputTag(paidInput, "Amount exceeded!");
+                } else {    
+                    const liabilityId = searchInputLiabilities.dataset.id;
+
+                    await fetch("/Member/Home/PayALiability", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ...formData,
+                            id: liabilityId
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Paid a liability??", data.message);
+                        utils.clearAndCloseModal(payLiabilityForm, modal);
+
+                        loadEntity(paginationState["Liabilities"].current, "Liabilities");
+                        displayLiabilitesDashboard();
+                    })
+                    .catch(err => utils.debug("Error", err));
+                }
+            } else {
+                utils.validateInputFieldsValue(payLiabilityForm);
+            }
+
+        });
+
+        // EVENT DEL
+        // Dropdown outside click
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".search-dropdown")) {
+                dropdownLiabilities.classList.remove("show");
+            }
+        });
+
+        let selectedEntityId;
+        document.addEventListener("click", function (e) {
+            const btn = e.target.closest(".editAssetBtn, .editLiabilityBtn, .deleteAssetBtn, .deleteLiabilityBtn");
+            if (!btn) return;
+
+            selectedEntityId = btn.dataset.id;
+
+            // EDIT
+            if (btn.classList.contains("editAssetBtn")) {
+                utils.debug("Edit asset", "clicked");
+                displayEntityOnModal("Edit Asset", "editAsset", "assets", selectedEntityId);
+            }
+
+            if (btn.classList.contains("editLiabilityBtn")) {
+                utils.debug("Edit liability", "clicked");
+                displayEntityOnModal("Edit Liability", "editLiability", "liabilities", selectedEntityId);
+            }
+
+            // DELETE
+            if (btn.classList.contains("deleteAssetBtn")) {
+                showModalAlert("Do you want to remove this asset?", "Remove Asset", "removeAsset");
+            }
+
+            if (btn.classList.contains("deleteLiabilityBtn")) {
+                showModalAlert("Do you want to remove this liability?", "Remove Liability", "removeLiability");
+            }
+        });
+
+        // DELETE CONFIRM
+        document.addEventListener("click", function (e) {
+            const actionBtn = e.target.closest("[data-action]");
+            if (!actionBtn) return;
+
+            if (actionBtn?.dataset.action === "removeAsset") {
+                utils.debug("Delete asset", "Deleted asset");
+                deleteEntity(selectedEntityId, "Asset");
+            }
+
+            if (actionBtn?.dataset.action === "removeLiability") {
+                utils.debug("Delete liabilityt", "Deleted liability");
+                deleteEntity(selectedEntityId, "Liability");
+            }
+        });
+
+        
+        // PAGINATION
+        document.addEventListener("click", (e) => {
+            const btn = e.target.closest(".next, .prev");
+            if (!btn) return;
+
+            const entity = btn.dataset.entity;
+            if (!entity) return;
+
+            const state = paginationState[entity];
+            if (!state) return;
+
+            if (btn.classList.contains("prev")) {
+                if (state.current > 1) {
+                    state.current--;
+                    loadEntity(state.current, entity);
+                }
+            }
+
+            if (btn.classList.contains("next")) {
+                if (state.current < state.total) {
+                    state.current++;
+                    loadEntity(state.current, entity);
+                }
+            }
+
+        });
+
+        // ADD and EDIT ASSET
+        const assetForm = document.getElementById("assetsRegistration");
+        assetForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            if (modalEntityBtnAction === "addAsset") {
+                if (utils.inputEmptyValidation(assetForm)) {
+                    utils.validateInputFieldsValue(assetForm);
+
+                    const formData = utils.getFormData(assetForm);
+
+                    utils.debug("Investment", formData);
+
+                    await fetch("/Member/Home/AssetRegistration", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(formData)
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Asset data", data);
+                        utils.clearAndCloseModal(assetForm, modal);
+
+                        loadEntity(paginationState["Assets"].current, "Assets");
+                        displayAssetsDashboard();
+                    })
+                    .catch(err => utils.debug("Error", err));
+                } else {
+                    utils.validateInputFieldsValue(assetForm);
+                }
+            } else {
+                if (utils.inputEmptyValidation(assetForm)) {
+                    utils.validateInputFieldsValue(assetForm);
+
+                    const assetId = modalEntityBtn.dataset.id;
+                    const formData = utils.getFormData(assetForm);
+
+                    utils.debug("Asset Id", assetId);
+
+                    await fetch("/Member/Home/EditAsset", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: Number(assetId),
+                            ...formData
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Asset data", data);
+                        utils.clearAndCloseModal(assetForm, modal);
+
+                        loadEntity(paginationState["Assets"].current, "Assets");
+                        displayAssetsDashboard();
+                    })
+                    .catch(err => utils.debug("Error", err));
+                } else {
+                    utils.validateInputFieldsValue(assetForm);
+                }
+            }
+        });
+
+
+        // ADD and EDIT LIABILITIES
+        const liabilitiesForm = document.getElementById("liabilitiesRegistration");
+        liabilitiesForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            
+            if (modalEntityBtnAction === "addLiability") {
+                if (utils.inputEmptyValidation(liabilitiesForm)) {
+                    utils.validateInputFieldsValue(liabilitiesForm);
+
+                    const formData = utils.getFormData(liabilitiesForm);
+
+                    await fetch("/Member/Home/LiabilityRegistration", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(formData)
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Liability Data", data);
+                        utils.clearAndCloseModal(liabilitiesForm, modal);
+                    })
+                    .catch(err => utils.debug("Error", err));
+
+                    loadEntity(paginationState["Liabilities"].current, "Liabilities");
+                    displayLiabilitesDashboard();
+                } else {
+                    utils.validateInputFieldsValue(liabilitiesForm);
+                }
+            } else {
+                if (utils.inputEmptyValidation(liabilitiesForm)) {
+                    utils.validateInputFieldsValue(liabilitiesForm);
+
+                    const liabilityId = modalEntityBtn.dataset.id;
+                    const formData = utils.getFormData(liabilitiesForm);
+
+                    utils.debug("Liability Id", liabilityId);
+
+                    await fetch("/Member/Home/EditLiability", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: Number(liabilityId),
+                            ...formData
+                        })
+                    }).then(res => res.json())
+                    .then(data => {
+                        utils.debug("Liability Data", data);
+                        utils.clearAndCloseModal(liabilitiesForm, modal);
+                    })
+                    .catch(err => utils.debug("Error", err));
+
+                    loadEntity(paginationState["Liabilities"].current, "Liabilities");
+                    displayLiabilitesDashboard();
+                } else {
+                    utils.validateInputFieldsValue(liabilitiesForm);
+                }
+            }
+        });
+
+    },
+
     settings: function() {
-        debug("Page", "Settings");
-
-        // CANCEL / CLOSE BTN
-        cancel.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        closeIcon.forEach(c => {
-            c.addEventListener("click", function () {
-                closeModal();
-            });
-        });
-
-        // OUTSIDE CLICK REMOVE THE MODAL
-        modal.addEventListener("click", function (e) {
-            if (e.target === modal) {
-                closeModal();
-            } 
-        });
+        utils.debug("Page", "Settings");
 
         // LOG OUT BUTTON
         var logOutBtn = document.getElementById("logOutBtn");
@@ -725,47 +1145,762 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // FUNCTIONS
-function clearError(form) {
-    const inputFields = form;
 
-    inputFields.forEach(i => {
-        i.classList.remove("error-input");
-        
+async function loadEntity(page, entity) {
+    const res = await fetch(`/Member/Home/Get${entity}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            pageNumber: page,
+            pageSize: 5
+        })
     });
 
-    
-    document.querySelectorAll(".error-tag").forEach(e => e.remove());
-} 
+    const data = await res.json();
 
-function showError(message) {
-    const p = document.createElement("p");
-    p.textContent = message;
-    p.classList.add("error-tag");
-    return p;
+    utils.debug("data", data.data);
+
+    renderEntity(data.data, entity);
+
+    paginationState[entity].current = page;
+    paginationState[entity].total = data.totalPages;
+
+    if (entity === "Assets") {
+        const container = document.querySelector("#assetsPagination");
+        renderPagination(container, page, data.totalPages, (p) => {
+            paginationState[entity].current = p;
+            loadEntity(p, "Assets");
+        });
+    }
+
+    if (entity === "Liabilities") {
+        const container = document.querySelector("#liabilitiesPagination");
+        renderPagination(container, page, data.totalPages, (p) => {
+            paginationState[entity].current = p;
+            loadEntity(p, "Liabilities");
+        });
+    }
 }
 
-async function employeeSearch(input) {
+function renderEntity(items, entity) {
+    let tbody;
+
+    switch (entity) {
+        case "Assets": 
+            tbody = document.getElementById("assetsTable");
+            tbody.innerHTML = "";
+
+            items.forEach(t => {
+                tbody.innerHTML += `
+                    <tr data-id="${t.id}">
+                        <td>${utils.dateFormat(t.createdAt)}</td>
+                        <td class="data-text-limit">${t.item}</td>
+                        <td>${t.category}</td>
+                        <td>${t.assetId}</td>
+                        <td>${utils.amountInputFormatToHundreds(t.amount)}</td>
+                        <td>
+                            <div class="action-con editAssetBtn" data-id="${t.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
+                            </div>
+
+                            <div class="action-con deleteAssetBtn" data-id="${t.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            break;
+            
+        case "Liabilities": 
+            tbody = document.getElementById("liabilitiesTable");
+            tbody.innerHTML = "";
+
+            items.forEach(t => {
+                const isDue = utils.isDueLiability(t.due);
+
+                tbody.innerHTML += `
+                    <tr class="${isDue ?  "" : "due-liability"}" data-id="${t.id}">
+                        <td>${utils.dateFormat(t.due)}</td>
+                        <td>${t.name}</td>
+                        <td>${t.type}</td>
+                        <td>₱${utils.amountInputFormatToHundreds(t.debt)}</td>
+                        <td>₱${utils.amountInputFormatToHundreds(t.paid)}</td>
+                        <td>₱${utils.amountInputFormatToHundreds(t.balance)}</td>
+                        <td>${t.progress}%</td>
+                        <td class="${t.status === "Paid" ? "liabilities-visual-graph-dashboard-paid" : "liabilities-visual-graph-dashboard-active"}">${t.status}</td>
+                        <td>
+                            <div class="action-con editLiabilityBtn" data-id="${t.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
+                            </div>
+
+                            <div class="action-con deleteLiabilityBtn" data-id="${t.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            break;
+
+        default: 
+            utils.debug("Render Entity", "No Entity");
+    }
+}
+
+// FINANCIAL STATEMENT
+async function selectDate(month, year) {
+    const numericalMonth = utils.getMonthNumber(month) + 1;
+    const lastDay = new Date(year, numericalMonth, 0).getDate();
+
+    utils.debug("Last day", numericalMonth);
+
+    const fsData = await getFinancialStatementsData(numericalMonth, year, lastDay);
+    setOwnersEquityDate(month);
+    setHeaderFsDate(month, numericalMonth, year);
+    displayFinancialStatementData(fsData);
+}   
+
+function getSelectedDate(month, numericalMonth, year) {
+    const lastDay = new Date(year, numericalMonth, 0).getDate();
+    setOwnersEquityDate(month);
+    return {
+        month: month,
+        numericalMonth: numericalMonth,
+        lastDay: lastDay,
+        year: year
+    }
+}
+
+function setHeaderFsDate(month, numericalMonth, year) {
+    const fsHeaderMonth = document.querySelectorAll(".fsHeaderMonth");
+    const fsHeaderDay = document.querySelectorAll(".fsHeaderDay");
+    const fsHeaderYear = document.querySelectorAll(".fsHeaderYear");
+
+    const fsDateData = getSelectedDate(month, numericalMonth, year);
+    utils.debug("Last day", fsDateData.lastDay);
+    fsHeaderMonth.forEach(m => {
+        m.textContent = fsDateData.month;
+    });
+
+    fsHeaderDay.forEach(d => {
+        d.textContent = fsDateData.lastDay;
+    });
+
+    fsHeaderYear.forEach(y => {
+        y.textContent = fsDateData.year;
+    });
+}
+
+async function displayFinancialStatementData(data) {
+    utils.debug("Financial Statement Data", data);
+
+    // INCOME STATEMENT
+    displayIncomeStatement(data);
+
+    // STATEMENT OF OWNERS EQUITY
+    displayOwnersEquity(data);
+
+    // CASHFLOW
+    displayCashFlow(data);
+
+    // ASSETS
+    displayAsset(data);
+
+    // LIABILITITES
+    displayLiabilites(data);
+}
+
+async function getFinancialStatementsData(month, year, lastDay) {
     try {
-        const res = await fetch("/Member/Home/Search", {
+        const res = await fetch("/Member/Home/GetFinancialStatementsData", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                EmployeeName: input
+                month: month,
+                year: year,
+                lastDay: lastDay
             })
         });
 
         const data = await res.json();
+        return data;
 
-        debug("Employee", data);
-
-        const employeesCardCon = document.getElementById("employeesCardCon");
-        displayEmployees(data, employeesCardCon);
     } catch (err) {
-        debug("Employee Display Error", err);
+        utils.debug("Error", err);
+        return null;
     }
 }
+
+function displayIncomeStatement(data) {
+    const feesEarned = document.getElementById("feesEarned");
+    const totalExpenses = document.getElementById("totalExpenses");
+    const netIncome = document.querySelectorAll(".netIncome");
+
+    feesEarned.textContent = utils.amountInputFormatToHundreds(data.incomeStatement.totalIncome);
+    totalExpenses.textContent = utils.amountInputFormatToHundreds(data.incomeStatement.totalExpense);
+    netIncome.forEach(i => {
+        i.textContent = utils.amountInputFormatToHundreds(data.incomeStatement.netIncome);
+    });
+
+    const expensesCon = document.querySelector(".income-statement-expenses");
+    expensesCon.innerHTML = "";
+
+    data.incomeStatement.expenses.forEach(e => {
+        const p = document.createElement("p");
+        p.textContent = e.name;
+        expensesCon.appendChild(p);
+    });
+
+    const expensesAmountCon = document.querySelector(".income-statement-expenses-amount-con");
+    expensesAmountCon.innerHTML = "";
+
+    data.incomeStatement.expenses.forEach(e => {
+        const p = document.createElement("p");
+        p.textContent = "₱" + utils.amountInputFormatToHundreds(e.amount);
+        expensesAmountCon.appendChild(p);
+    });
+}
+
+function displayOwnersEquity(data) {
+    const retainedEarningsLastmonth = document.getElementById("retainedEarningsLastmonth");
+    const dividends = document.getElementById("dividends");
+    const retainedEarnings = document.querySelectorAll(".retainedEarnings");
+
+    dividends.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.dividends);
+    retainedEarnings.forEach(e => {
+        e.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarnings);
+    });
+    retainedEarningsLastmonth.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.retainedEarningsLastMonth);
+}
+
+function setOwnersEquityDate(month) {
+    const lastMonthData = utils.getLastMonth(month);
+
+    const ownersEquityMonth = document.getElementById("fsOwnersEquityMonth");
+    const ownersEquityDay = document.getElementById("fsOwnersEquityDay");
+    const ownersEquityYear = document.getElementById("fsOwnersEquityYear");
+
+    ownersEquityMonth.textContent = lastMonthData.month;
+    ownersEquityDay.textContent = lastMonthData.lastDay;
+    ownersEquityYear.textContent = lastMonthData.year;
+
+    
+    const ownersEquityNetIncomeMonth = document.getElementById("fsOwnersEquityNetIncomeMonth");
+    ownersEquityNetIncomeMonth.textContent = lastMonthData.currentMonth; // +1
+}
+
+function displayCashFlow(data) {
+    const operatingTotalIncome = document.getElementById("operatingTotalIncome");
+    const netAsset = document.querySelectorAll(".netAsset");
+    const operatingTotalExpense = document.getElementById("operatingTotalExpense");
+
+    operatingTotalIncome.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingTotalIncome);
+    netAsset.forEach(a => {
+        a.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingNetIncome);
+    });
+    operatingTotalExpense.textContent = utils.amountInputFormatToHundreds(data.cashFlow.operatingAct.operatingTotalExpense);
+
+    const capital = document.querySelectorAll(".capital");
+    const dividends = document.querySelector(".dividends");
+    const netFinancingAct = document.querySelector(".netFinancingAct");
+
+    capital.forEach(c => {
+        c.textContent = utils.amountInputFormatToHundreds(data.cashFlow.financingAct.capital);
+    });
+    dividends.textContent = utils.amountInputFormatToHundreds(data.ownersEquity.dividends);
+    netFinancingAct.textContent = utils.amountInputFormatToHundreds(data.cashFlow.financingAct.netFinancingAct);
+
+
+    const netCashFlow = document.querySelector(".netCashFlow");
+    netCashFlow.textContent = utils.amountInputFormatToHundreds(data.cashFlow.netCashFlow);
+}
+
+function displayAsset(data) {
+    const assetNameCon = document.querySelectorAll(".asset-name-con");
+    assetNameCon.forEach(a => {
+        a.innerHTML = "";
+    });
+
+    const assetPriceCon = document.querySelectorAll(".asset-price-con");
+    assetPriceCon.forEach(a => {
+        a.innerHTML = "";
+    });
+
+    data.assets.assets.forEach(i => {
+        assetNameCon.forEach(a => {
+            const category = document.createElement("p");
+            category.textContent = i.category;
+            a.appendChild(category);
+        })
+        
+        assetPriceCon.forEach(a => {
+            const amount = document.createElement("p");
+            amount.textContent = "₱" + utils.amountInputFormatToHundreds(i.amount);
+            a.appendChild(amount);
+        });
+    });
+
+    const totalAssetValue = document.querySelectorAll(".totalAssetValue");
+    totalAssetValue.forEach(a => {
+        a.textContent = utils.amountInputFormatToHundreds(data.assets.totalAssetValue);
+    });
+}
+
+function displayLiabilites(data) {
+    const loansPayable = document.querySelector(".loansPayable");
+    const stockholderEquity = document.querySelector(".stockholderEquity");
+    const totalLiabAndEquity = document.querySelector(".totalLiabAndEquity");
+
+
+    loansPayable.textContent = utils.amountInputFormatToHundreds(data.liabilities.totalLoans);
+    stockholderEquity.textContent = utils.amountInputFormatToHundreds(data.liabilities.stockholderEquity);
+    totalLiabAndEquity.textContent = utils.amountInputFormatToHundreds(data.liabilities.totalLiabAndEquity);
+}
+
+
+
+// PAGINATION
+function renderPagination(container, page, totalPages, onPageChange) {
+    container.innerHTML = "";
+
+    const { start, end } = getPageRange(page, totalPages, 5);
+
+    for (let i = start; i <= end; i++) {
+        container.innerHTML += `
+            <li class="pagination-item page-number ${i === page ? "active-page" : ""}" data-page="${i}">
+                <p>${i}</p>
+            </li>
+        `;
+    }
+
+    container.querySelectorAll(".page-number").forEach(btn => {
+        btn.addEventListener("click", () => {
+            onPageChange(parseInt(btn.dataset.page));
+        });
+    });
+}
+
+function getPageRange(currentPage, totalPages, maxVisible = 5) {
+    let start = Math.max(currentPage - Math.floor(maxVisible / 2), 1);
+    let end = start + maxVisible - 1;
+
+    if (end > totalPages) {
+        end = totalPages;
+        start = Math.max(end - maxVisible + 1, 1);
+    }
+
+    return { start, end}
+}
+
+// LIABILITY
+async function getLiability(id, form) {
+    try {
+        await fetch("/Member/Home/GetLiability", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                Id: id
+            })
+        }).then(res => res.json())
+        .then(data => {
+            utils.debug("Liability data", data);
+
+            // Display Data
+            const inputFields = ["name", "type", "debt", "due", "status"];
+            utils.populateForm(form, data, inputFields);
+        })
+        .catch(err => utils.debug("Error", err));
+
+    } catch (err) {
+        utils.debug("Error", err);
+    }
+}
+
+async function loadLiabilityPicker(page, selected) {
+
+    if (selected === "Active" || selected === "Paid" || selected === "Due") {   
+        try {
+            const res = await fetch(`/Member/Home/GetSelectedLiabilities`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    pageNumber: page,
+                    pageSize: 5,
+                    Selected: selected
+                })
+            });
+
+            const data = await res.json();
+
+            utils.debug("data", data.data);
+
+            renderEntity(data.data, "Liabilities");
+
+            paginationState["Liabilities"].current = page;
+            paginationState["Liabilities"].total = data.totalPages;
+
+            const container = document.querySelector("#liabilitiesPagination");
+            renderPagination(container, page, data.totalPages, (p) => {
+                paginationState["Liabilities"].current = p;
+                loadLiabilityPicker(p, selected);
+            });
+
+            utils.debug("Liabilities picker", liabilities);
+
+        } catch (err) {
+            utils.debug("Error", err);    
+        }
+    } else {
+        loadEntity(paginationState["Liabilities"].current, "Liabilities");
+    }    
+}
+
+async function displayLiabilitesDashboard() {
+    const data = await getLiabilitiesDashboardData();
+
+    utils.debug("Liabilities Dashboard Data", data);
+    liabilitiesRemainingBalance.textContent = utils.amountInputFormatToHundreds(data.remainingBalance);
+    totalLiabilities.textContent = data.totalLiabilities;
+    activeLiabilities.textContent =  data.active;
+    paidLiabilities.textContent = data.paid;
+    dueLiabilities.textContent = data.due;
+
+    renderLiabilitiesGraph(data.graphData);
+}
+
+
+async function getLiabilitiesDashboardData() {
+    const res = await fetch("/Member/Home/GetLiabilitiesDashboardData");
+
+    const data = await res.json();
+    return data;
+}
+
+function renderLiabilitiesGraph(data) {
+    const visualGraphCon = document.querySelector(".liabilities-visual-graph-horizontal");
+    visualGraphCon.innerHTML = "";
+
+    data.forEach(t => {
+        const div = document.createElement("div");
+       div.classList.add("liabilities-visual-graph-horizontal-item", `${t.type}`);
+
+        div.style.width = `${t.percentage}%`;
+
+        visualGraphCon.appendChild(div);
+    });
+
+    renderLiabilitiesLegend(data);
+}
+
+function renderLiabilitiesLegend(data) {
+    const legendCon = document.querySelector(".liabilities-visual-graph-legend");
+    legendCon.innerHTML = "";
+
+    data.forEach(l => {
+        const div = document.createElement("div");
+        div.classList.add("horizontal-graph-legend-con");
+        
+        div.innerHTML = `
+            <div class="horizontal-graph-legend-key ${l.type}"></div>
+
+            <p class="horizontal-graph-legend-data-key">${l.type}</p>
+        `;
+
+        legendCon.appendChild(div);
+    });
+}
+
+// ASSETS
+async function displayAssetsDashboard() {
+    const data = await getAssetsDashboardData();
+
+    utils.debug("Assets Data", data);
+    totalAssetValueTag.textContent = utils.amountInputFormatToHundreds(data.totalAssetValue);
+
+    setAssetColorDomain(data.chartData);
+    drawDonutChart(data.chartData);
+    renderAssetLegend(data.chartData);
+}
+
+async function getAssetsDashboardData() {
+    const res = await fetch("/Member/Home/GetAssetsData");
+
+    const data = await res.json();
+
+    return data;
+}
+
+async function getAsset(id, form) {
+    try {
+        await fetch("/Member/Home/GetAsset", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                Id: id
+            })
+        }).then(res => res.json())
+        .then(data => {
+            utils.debug("Asset data", data);
+
+            // Display Data
+            const inputFields = ["item", "amount", "category"];
+            utils.populateForm(form, data, inputFields);
+        })
+        .catch(err => utils.debug("Error", err));
+
+    } catch (err) {
+        utils.debug("Error", err);
+    }
+}
+
+function drawDonutChart(data) {
+    const width = 220;
+    const height = 220;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select("#donutChart")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+    const pie = d3.pie()
+        .value(d => d.value)
+        .sort(null);
+
+    const arc = d3.arc()
+        .innerRadius(radius * 0.6) 
+        .outerRadius(radius);
+
+    const arcs = svg.selectAll("arc")
+        .data(pie(data))
+        .enter()
+        .append("g");
+
+    arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", d => chartDataColorMap(d.data.category))
+        .attr("stroke", "#fff")
+        .style("stroke-width", "2px");
+}
+
+function renderAssetLegend(data) {
+    const container = document.querySelector(".pie-graph-legend");
+    container.innerHTML = "";
+
+    data.forEach(d => {
+        container.innerHTML += `
+            <div class="pie-graph-legend-con">
+                <div class="pie-graph-legend-key" style="background:${getColor(d.category)}"></div>
+                <div class="pie-graph-legend-data">
+                    <p class="pie-graph-legend-data-key">${d.category}</p>
+                    <p class="pie-graph-legend-data-value">${d.percentage.toFixed(2)}%</p>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function setAssetColorDomain(data) {
+    chartDataColorMap.domain(data.map(d => d.category));
+}
+
+function getColor(category) {
+    return chartDataColorMap(category);
+}
+
+
+
+// INVESTORS
+async function displayInvestorsDashboard() {
+    const data = await getInvestorsDashboardData();
+    
+    utils.debug("Investors Data", data);
+    totalCapital.textContent = utils.amountInputFormatToHundreds(data.capital);
+
+    setInvestorColorDomain(data.chartData);
+    drawInvestorDonutChart(data.chartData);
+    renderInvestorLegend(data.chartData);
+}
+
+async function getInvestorsDashboardData(params) {
+    const res = await fetch("/Member/Home/GetInvestorsData");
+
+    const data = await res.json();
+
+    return data;
+}
+
+function drawInvestorDonutChart(data) {
+    const width = 220;
+    const height = 220;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select("#investorsDonutChart")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+    const pie = d3.pie()
+        .value(d => d.ownership)
+        .sort(null);
+
+    const arc = d3.arc()
+        .innerRadius(radius * 0.6) 
+        .outerRadius(radius);
+
+    const arcs = svg.selectAll("arc")
+        .data(pie(data))
+        .enter()
+        .append("g");
+
+    arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", d => chartDataColorMap(d.data.investor))
+        .attr("stroke", "#fff")
+        .style("stroke-width", "2px");
+}
+
+
+function renderInvestorLegend(data) {
+    const container = document.querySelector(".investors-graph-legend");
+    container.innerHTML = "";
+
+    data.forEach(d => {
+        container.innerHTML += `
+            <div class="pie-graph-legend-con">
+                <div class="pie-graph-legend-key" style="background:${getColor(d.investor)}"></div>
+                <div class="pie-graph-legend-data">
+                    <p class="pie-graph-legend-data-key">${d.investor}</p>
+                    <p class="pie-graph-legend-data-value">${d.ownership.toFixed(2)}%</p>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function setInvestorColorDomain(data) {
+    chartDataColorMap.domain(data.map(d => d.investor));
+}
+
+async function getCapitalInvestment(tag) {
+    try {
+        const res = await fetch("/Member/Home/GetCapitalInvestment");
+        const data = await res.json();
+
+        tag.textContent = utils.amountInputFormatToHundreds(data);
+    } catch (err) {
+        utils.debug("Get Capital Investment Error", err);
+    }
+}
+
+async function displayInvestors(data, listCon) {
+
+    const list = listCon;
+    list.innerHTML = "";
+
+    data.forEach(e => {
+        const li = document.createElement("div");
+        li.classList.add("table-card");
+        li.dataset.id = e.id;
+
+        let stakeholder;
+
+        utils.debug("Stakeholder", e.stakeholder);
+
+        if (e.stakeholder === "Owner") {
+            stakeholder = "owner";
+        } else if (e.stakeholder === "Investor") {
+            stakeholder = "investor";
+        } else {
+            stakeholder = "Undefined"
+        }
+
+        li.innerHTML = 
+        `<div class="table-card-header">
+                <div class="table-card-header-info">
+                    <p class="table-card-name">${e.firstName} ${e.middleName ?? ""} ${e.lastName}</p>
+                    <p class="table-card-role">${e.stakeholderId}</p>
+                </div>
+
+                <div class="table-card-actions-con">
+                    <div class="action-con editEmployeeBtn" data-id="${e.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
+                    </div>
+
+                    <div class="action-con deleteEmployeeBtn" data-id="${e.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="delete" d="M262.2 48C248.9 48 236.9 56.3 232.2 68.8L216 112L120 112C106.7 112 96 122.7 96 136C96 149.3 106.7 160 120 160L520 160C533.3 160 544 149.3 544 136C544 122.7 533.3 112 520 112L424 112L407.8 68.8C403.1 56.3 391.2 48 377.8 48L262.2 48zM128 208L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 208L464 208L464 512C464 520.8 456.8 528 448 528L192 528C183.2 528 176 520.8 176 512L176 208L128 208zM288 280C288 266.7 277.3 256 264 256C250.7 256 240 266.7 240 280L240 456C240 469.3 250.7 480 264 480C277.3 480 288 469.3 288 456L288 280zM400 280C400 266.7 389.3 256 376 256C362.7 256 352 266.7 352 280L352 456C352 469.3 362.7 480 376 480C389.3 480 400 469.3 400 456L400 280z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-card-info-con">
+                <div class="role-con ${stakeholder}">
+                    <p>${e.stakeholder}</p>
+                </div>
+
+                <div class="table-card-info">
+                    <div class="table-info-left">
+                        <p>Ownership:</p>
+                        <p>Investment:</p>
+                        <p>Income:</p>
+                        <p>ROI(YTD)</p>
+                        <p>Email:</p>
+                        <p>Phone:</p>
+                        <p>Address:</p>
+                        <p>TIN:</p>
+                    </div>
+
+                    <div class="table-info-right">
+                        <p>${e.ownership}%</p>
+                        <p class="safe">₱${utils.amountInputFormatToHundreds(e.investment)}</p>
+                        <p>₱${utils.amountInputFormatToHundreds(e.income)}</p>
+                        <p class="danger">${e.roi}%</p>
+                        <p>${e.email}</p>
+                        <p>+63 (09) ${e.phone}</p>
+                        <p>${e.address}</p>
+                        <p>${utils.tinInputFormat(e.tin)}</p>
+                    </div>
+                </div>
+
+                <div class="table-card-border"></div>
+
+                <div class="table-card-created-at">
+                    <p>Date of Investment: ${utils.dateFormat(e.createdAt)}</p>
+                </div>
+            </div>
+            `;
+        
+        list.appendChild(li);
+    });
+}
+
+async function loadInvestors() {
+    try {
+        const res = await fetch("/Member/Home/GetInvestors");
+        const investors = await res.json();
+
+        const investorsCardCon = document.getElementById("investorsCardCon");
+        displayInvestors(investors, investorsCardCon);
+    } catch (err) {
+        utils.debug("Investors Display Error", err);
+    }
+}
+
+
+// DASHBOARD
 
 function displayLineGraphIncExpComp(lineGraph, data) {
      const legendItems = [
@@ -1056,7 +2191,7 @@ async function displayStatementIcons(expense) {
     let financialValue = document.querySelectorAll(".financialValue");
 
     if (expense > 100) {
-        debug("Expense", "HIgh");
+        utils.debug("Expense", "HIgh");
 
         incomeIncreaseIcon.classList.remove("show");
         incomeDecreaseIcon.classList.add("show");
@@ -1072,7 +2207,7 @@ async function displayStatementIcons(expense) {
         })
 
     } else {
-        debug("Expense", "low");
+        utils.debug("Expense", "low");
         incomeIncreaseIcon.classList.add("show");
         incomeDecreaseIcon.classList.remove("show");
 
@@ -1093,12 +2228,12 @@ async function displayCommonSizeStatement(expenseId, netProfitId) {
         const res = await fetch("/Member/Home/GetCommonSizeStatement");
         const data = await res.json();
 
-        debug("Expense %", data.expense);
+        utils.debug("Expense %", data.expense);
         expenseId.textContent = data.expense;
         netProfitId.textContent = data.netProfit;
         displayStatementIcons(data.expense);
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
 
@@ -1107,10 +2242,10 @@ async function displayNetProfit(id) {
         const res = await fetch("/Member/Home/GetNetProfit");
         const data = await res.json();
 
-        id.textContent = data.totalProfit;
-        debug("Net profit", data.totalProfit);
+        id.textContent = utils.amountInputFormatToHundreds(data.totalProfit);
+        utils.debug("Net profit", data.totalProfit);
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     } 
 }
 
@@ -1119,10 +2254,10 @@ async function displayExpense(id) {
         const res = await fetch("/Member/Home/GetExpense");
         const data = await res.json();
 
-        id.textContent = data.totalExpense;
-        debug("Total Expense", data.totalExpense);
+        id.textContent = utils.amountInputFormatToHundreds(data.totalExpense);
+        utils.debug("Total Expense", data.totalExpense);
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
 
@@ -1132,12 +2267,14 @@ async function displayIncome(id) {
         const res = await fetch("/Member/Home/GetIncome");
         const data = await res.json();
 
-        id.textContent = data.totalIncome;
-        debug("Total Income", data.totalIncome);
+        id.textContent = utils.amountInputFormatToHundreds(data.totalIncome);
+        utils.debug("Total Income", data.totalIncome);
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
+
+// FINANCIAL TRANSACTION
 
 async function pickerTransaction(selected) {
 
@@ -1165,11 +2302,19 @@ async function pickerTransaction(selected) {
                 displayTransactions(transactions, table);
             }
         } catch (err) {
-            debug("Error", err);    
+            utils.debug("Error", err);    
         }
     } else {
         loadTransactions();
     }
+}
+
+function showModalEditTransaction() {
+    // REFACTOR centralise this
+
+    utils.showParentModal(modal);
+
+    editTransactionModal.classList.add("show");
 }
 
 async function deleteTransaction(id, type) {
@@ -1184,12 +2329,13 @@ async function deleteTransaction(id, type) {
     });
 
     const data = await res.json();
-    debug("Message", data.message);
+    utils.debug("Message", data.message);
     await pickerTransaction(type);
 }
 
 async function displayTransaction(id) {
     showModalEditTransaction();
+    const category = document.getElementById("fsCategory"); // TEMPORARY FIX
 
     try {
         await fetch("/Member/Home/GetFinancialTransaction", {
@@ -1202,23 +2348,25 @@ async function displayTransaction(id) {
             })
         }).then(res => res.json())
         .then(data => {
-            debug("Transaction data", data);
+            utils.debug("Transaction data", data);
 
             const radio = document.querySelector(`input[name="editTransactionType"][value="${data.type}"]`);
 
             if (radio) {
                 radio.checked = true;
             }
+            utils.debug("cat", category);
+            
             category.value = data.category;
             amount.value = data.amount;
             payee.value = data.payee;
             description.value = data.description;
             updateTransactionBtn.dataset.id = data.id;
         })
-        .catch(err => debug("Error", err));
+        .catch(err => utils.debug("Error", err));
 
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
 }
 
@@ -1246,7 +2394,7 @@ async function displayTransactions(data, tableId) {
                 <div class="financial-transaction-card-header">
                     <div class="financial-transaction-card-head">
                         <p class="card-head">${c.category}</p>
-                        <p class="card-date">${dateFormat(c.dateOfTransaction)}</p>
+                        <p class="card-date">${utils.dateFormat(c.dateOfTransaction)}</p>
                     </div>
 
                     <div class="financial-transaction-card-action-con">
@@ -1304,7 +2452,7 @@ async function displayTransactions(data, tableId) {
 
             row.innerHTML = `
                 <tr data-id="${t.id}">
-                    <td>${dateFormat(t.dateOfTransaction)}</td>
+                    <td>${utils.dateFormat(t.dateOfTransaction)}</td>
                     <td id="type" class="${type}">${t.type}</td>
                     <td>${t.category}</td>
                     <td class="description">${t.description}</td> <!-- Re design this shit set a maximum words then gawa ka ng parang button na "see more" -->
@@ -1340,12 +2488,34 @@ async function loadTransactions() {
             displayTransactions(transactions, table);
         }
     } catch (err) {
-        debug("Error", err);    
+        utils.debug("Error", err);    
     }
 }
 
-function isEmpty(value) {
-    return (value == null || (typeof value === "string" && value.length === 0));
+
+// EMPLOYEE
+
+async function employeeSearch(input) {
+    try {
+        const res = await fetch("/Member/Home/Search", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                EmployeeName: input
+            })
+        });
+
+        const data = await res.json();
+
+        utils.debug("Employee", data);
+
+        const employeesCardCon = document.getElementById("employeesCardCon");
+        displayEmployees(data, employeesCardCon);
+    } catch (err) {
+        utils.debug("Employee Display Error", err);
+    }
 }
 
 async function deleteEmployee(id) {
@@ -1362,7 +2532,17 @@ async function deleteEmployee(id) {
 }
 
 async function displayEmployee(id) {
-    showModalEmployee("Edit", "Edit", "editEmployee");
+    showModalEntity("Edit Employee", "editEmployee", "employee");
+
+    // REFACTOR
+    const firstName = document.querySelector(".firstName");
+    const middleName = document.querySelector(".middleName");
+    const lastName = document.querySelector(".lastName");
+    const role = document.querySelector(".role")
+    const position = document.querySelector(".position");
+    const email = document.querySelector(".email");
+    const phone = document.querySelector(".phone");
+    const address = document.querySelector(".address");
 
     try {
         await fetch("/Member/Home/GetEmployee", {
@@ -1375,7 +2555,7 @@ async function displayEmployee(id) {
             })
         }).then(res => res.json())
         .then(data => {
-            debug("Employee Data", data);
+            utils.debug("Employee Data", data);
 
             firstName.value = data.firstName;
             middleName.value = data.middleName;
@@ -1385,23 +2565,13 @@ async function displayEmployee(id) {
             email.value = data.email;
             phone.value = data.phone;
             address.value = data.address;
-            employeeModalBtn.dataset.id = data.id;
+            modalEntityBtn.dataset.id = data.id;
         })
-        .catch(err => debug("Error", err));
+        .catch(err => utils.debug("Error", err));
 
     } catch (err) {
-        debug("Error", err);
+        utils.debug("Error", err);
     }
-}
-
-function dateFormat(date) {
-    const format = new Date(date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric"
-    });
-
-    return format;
 }
 
 async function displayEmployees(data, listCon) {
@@ -1411,7 +2581,7 @@ async function displayEmployees(data, listCon) {
 
     data.forEach(e => {
         const li = document.createElement("div");
-        li.classList.add("employees-card");
+        li.classList.add("table-card");
         li.dataset.id = e.id;
 
         let role;
@@ -1427,13 +2597,13 @@ async function displayEmployees(data, listCon) {
         }
 
         li.innerHTML = 
-        `<div class="employees-card-header">
-                <div class="employees-card-header-info">
-                    <p class="employees-card-name">${e.firstName} ${e.middleName ?? ""} ${e.lastName}</p>
-                    <p class="employees-card-role">${e.position}</p>
+        `<div class="table-card-header">
+                <div class="table-card-header-info">
+                    <p class="table-card-name">${e.firstName} ${e.middleName ?? ""} ${e.lastName}</p>
+                    <p class="table-card-role">${e.position}</p>
                 </div>
 
-                <div class="employees-card-actions-con">
+                <div class="table-card-actions-con">
                     <div class="action-con editEmployeeBtn" data-id="${e.id}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path class="edit" d="M100.4 417.2C104.5 402.6 112.2 389.3 123 378.5L304.2 197.3L338.1 163.4C354.7 180 389.4 214.7 442.1 267.4L476 301.3L442.1 335.2L260.9 516.4C250.2 527.1 236.8 534.9 222.2 539L94.4 574.6C86.1 576.9 77.1 574.6 71 568.4C64.9 562.2 62.6 553.3 64.9 545L100.4 417.2zM156 413.5C151.6 418.2 148.4 423.9 146.7 430.1L122.6 517L209.5 492.9C215.9 491.1 221.7 487.8 226.5 483.2L155.9 413.5zM510 267.4C493.4 250.8 458.7 216.1 406 163.4L372 129.5C398.5 103 413.4 88.1 416.9 84.6C430.4 71 448.8 63.4 468 63.4C487.2 63.4 505.6 71 519.1 84.6L554.8 120.3C568.4 133.9 576 152.3 576 171.4C576 190.5 568.4 209 554.8 222.5C551.3 226 536.4 240.9 509.9 267.4z"/></svg>
                     </div>
@@ -1444,29 +2614,29 @@ async function displayEmployees(data, listCon) {
                 </div>
             </div>
 
-            <div class="employees-card-info-con">
+            <div class="table-card-info-con">
                 <div class="role-con ${role}">
                     <p>${e.role}</p>
                 </div>
 
-                <div class="employees-card-info">
-                    <div class="employees-info-left">
+                <div class="table-card-info">
+                    <div class="table-info-left">
                         <p>Email:</p>
                         <p>Phone:</p>
                         <p>Address:</p>
                     </div>
 
-                    <div class="employees-info-right">
+                    <div class="table-info-right">
                         <p>${e.email}</p>
                         <p>+63 (09) ${e.phone}</p>
                         <p>${e.address}</p>
                     </div>
                 </div>
 
-                <div class="employees-card-border"></div>
+                <div class="table-card-border"></div>
 
-                <div class="employees-card-created-at">
-                    <p>Added: ${dateFormat(e.createdAt)}</p>
+                <div class="table-card-created-at">
+                    <p>Added: ${utils.dateFormat(e.createdAt)}</p>
                 </div>
             </div>
             `;
@@ -1483,39 +2653,12 @@ async function loadEmployees() {
         const employeesCardCon = document.getElementById("employeesCardCon");
         displayEmployees(employees, employeesCardCon);
     } catch (err) {
-        debug("Employee Display Error", err);
+        utils.debug("Employee Display Error", err);
     }
 }
 
-function clearErrorInputFields(form) {
-    const inputFields = form;
 
-    inputFields.forEach(i => {
-        if (!i.value.trim()) {
-            i.classList.add("error-input");
-        } else {
-            i.classList.remove("error-input");
-        }
-    });
-}
-
-function inputEmptyValidation(form) {
-    const inputFields = Array.from(form);
-
-    const allFilled = inputFields.every(i => {
-        if (i.id === "middleName") return true;
-        return i.value.trim().length > 0;
-    });
-
-    return allFilled;
-}
-
-function selectAllInputFields(form) {
-    const inputFields = form.querySelectorAll("input, select, textarea");
-
-    return inputFields;
-}
-
+// VALIDATION
 function displayCompanyInfo() {
     fetch("/Member/Home/GetCompanyInfo")
         .then(res => res.json())
@@ -1523,35 +2666,12 @@ function displayCompanyInfo() {
             companyNameNav.textContent = data.companyName;
             companyIndustryNav.textContent = data.companyIndustry;
         })
-        .catch(err => debug("Error", err))
-}
-
-async function Logout() {
-    await fetch("/Member/Home/Logout", {
-        method: "POST"
-    });
-
-    window.location.replace("/Public/Account/LogIn"); // FIX THIS, CLIENTS MUST NOT CLICK BACK button and get to see the /member
-}
-
-// FORMAT PHONE NUMBER
-function formatNumber(value) {
-    // Remove non-digits
-    value = value.replace(/\D/g, '');
-
-    // Apply format: 2 3 4 grouping
-    if (value.length > 2 && value.length <= 5)
-        return value.replace(/(\d{2})(\d+)/, "$1 $2");
-
-    if (value.length > 5)
-        return value.replace(/(\d{2})(\d{3})(\d+)/, "$1 $2 $3");
-
-    return value;
+        .catch(err => utils.debug("Error", err))
 }
 
 function navOverlayChange(event) {
     if (event.matches) {
-        debug("Media Query", "It works"); // REMOVE THIS
+        utils.debug("Media Query", "It works"); // REMOVE THIS
         document.body.classList.add("relative");
         openNavVar.classList.add("absolute");
 
@@ -1563,13 +2683,13 @@ function navOverlayChange(event) {
             if (e.target.closest(".nav-item")) return;  
             openNavVar.classList.add("show");
 
-            debug("Text Sidebar", "Open");
+            utils.debug("Text Sidebar", "Open");
         });
 
         openNavVar.addEventListener("click", function () {
             openNavVar.classList.remove("show");
         
-            debug("Text Sidebar", "Close");
+            utils.debug("Text Sidebar", "Close");
         });
 
 
@@ -1595,77 +2715,174 @@ function navOverlayChange(event) {
     }
 }
 
-function showModalEditTransaction() {
-    modal.classList.add("show");
-    editTransactionModal.classList.add("show");
+// MODAL
+async function deleteEntity(id, entity) {
+    const res = await fetch(`/Member/Home/Delete${entity}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ Id: id })
+    });
+
+    const data = await res.json();
+
+    switch (entity) {
+        case "Asset":
+            entity = "Assets";
+            displayAssetsDashboard();
+            break;
+
+        case "Liability":
+            entity = "Liabilities";
+            displayLiabilitesDashboard();
+            break;
+        
+    }
+
+    await loadEntity(paginationState[entity].current, entity); // REFACTOR
 }
 
-function showModalEmployee(head, buttonText, actions) {
-    modal.classList.add("show");
-    employeeModal.classList.add("show");
+function displayEntityOnModal(text, actions, entity, id) {
+    showModalEntity(text, actions, entity);
+    const form = utils.getModalForm(modal);
+    modalEntityBtn.dataset.id = id;
 
-    employeeModalBtn.dataset.action = actions;
-    employeeModalHeadText.textContent = head;
-    employeeModalBtnText.textContent = buttonText;
+    switch (entity) {
+        case "employee":
+            // Create a function for getting the data from each entity
+            break;
+
+        case "assets":
+            // Create a function for getting the data from each entity
+            getAsset(id, form);
+            break;
+
+        case "liabilities":
+            // Create a function for getting the data from each entity
+            getLiability(id, form);
+            break;
+
+        default: 
+            utils.debug("Display Entity On Modal", "No Entity");
+    }
+}
+
+function showModalEntity(text, actions, entity) {
+    // REFACTOR centralise this
+    utils.showParentModal(modal);
+    modalEntity.classList.add("show");
+
+    modalEntity.dataset.entity = entity;
+    modalEntityBtn.dataset.action = actions;
+    modalEntityText.forEach(m => m.textContent = text);
+    
+    modalEntityBtnAction = actions; // THIS WILL BE USED TO IDENTIFY THE MODAL ENTITY (Investor, Employee, Clients, etc)
+
+    switch(entity) {
+        case "employee": 
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "investor":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "financialStatement":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "assets":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "liabilities":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        case "payLiability":
+            utils.debug("Modal Entity", entity);
+            showModalEntityForm(entity);
+            break;
+
+        default:
+            utils.debug("Modal Entity", "No entity");
+    }
+}
+
+function showModalEntityForm(entity) {
+    switch (entity) {
+        case "employee":
+            document.querySelector(".employee-form").classList.add("show", "active");
+            break;
+
+        case "investor":
+            document.querySelector(".investor-form").classList.add("show", "active");
+            break;
+
+        case "financialStatement":
+            document.querySelector(".financialStatement-form").classList.add("show", "active");
+            break;
+
+        case "assets":
+            document.querySelector(".assets-form").classList.add("show", "active");
+            break;
+
+        case "liabilities":
+            document.querySelector(".liabilities-form").classList.add("show", "active");
+            break;
+
+        case "payLiability":
+            document.querySelector(".pay-a-liability-form").classList.add("show", "active");
+            break;
+
+        default:
+            utils.debug("Modal Entity Form", "Unavailable");
+    }
+}
+
+function showEditEntityModal() {
+
+}
+
+function showAddEntityModal() {
+
 }
 
 function showModalAlert(subhead, buttonText, actions) {
-    modal.classList.add("show");
+    utils.showParentModal(modal);
+    alertModal.classList.remove("modal-sm");
+    alertModal.classList.add("modal-md");
     alertModal.classList.add("show");
+    modalBodyButtonConAlert.classList.remove("hide");
 
     if (actions === "logout") {
         logOutIconModal.classList.remove("hidden");
         alertBtn.dataset.action = actions;
+        alertHead.textContent = "Are you sure?";
         alertSubhead.textContent = subhead;
         alertBtnText.textContent = buttonText;
     } else {
         alertBtn.dataset.action = actions;
+        alertHead.textContent = "Are you sure?";
         alertSubhead.textContent = subhead;
         alertBtnText.textContent = buttonText;
     }
 }   
 
 function showModal(head, subhead) {
-    modal.classList.add("show");
+    // REFACTOR rename for clarity, this is a function for small alert pop up
+    utils.showParentModal(modal);
     alertModal.classList.remove("modal-md");
     alertModal.classList.add("show", "modal-sm");
+
+    modalBodyButtonConAlert.classList.add("hide");
 
     alertHead.textContent = head;
     alertSubhead.textContent = subhead;
 }   
-
-function clearForm(formId) {
-    formId.reset();
-}
-
-function setDateToday(dateInput) {
-    let date = new Date();
-
-    let day = ("0" + date.getDate()).slice(-2);
-    let month = ("0" + (date.getMonth() + 1)).slice(-2);
-    let today = date.getFullYear() + "-" + month + "-" + day;
-
-    dateInput.value = today;
-}
-
-function closeModal() {
-    modalContent.forEach(m => {
-        m.classList.remove("show");
-    });
-    modal.classList.remove("show");
-}
-
-function resetModal() {
-    alertModal.classList.remove("modal-sm");
-    alertModal.classList.add("modal-md");
-
-    alertHead.textContent = "Are you sure?";
-}
-
-function pageRefresh() {
-    window.location.reload(true);
-}
-
-function debug(type, description) {
-    console.log(type,": ", description);
-}

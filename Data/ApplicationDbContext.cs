@@ -14,5 +14,11 @@ namespace FinSys.Data
         public DbSet<FinancialTransactions> FinancialTransactions { get; set; }
 
         public DbSet<ResetPasswordCodes> ResetPasswordCodes { get; set; }
+
+        public DbSet<Investors> Investors { get; set; }
+
+        public DbSet<Assets> Assets { get; set; }
+
+        public DbSet<Liabilities> Liabilities { get; set; }
     }   
 }

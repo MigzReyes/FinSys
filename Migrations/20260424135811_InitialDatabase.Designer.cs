@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinSys.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260228152328_InitialDbCreation")]
-    partial class InitialDbCreation
+    [Migration("20260424135811_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,48 @@ namespace FinSys.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("FinSys.Models.Assets", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("AssetId")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("asset_id");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("category");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Item")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("item");
+
+                    b.HasKey("Id")
+                        .HasName("pk_assets");
+
+                    b.ToTable("assets", (string)null);
+                });
 
             modelBuilder.Entity("FinSys.Models.Clients", b =>
                 {
@@ -258,6 +300,147 @@ namespace FinSys.Migrations
                         .HasName("pk_financial_transactions");
 
                     b.ToTable("financial_transactions", (string)null);
+                });
+
+            modelBuilder.Entity("FinSys.Models.Investors", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("address");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("first_name");
+
+                    b.Property<int>("Income")
+                        .HasColumnType("int")
+                        .HasColumnName("income");
+
+                    b.Property<int>("Investment")
+                        .HasColumnType("int")
+                        .HasColumnName("investment");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("middle_name");
+
+                    b.Property<decimal>("Ownership")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("ownership");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("phone");
+
+                    b.Property<decimal>("Roi")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("roi");
+
+                    b.Property<string>("Stakeholder")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("stakeholder");
+
+                    b.Property<string>("StakeholderId")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("stakeholder_id");
+
+                    b.Property<int>("Tin")
+                        .HasColumnType("int")
+                        .HasColumnName("tin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_investors");
+
+                    b.ToTable("investors", (string)null);
+                });
+
+            modelBuilder.Entity("FinSys.Models.Liabilities", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Balance")
+                        .HasColumnType("int")
+                        .HasColumnName("balance");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Debt")
+                        .HasColumnType("int")
+                        .HasColumnName("debt");
+
+                    b.Property<DateTime>("Due")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("due");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Paid")
+                        .HasColumnType("int")
+                        .HasColumnName("paid");
+
+                    b.Property<decimal>("Progress")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("progress");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("status");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_liabilities");
+
+                    b.ToTable("liabilities", (string)null);
                 });
 
             modelBuilder.Entity("FinSys.Models.ResetPasswordCodes", b =>

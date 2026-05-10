@@ -1,0 +1,409 @@
+@{
+    // HEADER INFO
+    ViewData["Title"] = "Financial Statements";
+    ViewData["Description"] = "Records and monitor all of your financial statements";
+    ViewData["Page"] = "financialStatements";
+}
+
+<div class="financial-statements">
+    <div class="financial-statements-body">
+        <div class="financial-statements-body-header">
+            
+            <div class="financial-statements-body-header-con">             
+                <p class="financial-statements-body-head">Your Financial Statement of <span class="fsHeaderMonth"></span> <span class="fsHeaderDay"></span>, <span class="fsHeaderYear"></span></p>
+                <p class="financial-statements-body-subhead">This shows your full overview of your financial statement for this month.</p>
+            </div>
+
+            <div class="financial-statements-select-con">
+                <div class="financial-statements-months-select-con input-con select-input">
+                    <select name="months" id="financialStatementsMonthsSelect">
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+
+
+                <div class="financial-statements-years-select-con input-con select-input">
+                    <select name="years" id="financialStatementsYearsSelect">
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- INCOME STATEMENT -->
+        <div class="accounts-form-table">
+            <div class="accounts-form-table-title-con">
+                <p class="accounts-form-table-title">Income Statement</p>
+            </div>
+
+            <div class="accounts-form-body">
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head">
+                        <p>Fees Earned</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-top">
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data flex-row-center">
+                        <p>₱<span id="feesEarned"></span></p>
+                    </div>
+                </div>
+
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
+                        <p class="padding-bottom-1">Expenses:</p>
+                            <div class="income-statement-expenses padding-left-2">        
+                            </div>
+                        <p class="text-semi-bold deductions padding-left-2 padding-top-1">Total expenses</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
+                        <p>&nbsp;</p>
+                        <div class="income-statement-expenses-amount-con">
+                        </div>
+                        <p>&nbsp;</p>
+                    </div>
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-right flex-col-bottom-end flex-row-center">
+                        <p class="deductions">₱<span class="deductions" id="totalExpenses"></span></p>
+                    </div>
+                </div>
+
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head">
+                        <p class="text-bold earnings">Net Income</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-bottom">
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data flex-row-center">
+                        <p class="text-bold earnings">₱<span class="text-bold earnings netIncome"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATEMENT OF OWNERS EQUITY -->
+        <div class="accounts-form-table">
+            <div class="accounts-form-table-title-con">
+                <p class="accounts-form-table-title">Statement of Owner’s Equity</p>
+            </div>
+
+            <div class="accounts-form-body">
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head">
+                        <p>Retained earnings, <span id="fsOwnersEquityMonth"></span> <span id="fsOwnersEquityDay"></span>, <span id="fsOwnersEquityYear"></span></p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-top">
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data flex-row-center">
+                        <p>₱<span id="retainedEarningsLastmonth"></span></p>
+                    </div>
+                </div>
+
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
+                        <p class="padding-left-1">Net Income for <span id="fsOwnersEquityNetIncomeMonth"></span></p>
+                        <p class="text-semi-bold deductions padding-left-1">Less dividends</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
+                        <p>₱<span class="netIncome"></span></p>
+                        <p>&nbsp;</p>
+                    </div>
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-right flex-col-bottom-end flex-row-center">
+                        <p class="deductions">₱<span class="deductions" id="dividends"></span></p>
+                    </div>
+                </div>
+
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head">
+                        <p class="text-bold earnings">Retained Earnings</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-bottom">
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data flex-row-center">
+                        <p class="text-bold earnings">₱<span class="text-bold earnings retainedEarnings"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CASH FLOW -->
+        <div class="accounts-form-table">
+            <div class="accounts-form-table-title-con">
+                <p class="accounts-form-table-title">Cash Flow</p>
+            </div>
+
+            <div class="accounts-form-body">
+
+                <!-- Operating Activities -->
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-left">
+                        <p>Operating Activities</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-middle">
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-right">
+                    </div>
+                </div>
+
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
+                        <p>Cash received from customers/clients</p>
+                        <p class="deductions">Deduct cash payments for expenses and payments to creditors</p>
+                        <p class="earnings">Net cash flow from operating activities</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
+                        <p>₱<span id="operatingTotalIncome"></span></p>
+                        <p class="deductions">₱<span class="deductions" id="operatingTotalExpense"></span></p>
+                        <p>&nbsp;</p>
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-right flex-col-bottom-end flex-row-center">
+                        <p class="earnings">₱<span class="earnings netAsset"></span></p>
+                    </div>
+                </div>
+
+                <!-- Investing Activities -->
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-left">
+                        <p>Investing Activities</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-middle">
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-right">
+                    </div>
+                </div>
+
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
+                        <div class="asset-name-con  padding-left-1">
+                        </div>
+                        <p class="text-semi-bold deductions padding-left-1">Net cash flow from investing activities</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
+                        <div class="asset-price-con"></div>
+                        <p>&nbsp;</p>
+                    </div>
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-right flex-col-bottom-end flex-row-center">
+                        <p class="deductions">₱<span class="deductions totalAssetValue"></span></p>
+                    </div>
+                </div>
+
+                <!-- Financing Activities -->
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-left">
+                        <p>Financing Activities</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-middle">
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-right">
+                    </div>
+                </div>
+
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
+                        <p class="padding-left-1">Cash received from issuing stock</p>
+                        <p class="text-semi-bold deductions padding-left-1">Deduct cash dividends</p>
+                        <p class="text-semi-bold earnings padding-left-1">Net cash flow from financing activities</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
+                        <p>₱<span class="capital"></span></p>
+                        <p class="deductions">₱<span class="deductions dividends"></span></p>
+                        <p>&nbsp;</p>
+                    </div>
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-right flex-col-bottom-end flex-row-center">
+                        <p class="earnings">₱<span class="earnings netFinancingAct"></span></p>
+                    </div>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="accounts-form-body-row">
+                    <div class="accounts-form-body-col accounts-form-body-head">
+                        <p class="text-bold earnings">Net Cash Flow (Cash Balance)</p>
+                    </div>
+
+                    <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-bottom">
+                    </div>
+
+                    
+                    <div class="accounts-form-body-col accounts-form-body-data flex-row-center">
+                        <p class="text-bold earnings">₱<span class="text-bold earnings netCashFlow"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BALANCE SHEET -->
+        <div class="financial-statements-body-con">
+            <div class="financial-statements-body-con-header">
+                <p class="financial-statements-body-con-head">Balance Sheet</p>
+            </div>
+
+            <div class="financial-statements-body-con-main">
+
+                <!-- ASSETS -->
+                <div class="accounts-form-table flex-400">
+                    <div class="accounts-form-body">
+                        <div class="accounts-form-body-row two-column">
+                            <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-left">
+                                <p>Assets</p>
+                            </div>
+
+                            <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-middle">
+                            </div>
+                        </div>
+
+                        <div class="accounts-form-body-row two-column">
+                            <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
+                                <div class="asset-name-con padding-left-1">
+                                </div>
+                            </div>
+
+                            <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
+                                <div class="asset-price-con"></div>
+                            </div>
+
+                        </div>
+
+                        <!-- TOTAL -->
+                        <div class="accounts-form-body-row two-column">
+                            <div class="accounts-form-body-col accounts-form-body-head">
+                                <p class="text-bold earnings">Total Assets</p>
+                            </div>
+
+                            <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-bottom flex-row-center">
+                                <p class="text-bold earnings">₱<span class="earnings totalAssetValue"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIABILITIES and STOCKHOLDERS EQUITY -->
+                <div class="accounts-form-table border-left flex-400">
+                    <div class="accounts-form-body">
+
+                        <!-- LIABILITIES-->
+                        <div class="accounts-form-body-row">
+                            <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-left">
+                                <p>Liabilities</p>
+                            </div>
+
+                            <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-middle">
+                            </div>
+
+                            
+                            <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-right">
+                            </div>
+                        </div>
+
+                        <div class="accounts-form-body-row">
+                            <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
+                                <p>Loans payable</p>
+                            </div>
+
+                            <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
+                            </div>
+
+                            
+                            <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-right flex-col-bottom-end flex-row-center">
+                                <p>₱<span class="loansPayable"></span></p>
+                            </div>
+                        </div>
+
+                        <!-- STOCKHOLDERS EQUITY -->
+                        <div class="accounts-form-body-row">
+                            <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-left">
+                                <p>Stockholders' Equity</p>
+                            </div>
+
+                            <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-middle">
+                            </div>
+
+                            
+                            <div class="accounts-form-body-col accounts-form-body-title accounts-form-body-title-right">
+                            </div>
+                        </div>
+
+                        <div class="accounts-form-body-row">
+                            <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
+                                <p>Capital stock</p>
+                                <p>Retained earnings</p>
+                                <p class="earnings">Total Stockholders' Equity</p>
+                            </div>
+
+                            <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
+                                <p>₱<span class="capital"></span></p>
+                                <p>₱<span class="retainedEarnings"></span></p>
+                                <p>&nbsp;</p>
+                            </div>
+
+                            
+                            <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-right flex-col-bottom-end flex-row-center">
+                                <p class="earnings">₱<span class="earnings stockholderEquity"></span></p>
+                            </div>
+                        </div>
+
+                        <!-- TOTAL -->
+                        <div class="accounts-form-body-row">
+                            <div class="accounts-form-body-col accounts-form-body-head">
+                                <p class="text-bold earnings">Total liabilities and stockholders’ equity</p>
+                            </div>
+
+                            <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-bottom">
+                            </div>
+
+                            
+                            <div class="accounts-form-body-col accounts-form-body-data flex-col-center flex-row-center">
+                                <p class="text-bold earnings">₱<span class="text-bold earnings totalLiabAndEquity"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
+    </div>
+</div>

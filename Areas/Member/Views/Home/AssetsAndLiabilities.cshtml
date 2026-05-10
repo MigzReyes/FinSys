@@ -1,0 +1,221 @@
+@{
+    // HEADER INFO
+    ViewData["Title"] = "Assets and Liabilities";
+    ViewData["Description"] = "Records and monitor all of your assets and liabilities";
+    ViewData["Page"] = "assetsAndLiabilities";
+}
+
+<div class="assets-and-liabilities">
+
+    <!-- ASSETS -->
+    <div class="assets">
+        <div class="assets-and-liabilities-header">
+            <p class="assets-and-liabilities-head">Assets</p>
+
+            <button class="accent-btn" id="addAssetBtn">
+                <div class="add-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
+                </div>
+                Add Asset
+            </button>
+        </div>
+
+        <div class="assets-body">
+            <div class="table">
+                <div class="assets-body-table table-con">
+                    <table>
+                        <thead>
+                            <tr>     
+                                <th>Date</th>
+                                <th>Item</th>
+                                <th>Category</th>
+                                <th>ID</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="assetsTable">
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-item page-control prev" data-entity="Assets">
+                        <svg class="icon icon-15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                            <path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"/>
+                        </svg>
+
+                        <p>Previous</p>
+                    </div>
+
+                    <ul id="assetsPagination" class="pagination-item-con">
+                    </ul>
+
+                    <div class="pagination-item page-control next" data-entity="Assets">
+                        <p>Next</p>
+
+                        <svg class="icon icon-15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                            <path d="M439.1 297.4C451.6 309.9 451.6 330.2 439.1 342.7L279.1 502.7C266.6 515.2 246.3 515.2 233.8 502.7C221.3 490.2 221.3 469.9 233.8 457.4L371.2 320L233.9 182.6C221.4 170.1 221.4 149.8 233.9 137.3C246.4 124.8 266.7 124.8 279.2 137.3L439.2 297.3z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pie-graph-con">
+                <div class="pie-graph-con-header">
+                    <p class="pie-graph-con-header-title">Assets Chart</p>
+                    
+                    <div class="pie-graph-con-head-con">
+                        <p class="pie-graph-con-head">₱<span id="totalAssetValueTag"></span></p>
+                        <p class="pie-graph-con-subhead">Total Asset Value</p>
+                    </div>
+                </div>
+
+                <div class="pie-graph-body">
+                    <svg id="donutChart" width="220" height="220">
+                    </svg>
+                </div>
+
+                <div class="pie-graph-legend">
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LIABILITIES -->
+    <div class="liabilities">
+        <div class="assets-and-liabilities-header">
+            <p class="assets-and-liabilities-head">Liabilities</p>
+
+            <div class="assets-and-liabilities-header-btn-con">
+                <button class="primary-btn" id="payLiabilityBtn">
+                    Pay Liability
+                </button>
+
+                <button class="accent-btn" id="addLiabilityBtn">
+                    <div class="add-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
+                    </div>
+                    Add Liability
+                </button>
+            </div>
+        </div>
+
+        <div class="liabilities-body">
+            <div class="liabilities-visual">
+                <div class="liabilities-visual-balance-con">
+                    <p class="liabilities-visual-balance-con-subhead">Remaining Balance</p>
+                    <p class="liabilities-visual-balance-con-head">₱<span id="liabilitiesRemainingBalance"></span></p>
+                </div>
+
+                <div class="liabilities-visual-graph-con">
+                    <div class="liabilities-visual-graph-con-header">
+                        <p class="liabilities-visual-graph-head"><span id="totalLiabilities"></span></p>
+                        <p class="liabilities-visual-graph-subhead">Total Liabilities</p>
+                    </div>
+
+                    <div class="liabilities-visual-graph">
+                        <div class="liabilities-visual-graph-horizontal">
+                        </div>
+
+                        <div class="liabilities-visual-graph-legend">
+    
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="liabilities-visual-dashboard-con">
+                    <div class="liabilities-visual-dashboard-con-item">
+                        <p class="liabilities-visual-dashboard-con-item-subhead">Active</p>
+                        <p class="liabilities-visual-dashboard-con-item-head"><span class="liabilities-visual-graph-dashboard-active" id="activeLiabilities"></span></p>
+                    </div>
+
+                    
+                    <div class="liabilities-visual-dashboard-con-item">
+                        <p class="liabilities-visual-dashboard-con-item-subhead">Paid</p>
+                        <p class="liabilities-visual-dashboard-con-item-head"><span class="liabilities-visual-graph-dashboard-paid" id="paidLiabilities"></span></p>
+                    </div>
+
+                    
+                    <div class="liabilities-visual-dashboard-con-item">
+                        <p class="liabilities-visual-dashboard-con-item-subhead">Due</p>
+                        <p class="liabilities-visual-dashboard-con-item-head"><span class="liabilities-visual-graph-dashboard-due" id="dueLiabilities"></span></p>
+                    </div>
+
+                </div>
+            </div>
+
+        
+
+            <div class="table">
+                <div class="picker-con min-content">
+                    <div class="picker-item pickerAll picked max-content" data-item="All" id="pickerAll">
+                        <p>All</p>
+                    </div>
+
+                    <div class="picker-item pickerActive" data-item="Active" id="pickerActive">
+                        <p>Active</p>
+                    </div>
+
+                    <div class="picker-item pickerPaid" data-item="Paid" id="pickerPaid">
+                        <p>Paid</p>
+                    </div>
+
+                    <div class="picker-item pickerDue" data-item="Due" id="pickerDue">
+                        <p>Due</p>
+                    </div>
+                </div>
+
+                <div class="liabilities-body-table table-con">
+                    <table>
+                        <thead>
+                            <tr>     
+                                <th>Due</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Debt</th>
+                                <th>Paid</th>
+                                <th>Balance</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="liabilitiesTable">
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <div class="pagination-item page-control prev" data-entity="Liabilities">
+                        <svg class="icon icon-15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                            <path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"/>
+                        </svg>
+
+                        <p>Previous</p>
+                    </div>
+
+                    <ul id="liabilitiesPagination" class="pagination-item-con">
+                    </ul>
+
+                    <div class="pagination-item page-control next" data-entity="Liabilities">
+                        <p>Next</p>
+
+                        <svg class="icon icon-15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                            <path d="M439.1 297.4C451.6 309.9 451.6 330.2 439.1 342.7L279.1 502.7C266.6 515.2 246.3 515.2 233.8 502.7C221.3 490.2 221.3 469.9 233.8 457.4L371.2 320L233.9 182.6C221.4 170.1 221.4 149.8 233.9 137.3C246.4 124.8 266.7 124.8 279.2 137.3L439.2 297.3z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
