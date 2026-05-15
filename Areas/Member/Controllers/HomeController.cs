@@ -704,9 +704,7 @@ public class HomeController : Controller
         var retainedEarningsLastMonth = oeNetIncomeLastMonth - dividends; // Get the retained earnings of last month. Create a table for storing
                                                                           // retained earnings per snapshot month and year
   
-        var retainedEarnings = retainedEarningsLastMonth + netIncome - dividends;
-
-
+    
         // CASH FLOW
         var operatingTotalIncome = totalIncome;
         var operatingTotalExpense = totalExpense + dividends;
@@ -729,12 +727,14 @@ public class HomeController : Controller
 
         var netCashFlow = operatingNetIncome - totalAssetValue + netFinancingAct;
 
+         // USE CAPITAL
+        var retainedEarnings =  capital - netIncome - dividends;
 
         // LIABILITIES
         var liabilities = _context.Liabilities.Where(l => l.CompanyId == companyId);
         var totalLoans = await liabilities.SumAsync(l => (decimal?)l.Balance) ?? 0;
 
-        var stockholderEquity = capital + retainedEarnings;
+        var stockholderEquity = capital /*+ retainedEarnings*/;
         var totalLiabAndEquity = stockholderEquity + totalLoans;
 
         var data = new

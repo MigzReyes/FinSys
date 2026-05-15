@@ -109,7 +109,8 @@
             <div class="accounts-form-body">
                 <div class="accounts-form-body-row">
                     <div class="accounts-form-body-col accounts-form-body-head">
-                        <p>Retained earnings, <span id="fsOwnersEquityMonth"></span> <span id="fsOwnersEquityDay"></span>, <span id="fsOwnersEquityYear"></span></p>
+                        <p class="hide">Retained earnings, <span id="fsOwnersEquityMonth"></span> <span id="fsOwnersEquityDay"></span>, <span id="fsOwnersEquityYear"></span></p>
+                        <p>Capital</p>
                     </div>
 
                     <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body-top">
@@ -117,7 +118,7 @@
 
                     
                     <div class="accounts-form-body-col accounts-form-body-data flex-row-center">
-                        <p>₱<span id="retainedEarningsLastmonth"></span></p>
+                        <p>₱<span class="capital"></span><span class="hide" id="retainedEarningsLastmonth"></span></p>
                     </div>
                 </div>
 
@@ -368,13 +369,13 @@
                         <div class="accounts-form-body-row">
                             <div class="accounts-form-body-col accounts-form-body-head accounts-form-middle-body-left">
                                 <p>Capital stock</p>
-                                <p>Retained earnings</p>
+                                <p class="hide">Retained earnings</p>
                                 <p class="earnings">Total Stockholders' Equity</p>
                             </div>
 
                             <div class="accounts-form-body-col accounts-form-body-data accounts-form-middle-body">
                                 <p>₱<span class="capital"></span></p>
-                                <p>₱<span class="retainedEarnings"></span></p>
+                                <p class="hide">₱<span class="retainedEarnings"></span></p>
                                 <p>&nbsp;</p>
                             </div>
 
