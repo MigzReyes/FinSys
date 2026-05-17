@@ -125,6 +125,7 @@ const PageScripts = {
         let companyIndustry = document.getElementById("companyIndustry");
         let companyCountry = document.getElementById("companyCountry");
         let companyEmployees = companyRegistration.elements["employees"].value;
+        let investment = document.querySelector(".investment");
 
         let income = document.getElementById("income");
         let expense = document.getElementById("expense");
@@ -232,6 +233,7 @@ const PageScripts = {
                     i.classList.remove("error-input");
                 })
 
+                utils.debug("INvestment", investment.value);
                 const res = await fetch("/Member/Home/CompanyRegistration", {
                     method: "POST",
                     headers: {
@@ -241,7 +243,8 @@ const PageScripts = {
                         CompanyName: companyName.value,
                         CompanyIndustry: companyIndustry.value,
                         CompanyCountry: companyCountry.value,
-                        Employees: companyEmployees
+                        Employees: companyEmployees,
+                        Investment: Number(investment.value.replace(/,/g, ""))
                     })
                 }).then(res => res.json())
                 .then(data => {
@@ -251,6 +254,7 @@ const PageScripts = {
                         modal.classList.remove("show");
                         businessRegistrationModal.classList.remove("show");
                         displayCompanyInfo();
+                        displayInvestorsDashboard();
                     } else {
                         utils.debug("Company registration", "Company has not been registered" + company);
                     }

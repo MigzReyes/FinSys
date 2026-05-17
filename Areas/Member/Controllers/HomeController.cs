@@ -308,6 +308,21 @@ public class HomeController : Controller
         _context.Companies.Add(company);
         await _context.SaveChangesAsync();
 
+        // ADD OWNER INVESTOR
+        var investor = new InvestorRegistration {
+            FirstName = User.FindFirst("FirstName")?.Value,
+            MiddleName = "",
+            LastName = User.FindFirst("LastName")?.Value,
+            Stakeholder = "Owner",
+            Investment = companyDto.Investment,
+            Email = User.FindFirst("Email")?.Value,
+            Phone = User.FindFirst("Phone")?.Value,
+            Tin = 0,
+            Address = User.FindFirst("Country")?.Value
+        };
+
+        await InvestorRegistration(investor);
+
         return Ok( new { company, success = true, message = "Company Registered", isPayed = clientIsPayed.IsPayed });
     }
 
