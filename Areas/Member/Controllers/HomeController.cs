@@ -308,6 +308,21 @@ public class HomeController : Controller
         _context.Companies.Add(company);
         await _context.SaveChangesAsync();
 
+        // ADD OWNER INVESTOR
+        var investor = new InvestorRegistration {
+            FirstName = User.FindFirst("FirstName")?.Value,
+            MiddleName = "",
+            LastName = User.FindFirst("LastName")?.Value,
+            Stakeholder = "Owner",
+            Investment = companyDto.Investment,
+            Email = User.FindFirst("Email")?.Value,
+            Phone = User.FindFirst("Phone")?.Value,
+            Tin = 0,
+            Address = User.FindFirst("Country")?.Value
+        };
+
+        await InvestorRegistration(investor);
+
         return Ok( new { company, success = true, message = "Company Registered", isPayed = clientIsPayed.IsPayed });
     }
 
@@ -704,9 +719,7 @@ public class HomeController : Controller
         var retainedEarningsLastMonth = oeNetIncomeLastMonth - dividends; // Get the retained earnings of last month. Create a table for storing
                                                                           // retained earnings per snapshot month and year
   
-        var retainedEarnings = retainedEarningsLastMonth + netIncome - dividends;
-
-
+    
         // CASH FLOW
         var operatingTotalIncome = totalIncome;
         var operatingTotalExpense = totalExpense + dividends;
@@ -729,12 +742,14 @@ public class HomeController : Controller
 
         var netCashFlow = operatingNetIncome - totalAssetValue + netFinancingAct;
 
+         // USE CAPITAL
+        var retainedEarnings =  capital - netIncome - dividends;
 
         // LIABILITIES
         var liabilities = _context.Liabilities.Where(l => l.CompanyId == companyId);
         var totalLoans = await liabilities.SumAsync(l => (decimal?)l.Balance) ?? 0;
 
-        var stockholderEquity = capital + retainedEarnings;
+        var stockholderEquity = capital /*+ retainedEarnings*/;
         var totalLiabAndEquity = stockholderEquity + totalLoans;
 
         var data = new
