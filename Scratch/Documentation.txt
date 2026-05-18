@@ -631,10 +631,14 @@ TO-DO
 
     get the retained earnings of last month. Create a table for storing retained earnings per snapshot month and year
 
-4/15/2026
+5/15/2026
 
     Make the donut chart responsive
 
     make assets and a liabilities responsive
 
-    Change retained earnings to capital 
+    Change retained earnings to capital -- DONE
+
+5/18/2026
+
+    Clear input validation when added in employees

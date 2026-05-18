@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinSys.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260424135811_InitialDatabase")]
-    partial class InitialDatabase
+    [Migration("20260518004543_TryingToFixWarningNU1902")]
+    partial class TryingToFixWarningNU1902
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
